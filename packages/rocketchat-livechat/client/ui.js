@@ -82,7 +82,8 @@ RocketChat.TabBar.addButton({
 	i18nTitle: 'Knowledge_Base',
 	icon: 'icon-lightbulb',
 	template: 'externalSearch',
-	order: 10
+	order: 10,
+	initialOpen: true
 });
 
 RocketChat.MessageTypes.registerType({
