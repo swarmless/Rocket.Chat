@@ -52,6 +52,18 @@ Meteor.startup(function() {
 		i18nLabel: 'Enabled'
 	});
 
+	RocketChat.settings.add('Livechat_Knowledge_Source', '', {
+		type: 'select',
+		group: 'Livechat',
+		section: 'Knowledge Base',
+		values: [
+			{ key: '0', i18nLabel: 'Livechat_Knowledge_Source_APIAI' },
+			{ key: '1', i18nLabel: 'Livechat_Knowledge_Source_Redlink' }
+		],
+		public: true ,
+		i18nLabel: 'Livechat_Knowledge_Source'
+	});
+
 	RocketChat.settings.add('Livechat_Knowledge_Apiai_Key', '', {
 		type: 'string',
 		group: 'Livechat',
@@ -66,5 +78,31 @@ Meteor.startup(function() {
 		section: 'Knowledge Base',
 		public: true,
 		i18nLabel: 'Apiai_Language'
+	});
+
+	RocketChat.settings.add('Livechat_Knowledge_Redlink_URL', '', {
+		type: 'string',
+		group: 'Livechat',
+		section: 'Knowledge Base',
+		public: true,
+		i18nLabel: 'Livechat_Knowledge_Redlink_URL'
+	});
+
+	/* Currently, Redlink does not offer hashed API_keys, but uses simple password-auth
+	 * This is of course far from perfect and is hopeully going to change sometime later */
+	RocketChat.settings.add('Livechat_Knowledge_Redlink_Auth_User', '', {
+		type: 'string',
+		group: 'Livechat',
+		section: 'Knowledge Base',
+		public: true,
+		i18nLabel: 'Livechat_Knowledge_Redlink_Auth_User'
+	});
+
+	RocketChat.settings.add('Livechat_Knowledge_Redlink_Auth_Password', '', {
+		type: 'string',
+		group: 'Livechat',
+		section: 'Knowledge Base',
+		public: false,
+		i18nLabel: 'Livechat_Knowledge_Redlink_Auth_Password'
 	});
 });
