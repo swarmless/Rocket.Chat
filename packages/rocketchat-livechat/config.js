@@ -90,19 +90,11 @@ Meteor.startup(function() {
 
 	/* Currently, Redlink does not offer hashed API_keys, but uses simple password-auth
 	 * This is of course far from perfect and is hopeully going to change sometime later */
-	RocketChat.settings.add('Livechat_Knowledge_Redlink_Auth_User', '', {
+	RocketChat.settings.add('Livechat_Knowledge_Redlink_Auth_Token', '', {
 		type: 'string',
 		group: 'Livechat',
 		section: 'Knowledge Base',
 		public: true,
-		i18nLabel: 'Livechat_Knowledge_Redlink_Auth_User'
-	});
-
-	RocketChat.settings.add('Livechat_Knowledge_Redlink_Auth_Password', '', {
-		type: 'string',
-		group: 'Livechat',
-		section: 'Knowledge Base',
-		public: false,
-		i18nLabel: 'Livechat_Knowledge_Redlink_Auth_Password'
+		i18nLabel: 'Livechat_Knowledge_Redlink_Auth_Token'
 	});
 });
