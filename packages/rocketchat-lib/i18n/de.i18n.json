@@ -583,11 +583,6 @@
   "Livechat_Dashboard" : "LiveChat-Dashboard",
   "Livechat_enabled" : "LiveChat aktiviert",
   "Livechat_guest_count" : "Gästezähler",
-  "Livechat_Knowledge_Source" : "Wissensquelle",
-  "Livechat_Knowledge_Source_APIAI" : "API.ai",
-  "Livechat_Knowledge_Source_Redlink" : "Redlink",
-  "Livechat_Knowledge_Redlink_URL" : "URL des Redlink-Service",
-  "Livechat_Knowledge_Redlink_Auth_Token" : "Basic-Auth Token",
   "Livechat_managers" : "LiveChat-Manager",
   "Livechat_room_count" : "Livechat Zimmeranzahl",
   "Livechat_title" : "LiveChat-Titel",
@@ -1167,5 +1162,14 @@
   "Your_file_has_been_deleted" : "Deine Datei wurde erfolgreich gelöscht.",
   "Your_mail_was_sent_to_s" : "Ihre E-Mail wurde an %s gesendet.",
   "Your_password_is_wrong" : "Falsches Passwort",
-  "Your_push_was_sent_to_s_devices" : "Die Push-Nachricht wurde an %s Geräte gesendet."
+  "Your_push_was_sent_to_s_devices" : "Die Push-Nachricht wurde an %s Geräte gesendet.",
+  "Livechat_Knowledge_Source" : "Wissensquelle",
+  "Livechat_Knowledge_Source_APIAI" : "API.ai",
+  "Livechat_Knowledge_Source_Redlink" : "Redlink",
+  "Livechat_Knowledge_Redlink_URL" : "URL des Redlink-Service",
+  "Livechat_Knowledge_Redlink_Auth_Token" : "Basic-Auth Token",
+  "Unanswered": "Unbeantwortet",
+  "Answered": "Beantwortet",
+  "No_unanswered_livechats": "Keine unbeantworteten Konversationen",
+  "No_answered_livechats": "Keine beantworteten Konversationen"
 }
