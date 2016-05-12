@@ -16,20 +16,23 @@ Template.livechat.helpers({
 		}
 	},
 	rooms() {
-		var query = {
+		return ChatSubscription.find({
 			t: 'l',
-			open: true
-		};
-
-		var user = Meteor.user();
-
-		if (user && user.settings && user.settings.preferences && user.settings.preferences.unreadRoomsMode) {
-			query.alert = {
-				$ne: true
-			};
-		}
-
-		return ChatSubscription.find(query, {
+			open: true,
+			answered: true
+		}, {
+			sort: {
+				't': 1,
+				'name': 1
+			}
+		});
+	},
+	roomsUnread() {
+		return ChatSubscription.find({
+			t: 'l',
+			open: true,
+			answered: false
+		}, {
 			sort: {
 				't': 1,
 				'name': 1
