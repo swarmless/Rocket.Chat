@@ -134,6 +134,8 @@ Package.onUse(function(api) {
 	api.addFiles('server/lib/Livechat.js', 'server');
 	api.addFiles('server/sendMessageBySMS.js', 'server');
 	api.addFiles('server/externalMessageHook.js', 'server');
+	api.addFiles('server/answerSubscriptionUpdateHook.js', 'server');
+	api.addFiles('server/lastActivitySubscriptionUpdateHook.js', 'server');
 
 	// publications
 	api.addFiles('server/publications/customFields.js', 'server');
