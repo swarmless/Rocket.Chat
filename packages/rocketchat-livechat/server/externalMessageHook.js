@@ -58,35 +58,47 @@ function getKnowledgeAdapter(knowledgeSource){
 			return {
 				onMessage: function(message){
 					let conversation = [];
+					const headers = {
+						'Content-Type': 'application/json; charset=utf-8',
+						'Authorization': 'basic ' + redlinkAuthToken
+					};
 					const room = RocketChat.models.Rooms.findOneById(message.rid);
+
 					RocketChat.models.Messages.findVisibleByRoomId(message.rid).forEach(visibleMessage => {
 						conversation.push({
 							content: visibleMessage.msg,
 							origin: (room.v._id === visibleMessage.u._id) ? 'User' : 'Agent' //in livechat, the owner of the room is the user
 						});
 					});
-					const responseRedlink = HTTP.post(redlinkURL + '/prepare', {
+					const responseRedlinkPrepare = HTTP.post(redlinkURL + '/prepare', {
 						data: {
 							messages: conversation.filter(temp => temp.origin === 'User') //todo: entfernen, sobald Redlink mit "Agent" umgehen kann
 						},
-						headers: {
-							'Content-Type': 'application/json; charset=utf-8',
-							'Authorization': 'basic ' + redlinkAuthToken
-						}
+						headers: headers
 					});
 
-					if (responseRedlink.data && responseRedlink.statusCode === 200) {
+					try {
+						const responseRedlinkQuery = HTTP.post(redlinkURL + '/prepare', {
+							data: responseRedlinkPrepare.data,
+							headers: headers
+						});
+					} catch(e) {
+						//todo: Query funktioniert noch nicht. als Fallback nehmen wir so lange das Ergebnis aus Prepare
+						responseRedlinkQuery = responseRedlinkPrepare;
+					}
+
+					if (responseRedlinkQuery.data && responseRedlinkQuery.statusCode === 200) {
 
 						//delete suggestions proposed so far - Redlink will always analyze the complete conversation
 						RocketChat.models.LivechatExternalMessage.findByRoomId(message.rid).forEach( (oldSuggestion) => {
 							RocketChat.models.LivechatExternalMessage.remove(oldSuggestion._id);
 						});
 
-						for (let i = 0; i < responseRedlink.data.queries.length; i++){
+						for (let i = 0; i < responseRedlinkQuery.data.queries.length; i++){
 							RocketChat.models.LivechatExternalMessage.insert({
 								rid: message.rid,
-								msg: responseRedlink.data.queries[i].serviceName,
-								url: responseRedlink.data.queries[i].url,
+								msg: responseRedlinkQuery.data.queries[i].serviceName,
+								url: responseRedlinkQuery.data.queries[i].url,
 								orig: message._id,
 								ts: new Date()
 							});
