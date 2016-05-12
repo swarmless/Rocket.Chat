@@ -67,7 +67,7 @@ function getKnowledgeAdapter(knowledgeSource){
 					});
 					const responseRedlink = HTTP.post(redlinkURL + '/prepare', {
 						data: {
-							messages: conversation
+							messages: conversation.filter(temp => temp.origin === 'User') //todo: entfernen, sobald Redlink mit "Agent" umgehen kann
 						},
 						headers: {
 							'Content-Type': 'application/json; charset=utf-8',
@@ -76,6 +76,12 @@ function getKnowledgeAdapter(knowledgeSource){
 					});
 
 					if (responseRedlink.data && responseRedlink.statusCode === 200) {
+
+						//delete suggestions proposed so far - Redlink will always analyze the complete conversation
+						RocketChat.models.LivechatExternalMessage.findByRoomId(message.rid).forEach( (oldSuggestion) => {
+							RocketChat.models.LivechatExternalMessage.remove(oldSuggestion._id);
+						});
+
 						for (let i = 0; i < responseRedlink.data.queries.length; i++){
 							RocketChat.models.LivechatExternalMessage.insert({
 								rid: message.rid,
@@ -89,7 +95,7 @@ function getKnowledgeAdapter(knowledgeSource){
 				}
 			}
 	}
-};
+}
 
 RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 	// skips this callback if the message was edited
