@@ -6,8 +6,13 @@
 		<div class="external-messages">
 			{{#each messages}}
 				<div class="external-message">
-					<button class="pick-message"><i class="icon-edit"></i></button>
-					{{msg}}
+					{{#if url}}
+                        <button class="pick-message"><i class="icon-link-ext"></i></button>
+                        <a target="_blank" href="{{url}}">{{msg}}</a>
+					{{else}}
+                        <button class="pick-message"><i class="icon-edit"></i></button>
+						{{msg}}
+					{{/if}}
 				</div>
 			{{/each}}
 		</div>
