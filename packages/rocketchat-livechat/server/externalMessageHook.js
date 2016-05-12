@@ -28,7 +28,7 @@ RocketChat.settings.get('Livechat_Knowledge_Redlink_Auth_Token', function(key, v
 	redlinkAuthToken = value;
 });
 
-var getKnowledgeAdapter = function(knowledgeSource){
+function getKnowledgeAdapter(knowledgeSource){
 	switch( knowledgeSource ) {
 		case KNOWLEDGE_SRC_APIAI:
 			return {
@@ -57,23 +57,26 @@ var getKnowledgeAdapter = function(knowledgeSource){
 		case KNOWLEDGE_SRC_REDLINK:
 			return {
 				onMessage: function(message){
-					//todo: Alle Nachrichten des Raums abholen
-					var responseRedlink = HTTP.post(redlinkURL + '/prepare', {
+					let conversation = [];
+					const room = RocketChat.models.Rooms.findOneById(message.rid);
+					RocketChat.models.Messages.findVisibleByRoomId(message.rid).forEach(visibleMessage => {
+						conversation.push({
+							content: visibleMessage.msg,
+							origin: (room.v._id === visibleMessage.u._id) ? 'User' : 'Agent' //in livechat, the owner of the room is the user
+						});
+					});
+					const responseRedlink = HTTP.post(redlinkURL + '/prepare', {
 						data: {
-							messages: [
-								{
-									content: message.msg
-								}
-							]
+							messages: conversation
 						},
 						headers: {
 							'Content-Type': 'application/json; charset=utf-8',
 							'Authorization': 'basic ' + redlinkAuthToken
 						}
-					})
+					});
 
 					if (responseRedlink.data && responseRedlink.statusCode === 200) {
-						for (var i = 0; i < responseRedlink.data.queries.length; i++){
+						for (let i = 0; i < responseRedlink.data.queries.length; i++){
 							RocketChat.models.LivechatExternalMessage.insert({
 								rid: message.rid,
 								msg: responseRedlink.data.queries[i].serviceName,
