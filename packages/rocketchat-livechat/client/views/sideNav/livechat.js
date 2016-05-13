@@ -21,7 +21,7 @@ Template.livechat.helpers({
 			open: true,
 			answered: true
 		}, {
-			sort: {'lastActivity': 'asc'}
+			sort: {lastActivity: -1}
 		});
 	},
 	roomsUnread() {
@@ -30,7 +30,7 @@ Template.livechat.helpers({
 			open: true,
 			answered: false
 		}, {
-			sort: {'lastActivity': 'desc'}
+			sort: {lastActivity: 1}
 		});
 	},
 	available() {

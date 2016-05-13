@@ -130,6 +130,7 @@
   "and" : "und",
   "And_more" : "Und mehr __length__...",
   "Animals_and_Nature" : "Tiere & Natur",
+  "Answered": "Beantwortet",
   "API" : "API",
   "API_Analytics" : "Analytics",
   "API_Embed" : "Einbetten",
@@ -702,6 +703,8 @@
   "No_group_with_name_%s_was_found" : "Es wurde keine private Gruppe mit dem Namen <strong>\"%s\"</strong> gefunden!",
   "No_groups_yet" : "Sie sind kein Mitglied einer privaten Gruppe.",
   "No_livechats" : "Kein LiveChat vorhanden.",
+  "No_answered_livechats" : "Keine beantworteten LiveChats",
+  "No_unanswered_livechats" : "Keine unbeantworteten LiveChats",
   "No_mentions_found" : "Sie wurden bisher nirgendwo erwähnt.",
   "No_pinned_messages" : "Es wurden bisher keine Nachrichten fixiert.",
   "No_results_found" : "Keine Ergebnisse gefunden.",
@@ -1033,6 +1036,7 @@
   "Type" : "Typ",
   "Type_your_new_password" : "Geben Sie Ihr neues Passwort ein",
   "UI_DisplayRoles" : "Rollen anzeigen",
+  "Unanswered": "Unbeantwortet",
   "Unarchive" : "Wiederherstellen",
   "Unmute_someone_in_room" : "Jemanden das Chatten in einem Raum wieder erlauben",
   "Unmute_user" : "Benutzern das Chatten erlauben ",
@@ -1167,9 +1171,5 @@
   "Livechat_Knowledge_Source_APIAI" : "API.ai",
   "Livechat_Knowledge_Source_Redlink" : "Redlink",
   "Livechat_Knowledge_Redlink_URL" : "URL des Redlink-Service",
-  "Livechat_Knowledge_Redlink_Auth_Token" : "Basic-Auth Token",
-  "Unanswered": "Unbeantwortet",
-  "Answered": "Beantwortet",
-  "No_unanswered_livechats": "Keine unbeantworteten Konversationen",
-  "No_answered_livechats": "Keine beantworteten Konversationen"
+  "Livechat_Knowledge_Redlink_Auth_Token" : "Basic-Auth Token"
 }
