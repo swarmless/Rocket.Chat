@@ -78,7 +78,7 @@ function getKnowledgeAdapter(knowledgeSource){
 					});
 
 					try {
-						const responseRedlinkQuery = HTTP.post(redlinkURL + '/prepare', {
+						const responseRedlinkQuery = HTTP.post(redlinkURL + '/query', {
 							data: responseRedlinkPrepare.data,
 							headers: headers
 						});
