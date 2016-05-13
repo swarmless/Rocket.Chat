@@ -18,13 +18,21 @@ Template.livechat.helpers({
 	rooms() {
 		return ChatSubscription.find({
 			t: 'l',
+			open: true
+		}, {
+			sort: {lastActivity: -1}
+		});
+	},
+	roomsAnswered() {
+		return ChatSubscription.find({
+			t: 'l',
 			open: true,
 			answered: true
 		}, {
 			sort: {lastActivity: -1}
 		});
 	},
-	roomsUnread() {
+	roomsUnanswered() {
 		return ChatSubscription.find({
 			t: 'l',
 			open: true,
