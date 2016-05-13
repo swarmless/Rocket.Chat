@@ -28,19 +28,19 @@ RocketChat.settings.get('Livechat_Knowledge_Redlink_Auth_Token', function(key, v
 	redlinkAuthToken = value;
 });
 
-function getKnowledgeAdapter(knowledgeSource){
+function getKnowledgeAdapter(knowledgeSource, adapterProps){
 	switch( knowledgeSource ) {
 		case KNOWLEDGE_SRC_APIAI:
 			return {
 				onMessage: function(message){
-					const responseAPIAI = HTTP.post('https://api.api.ai/api/query?v=20150910', {
+					const responseAPIAI = HTTP.post(adapterProps.url, {
 						data: {
 							query: message.msg,
-							lang: apiaiLanguage
+							lang: adapterProps.language
 						},
 						headers: {
 							'Content-Type': 'application/json; charset=utf-8',
-							'Authorization': 'Bearer ' + apiaiKey
+							'Authorization': 'Bearer ' + adapterProps.token
 						}
 					});
 					if (responseAPIAI.data && responseAPIAI.data.status.code === 200 && !_.isEmpty(responseAPIAI.data.result.fulfillment.speech)) {
@@ -60,7 +60,7 @@ function getKnowledgeAdapter(knowledgeSource){
 					let conversation = [];
 					const headers = {
 						'Content-Type': 'application/json; charset=utf-8',
-						'Authorization': 'basic ' + redlinkAuthToken
+						'Authorization': 'basic ' + adapterProps.token
 					};
 					const room = RocketChat.models.Rooms.findOneById(message.rid);
 
@@ -70,7 +70,7 @@ function getKnowledgeAdapter(knowledgeSource){
 							origin: (room.v._id === visibleMessage.u._id) ? 'User' : 'Agent' //in livechat, the owner of the room is the user
 						});
 					});
-					const responseRedlinkPrepare = HTTP.post(redlinkURL + '/prepare', {
+					const responseRedlinkPrepare = HTTP.post(adapterProps.url + '/prepare', {
 						data: {
 							messages: conversation.filter(temp => temp.origin === 'User') //todo: entfernen, sobald Redlink mit "Agent" umgehen kann
 						},
@@ -78,7 +78,7 @@ function getKnowledgeAdapter(knowledgeSource){
 					});
 
 					try {
-						const responseRedlinkQuery = HTTP.post(redlinkURL + '/query', {
+						const responseRedlinkQuery = HTTP.post(adapterProps.url + '/query', {
 							data: responseRedlinkPrepare.data,
 							headers: headers
 						});
@@ -128,14 +128,29 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 		return message;
 	}
 
-	const knowledgeAdapter = getKnowledgeAdapter(knowledgeSource);
+	let adapterProps = { };
+	if ( knowledgeSource === KNOWLEDGE_SRC_APIAI )
+		adapterProps = {
+			url: 'https://api.api.ai/api/query?v=20150910',
+			token: apiaiKey,
+			language: apiaiLanguage
+		};
+
+	if ( knowledgeSource === KNOWLEDGE_SRC_REDLINK )
+		adapterProps = {
+			url: redlinkURL,
+			token: redlinkAuthToken,
+			language: 'de'
+		};
+
+	const knowledgeAdapter = getKnowledgeAdapter(knowledgeSource, adapterProps);
 	if (!knowledgeAdapter) {
 		return;
 	}
 
 	Meteor.defer(() => {
 				try {
-					getKnowledgeAdapter(knowledgeSource).onMessage(message);
+					getKnowledgeAdapter(knowledgeSource, adapterProps).onMessage(message);
 				}
 				catch(e) {
 					SystemLogger.error('Error using knowledge provider ->', e);
