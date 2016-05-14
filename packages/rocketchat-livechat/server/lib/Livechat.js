@@ -1,3 +1,102 @@
+class RedlinkAdapter {
+	constructor(adapterProps) {
+		this.properties = adapterProps;
+		this.headers = {
+			'Content-Type': 'application/json; charset=utf-8',
+			'Authorization': 'basic ' + this.properties.token
+		};
+	}
+
+	onMessage(message) {
+		let conversation = [];
+		const room = RocketChat.models.Rooms.findOneById(message.rid);
+
+		RocketChat.models.Messages.findVisibleByRoomId(message.rid).forEach(visibleMessage => {
+			conversation.push({
+				content: visibleMessage.msg,
+				origin: (room.v._id === visibleMessage.u._id) ? 'User' : 'Agent' //in livechat, the owner of the room is the user
+			});
+		});
+		const responseRedlinkPrepare = HTTP.post(this.properties.url + '/prepare', {
+			data: {
+				messages: conversation.filter(temp => temp.origin === 'User') //todo: entfernen, sobald Redlink mit "Agent" umgehen kann
+			},
+			headers: this.headers
+		});
+
+		var responseRedlinkQuery = HTTP.post(this.properties.url + '/query', {
+			data: responseRedlinkPrepare.data,
+			headers: this.headers
+		});
+
+		if (responseRedlinkQuery.data && responseRedlinkQuery.statusCode === 200) {
+
+			//delete suggestions proposed so far - Redlink will always analyze the complete conversation
+			RocketChat.models.LivechatExternalMessage.findByRoomId(message.rid).forEach((oldSuggestion) => {
+				RocketChat.models.LivechatExternalMessage.remove(oldSuggestion._id);
+			});
+
+			for (let i = 0; i < responseRedlinkQuery.data.queries.length; i++) {
+				RocketChat.models.LivechatExternalMessage.insert({
+					rid: message.rid,
+					msg: responseRedlinkQuery.data.queries[i].serviceName,
+					url: responseRedlinkQuery.data.queries[i].url,
+					orig: message._id,
+					ts: new Date()
+				});
+			}
+		}
+	}
+
+	onClose(room) { //async
+		let conversation = [];
+
+		RocketChat.models.Messages.findVisibleByRoomId(room._id).forEach(visibleMessage => {
+			conversation.push({
+				content: visibleMessage.msg,
+				origin: (room.v._id === visibleMessage.u._id) ? 'User' : 'Agent' //in livechat, the owner of the room is the user
+			});
+		});
+		HTTP.post(this.properties.url + '/close', {
+			data: {
+				messages: conversation
+			},
+			headers: this.headers
+		});
+	}
+}
+
+class ApiAiAdapter {
+	constructor(adapterProps) {
+		this.properties = adapterProps;
+		this.headers = {
+			'Content-Type': 'application/json; charset=utf-8',
+			'Authorization': 'Bearer ' + this.properties.token
+		}
+	}
+
+	onMessage(message) {
+		const responseAPIAI = HTTP.post(this.properties.url, {
+			data: {
+				query: message.msg,
+				lang: this.properties.language
+			}
+		});
+		if (responseAPIAI.data && responseAPIAI.data.status.code === 200 && !_.isEmpty(responseAPIAI.data.result.fulfillment.speech)) {
+			RocketChat.models.LivechatExternalMessage.insert({
+				rid: message.rid,
+				msg: responseAPIAI.data.result.fulfillment.speech,
+				orig: message._id,
+				ts: new Date()
+			});
+		}
+	}
+
+	onClose() {
+		//do nothing, api.ai does not learn from us.
+	}
+}
+
 RocketChat.Livechat = {
 	getNextAgent(department) {
 		if (department) {
@@ -6,7 +105,7 @@ RocketChat.Livechat = {
 			return RocketChat.models.Users.getNextAgent();
 		}
 	},
-	sendMessage({ guest, message, roomInfo }) {
+	sendMessage({guest, message, roomInfo}) {
 		var room = RocketChat.models.Rooms.findOneById(message.rid);
 		var newRoom = false;
 
@@ -75,12 +174,12 @@ RocketChat.Livechat = {
 		if (!room) {
 			throw new Meteor.Error('cannot-acess-room');
 		}
-		return _.extend(RocketChat.sendMessage(guest, message, room), { newRoom: newRoom });
+		return _.extend(RocketChat.sendMessage(guest, message, room), {newRoom: newRoom});
 	},
-	registerGuest({ token, name, email, department, phone, loginToken, username } = {}) {
+	registerGuest({token, name, email, department, phone, loginToken, username} = {}) {
 		check(token, String);
 
-		const user = RocketChat.models.Users.getVisitorByToken(token, { fields: { _id: 1 } });
+		const user = RocketChat.models.Users.getVisitorByToken(token, {fields: {_id: 1}});
 
 		if (user) {
 			throw new Meteor.Error('token-already-exists', 'Token already exists');
@@ -138,7 +237,7 @@ RocketChat.Livechat = {
 			if (loginToken) {
 				updateUser.$set.services = {
 					resume: {
-						loginTokens: [ loginToken ]
+						loginTokens: [loginToken]
 					}
 				};
 			}
@@ -146,13 +245,13 @@ RocketChat.Livechat = {
 
 		if (phone) {
 			updateUser.$set.phone = [
-				{ phoneNumber: phone.number }
+				{phoneNumber: phone.number}
 			];
 		}
 
 		if (email && email.trim() !== '') {
 			updateUser.$set.emails = [
-				{ address: email }
+				{address: email}
 			];
 		}
 
@@ -161,7 +260,7 @@ RocketChat.Livechat = {
 		return userId;
 	},
 
-	saveGuest({ _id, name, email, phone }) {
+	saveGuest({_id, name, email, phone}) {
 		let updateData = {};
 
 		if (name) {
@@ -176,7 +275,7 @@ RocketChat.Livechat = {
 		return RocketChat.models.Users.saveUserById(_id, updateData);
 	},
 
-	closeRoom({ user, room, comment }) {
+	closeRoom({user, room, comment}) {
 		RocketChat.models.Rooms.closeByRoomId(room._id);
 
 		const message = {
@@ -188,6 +287,14 @@ RocketChat.Livechat = {
 		RocketChat.sendMessage(user, message, room);
 
 		RocketChat.models.Subscriptions.hideByRoomIdAndUserId(room._id, user._id);
+
+		Meteor.defer(() => {
+			try {
+				this.getKnowledgeAdapter().onClose(room);
+			} catch (e) {
+				SystemLogger.error('Error submitting closed conversation to knowledge provider ->', e);
+			}
+		});
 
 		return true;
 	},
@@ -208,5 +315,48 @@ RocketChat.Livechat = {
 		});
 
 		return settings;
+	},
+
+	getKnowledgeAdapter () {
+		var knowledgeSource = '';
+
+		const KNOWLEDGE_SRC_APIAI = "0";
+		const KNOWLEDGE_SRC_REDLINK = "1";
+
+		RocketChat.settings.get('Livechat_Knowledge_Source', function (key, value) {
+			knowledgeSource = value;
+		});
+
+		let adapterProps = {
+			url: '',
+			token: '',
+			language: ''
+		};
+
+		switch (knowledgeSource) {
+			case KNOWLEDGE_SRC_APIAI:
+				adapterProps.url = 'https://api.api.ai/api/query?v=20150910';
+
+				RocketChat.settings.get('Livechat_Knowledge_Apiai_Key', function (key, value) {
+					adapterProps.token = value;
+				});
+				RocketChat.settings.get('Livechat_Knowledge_Apiai_Language', function (key, value) {
+					adapterProps.language = value;
+				});
+
+				if (!this.apiaiAdapter) this.apiaiAdapter = new ApiAiAdapter(adapterProps);
+				return this.apiaiAdapter;
+				break;
+			case KNOWLEDGE_SRC_REDLINK:
+				RocketChat.settings.get('Livechat_Knowledge_Redlink_URL', function (key, value) {
+					adapterProps.url = value;
+				});
+				RocketChat.settings.get('Livechat_Knowledge_Redlink_Auth_Token', function (key, value) {
+					adapterProps.token = value;
+				});
+
+				if (!this.redlinkAdapter) this.redlinkAdapter = new RedlinkAdapter(adapterProps);
+				return this.redlinkAdapter;
+		}
 	}
 };
