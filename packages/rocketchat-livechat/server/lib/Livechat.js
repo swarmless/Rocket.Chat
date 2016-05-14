@@ -8,17 +8,18 @@ class RedlinkAdapter {
 			'Authorization': 'basic ' + this.properties.token
 		};
 	}
-
-	onMessage(message) {
+	getConversation(rid){
 		let conversation = [];
-		const room = RocketChat.models.Rooms.findOneById(message.rid);
-
-		RocketChat.models.Messages.findVisibleByRoomId(message.rid).forEach(visibleMessage => {
+		RocketChat.models.Messages.findVisibleByRoomId(rid).forEach(visibleMessage => {
 			conversation.push({
 				content: visibleMessage.msg,
 				origin: (room.v._id === visibleMessage.u._id) ? 'User' : 'Agent' //in livechat, the owner of the room is the user
 			});
 		});
+		return conversation;
+	}
+	onMessage(message) {
+		const conversation = this.getConversation(message.rid)
 		const responseRedlinkPrepare = HTTP.post(this.properties.url + '/prepare', {
 			data: {
 				messages: conversation.filter(temp => temp.origin === 'User') //todo: entfernen, sobald Redlink mit "Agent" umgehen kann
@@ -51,17 +52,9 @@ class RedlinkAdapter {
 	}
 
 	onClose(room) { //async
-		let conversation = [];
-
-		RocketChat.models.Messages.findVisibleByRoomId(room._id).forEach(visibleMessage => {
-			conversation.push({
-				content: visibleMessage.msg,
-				origin: (room.v._id === visibleMessage.u._id) ? 'User' : 'Agent' //in livechat, the owner of the room is the user
-			});
-		});
-		HTTP.post(this.properties.url + '/close', {
+		HTTP.post(this.properties.url + '/store', {
 			data: {
-				messages: conversation
+				messages: this.getConversation(room._id)
 			},
 			headers: this.headers
 		});
