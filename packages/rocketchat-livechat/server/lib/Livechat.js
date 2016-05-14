@@ -1,3 +1,5 @@
+/* globals SystemLogger */
+
 class RedlinkAdapter {
 	constructor(adapterProps) {
 		this.properties = adapterProps;
