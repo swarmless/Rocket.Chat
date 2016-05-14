@@ -80,7 +80,8 @@ class ApiAiAdapter {
 			data: {
 				query: message.msg,
 				lang: this.properties.language
-			}
+			},
+			headers: this.headers
 		});
 		if (responseAPIAI.data && responseAPIAI.data.status.code === 200 && !_.isEmpty(responseAPIAI.data.result.fulfillment.speech)) {
 			RocketChat.models.LivechatExternalMessage.insert({
