@@ -4,12 +4,14 @@ class RedlinkAdapter {
 	constructor(adapterProps) {
 		this.properties = adapterProps;
 		this.headers = {
-			'Content-Type': 'application/json; charset=utf-8',
-			'Authorization': 'basic ' + this.properties.token
+			'content-Type': 'application/json; charset=utf-8',
+			'authorization': 'basic ' + this.properties.token
 		};
 	}
-	getConversation(rid){
+
+	getConversation(rid) {
 		let conversation = [];
+		const room = RocketChat.models.Rooms.findOneById(rid);
 		RocketChat.models.Messages.findVisibleByRoomId(rid).forEach(visibleMessage => {
 			conversation.push({
 				content: visibleMessage.msg,
@@ -18,19 +20,30 @@ class RedlinkAdapter {
 		});
 		return conversation;
 	}
+
 	onMessage(message) {
 		const conversation = this.getConversation(message.rid)
 		const responseRedlinkPrepare = HTTP.post(this.properties.url + '/prepare', {
 			data: {
-				messages: conversation.filter(temp => temp.origin === 'User') //todo: entfernen, sobald Redlink mit "Agent" umgehen kann
+				messages: conversation.filter(temp => temp.origin === 'User'), //todo: entfernen, sobald Redlink mit "Agent" umgehen kann
+				user: {
+					id: message.u._id
+				}
 			},
 			headers: this.headers
 		});
 
-		var responseRedlinkQuery = HTTP.post(this.properties.url + '/query', {
-			data: responseRedlinkPrepare.data,
-			headers: this.headers
-		});
+		try {
+			var responseRedlinkQuery = HTTP.post(this.properties.url + '/query', {
+				data: responseRedlinkPrepare.data,
+				headers: this.headers
+			});
+		} catch(e) {
+			//todo Redlink-API und Implementierung sind noch nicht wirklich stabil =>
+			//Als Fallback das Ergebnis von query nehmen
+			responseRedlinkQuery = responseRedlinkPrepare;
+			SystemLogger.error('Redlink-Query with results from prepare did not succeed -> ', e);
+		}
 
 		if (responseRedlinkQuery.data && responseRedlinkQuery.statusCode === 200) {
 
@@ -90,6 +103,15 @@ class ApiAiAdapter {
 
 	onClose() {
 		//do nothing, api.ai does not learn from us.
+	}
+}
+
+class RedlinkMock extends RedlinkAdapter {
+	constructor(adapterProps) {
+		super(adapterProps);
+
+		this.properties.url = 'http://localhost:8080';
+		delete this.headers.authorization;
 	}
 }
 
@@ -351,8 +373,16 @@ RocketChat.Livechat = {
 					adapterProps.token = value;
 				});
 
-				if (!this.redlinkAdapter) this.redlinkAdapter = new RedlinkAdapter(adapterProps);
-				return this.redlinkAdapter;
+				if (this.redlinkAdapter) return this.redlinkAdapter;
+				else {
+					if (process.env.NODE_ENV === 'development') { //use mock
+						this.redlinkAdapter = new RedlinkMock(adapterProps);
+					} else {
+						this.redlinkAdapter = new RedlinkAdapter(adapterProps);
+					}
+					return this.redlinkAdapter;
+				}
+
 		}
 	}
 };
