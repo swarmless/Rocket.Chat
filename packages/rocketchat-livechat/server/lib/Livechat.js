@@ -67,7 +67,8 @@ class RedlinkAdapter {
 	onClose(room) { //async
 		HTTP.post(this.properties.url + '/store', {
 			data: {
-				messages: this.getConversation(room._id)
+				messages: this.getConversation(room._id),
+				user: {id: room.v._id}
 			},
 			headers: this.headers
 		});
