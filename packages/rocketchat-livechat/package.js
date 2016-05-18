@@ -132,6 +132,7 @@ Package.onUse(function(api) {
 	api.addFiles('server/models/indexes.js', 'server');
 
 	// server lib
+	api.addFiles('server/lib/Redlink.js', 'server');
 	api.addFiles('server/lib/Livechat.js', 'server');
 	api.addFiles('server/sendMessageBySMS.js', 'server');
 	api.addFiles('server/externalMessageHook.js', 'server');
