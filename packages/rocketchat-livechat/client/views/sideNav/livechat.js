@@ -51,7 +51,7 @@ Template.livechat.helpers({
 			open: true,
 			answered: false
 		}, {
-			sort: {lastActivity: 1}
+			sort: {lastChangedByCustomer: 1}
 		});
 	},
 	available() {

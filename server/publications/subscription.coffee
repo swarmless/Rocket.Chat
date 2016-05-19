@@ -15,6 +15,7 @@ Meteor.publish 'subscription', ->
 			alert: 1
 			answered: 1
 			lastActivity: 1
+			lastChangedByCustomer: 1
 			unread: 1
 			archived: 1
 			desktopNotifications: 1
