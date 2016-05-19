@@ -221,6 +221,7 @@ RocketChat.Livechat = {
 
 		RocketChat.sendMessage(user, message, room);
 
+		RocketChat.models.Subscriptions.handleCloseRoom(room._id);
 		RocketChat.models.Subscriptions.hideByRoomIdAndUserId(room._id, user._id);
 
 		Meteor.defer(() => {

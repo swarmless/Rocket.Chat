@@ -109,6 +109,16 @@ RocketChat.models.Subscriptions = new class extends RocketChat.models._Base
 
 		return @update query, update
 
+	handleCloseRoom: (roomId) ->
+		query =
+			rid: roomId
+
+		update =
+			$unset:
+				open: false
+		
+		return @update query, update
+
 	openByRoomIdAndUserId: (roomId, userId) ->
 		query =
 			rid: roomId
