@@ -127,7 +127,7 @@ class ClosingDialog {
 				},
 				{
 					id: 'tags',
-					value: this.room.tags.join(", "),
+					value: this.room.tags ? this.room.tags.join(", ") : "",
 					type: 'input',
 					placeholder: t('Please_add_a_tag')
 				}
