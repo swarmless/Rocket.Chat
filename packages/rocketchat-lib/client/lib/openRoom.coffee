@@ -41,6 +41,9 @@ currentTracker = undefined
 				if roomDom.classList.contains('room-container')
 					roomDom.querySelector('.messages-box > .wrapper').scrollTop = roomDom.oldScrollTop
 
+			if !room.open
+				$('.input-message').attr('disabled', true)
+
 			Session.set 'openedRoom', room._id
 
 			Session.set 'editRoomTitle', false
