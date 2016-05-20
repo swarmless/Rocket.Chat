@@ -20,6 +20,7 @@ boilerplate-generator@1.0.4
 caching-compiler@1.0.0
 caching-html-compiler@1.0.2
 callback-hook@1.0.4
+canotto90:swal-forms@0.3.0
 cfs:http-methods@0.0.32
 check@1.1.0
 chrismbeckett:toastr@2.1.2_1
@@ -63,6 +64,7 @@ jquery@1.11.4
 kadira:blaze-layout@2.3.0
 kadira:flow-router@2.10.1
 kenton:accounts-sandstorm@0.3.0
+kevohagan:sweetalert@1.0.0
 konecty:change-case@2.3.0
 konecty:delayed-task@1.0.0
 konecty:mongo-counter@0.0.3

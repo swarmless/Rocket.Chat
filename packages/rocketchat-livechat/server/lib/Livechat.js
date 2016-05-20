@@ -210,12 +210,19 @@ RocketChat.Livechat = {
 		return RocketChat.models.Users.saveUserById(_id, updateData);
 	},
 
-	closeRoom({user, room, comment}) {
+	closeRoom({user, room, closeProps}) {
 		RocketChat.models.Rooms.closeByRoomId(room._id);
+
+		RocketChat.models.Rooms.update(room._id, {
+			$set: {
+				topic: closeProps.topic,
+				tags: closeProps.tags
+			}
+		});
 
 		const message = {
 			t: 'livechat-close',
-			msg: comment,
+			msg: closeProps.comment,
 			groupable: false
 		};
 

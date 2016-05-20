@@ -19,7 +19,7 @@ Template.visitorInfo.helpers({
 	},
 
 	room() {
-		return ChatRoom.findOne({ _id: this.rid });
+		return ChatRoom.findOne({_id: this.rid});
 	},
 
 	joinTags() {
@@ -47,9 +47,9 @@ Template.visitorInfo.helpers({
 				if (livechatData.hasOwnProperty(_id)) {
 					let customFields = Template.instance().customFields.get();
 					if (customFields) {
-						let field = _.findWhere(customFields, { _id: _id });
+						let field = _.findWhere(customFields, {_id: _id});
 						if (field && field.visibility !== 'hidden') {
-							fields.push({ label: field.label, value: livechatData[_id] });
+							fields.push({label: field.label, value: livechatData[_id]});
 						}
 					}
 				}
@@ -92,11 +92,81 @@ Template.visitorInfo.helpers({
 	},
 
 	roomOpen() {
-		const room = ChatRoom.findOne({ _id: this.rid });
+		const room = ChatRoom.findOne({_id: this.rid});
 
 		return room.open;
 	}
 });
+
+class ClosingDialog {
+	constructor(room, onValidatedOk) {
+		this.room = room;
+		this.action = undefined;
+		this.onValidatedOk = onValidatedOk;
+	}
+
+	getAction() {
+		return this.action;
+	}
+
+	display() {
+		var self = this;
+		swal.withFormAsync({
+			title: t('Closing_chat'),
+			formFields: [
+				{
+					id: 'comment',
+					type: 'input',
+					placeholder: t('Please_add_a_comment')
+				},
+				{
+					id: 'topic',
+					value: this.room.topic,
+					type: 'input',
+					placeholder: t('Please_add_a_topic')
+				},
+				{
+					id: 'tags',
+					value: this.room.tags.join(", "),
+					type: 'input',
+					placeholder: t('Please_add_a_tag')
+				}
+			],
+
+			showCancelButton: true,
+			closeOnConfirm: false
+		}).then(function (context) {
+			if (context._isConfirm) {
+				let errorMessage = '';
+				if (!context.swalForm.comment || s.trim(context.swalForm.comment) === '') {
+					errorMessage = t('Please_add_a_comment_to_close_the_room');
+				}
+
+				if (!errorMessage && (!context.swalForm.topic || s.trim(context.swalForm.topic) === '')) {
+					errorMessage = t('Please_add_a_topic_to_close_the_room');
+				}
+
+				if (!errorMessage && (!context.swalForm.tags || s.trim(context.swalForm.tags) === '')) {
+					errorMessage = t('Please_add_a_tag_to_close_the_room');
+				}
+
+				if (errorMessage) {
+					self.action = undefined;
+					//somehow propagate the erroneous form elements to the swal. Maybe. In future.
+					self.display();
+				} else {
+					self.action = 'ok';
+					self.onValidatedOk({
+						comment: context.swalForm.comment,
+						topic: context.swalForm.topic,
+						tags: context.swalForm.tags.split(",") //trimming is done somewhere internally
+					});
+				}
+			}
+			else self.action = 'cancel';
+		});
+	}
+}
 
 Template.visitorInfo.events({
 	'click .edit-livechat'(event, instance) {
@@ -107,24 +177,10 @@ Template.visitorInfo.events({
 	'click .close-livechat'(event) {
 		event.preventDefault();
 
-		swal({
-			title: t('Closing_chat'),
-			type: 'input',
-			inputPlaceholder: t('Please_add_a_comment'),
-			showCancelButton: true,
-			closeOnConfirm: false
-		}, (inputValue) => {
-			if (!inputValue) {
-				swal.showInputError(t('Please_add_a_comment_to_close_the_room'));
-				return false;
-			}
+		const room = RocketChat.models.Rooms.findOne({_id: this.rid});
+		const closingDialog = new ClosingDialog(room, function (closingProps) {
 
-			if (s.trim(inputValue) === '') {
-				swal.showInputError(t('Please_add_a_comment_to_close_the_room'));
-				return false;
-			}
-
-			Meteor.call('livechat:closeRoom', this.rid, inputValue, function(error/*, result*/) {
+			Meteor.call('livechat:closeRoom', this.room._id, closingProps, function (error/*, result*/) {
 				if (error) {
 					return handleError(error);
 				}
@@ -137,10 +193,12 @@ Template.visitorInfo.events({
 				});
 			});
 		});
+
+		closingDialog.display();
 	}
 });
 
-Template.visitorInfo.onCreated(function() {
+Template.visitorInfo.onCreated(function () {
 	this.visitorId = new ReactiveVar(null);
 	this.customFields = new ReactiveVar([]);
 	this.editing = new ReactiveVar(false);
@@ -164,10 +222,10 @@ Template.visitorInfo.onCreated(function() {
 			}
 		});
 
-		this.subscribe('livechat:visitorInfo', { rid: currentData.rid });
+		this.subscribe('livechat:visitorInfo', {rid: currentData.rid});
 	}
 
 	this.autorun(() => {
-		this.user.set(Meteor.users.findOne({ '_id': this.visitorId.get() }));
+		this.user.set(Meteor.users.findOne({'_id': this.visitorId.get()}));
 	});
 });

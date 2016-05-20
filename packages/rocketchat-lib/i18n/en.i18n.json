@@ -768,6 +768,8 @@
   "Placeholder_for_password_login_field" : "Placeholder for password login field",
   "Please_add_a_comment" : "Please add a comment",
   "Please_add_a_comment_to_close_the_room" : "Please, add a comment to close the room",
+  "Please_add_a_title_to_close_the_room" : "Please, add a title to close the room",
+  "Please_add_a_tag_to_close_the_room" : "Please, add at least one tag to close the room",
   "Please_answer_survey" : "Please take a moment to answer a quick survey about this chat",
   "Please_enter_value_for_url" : "Please enter a value for the url of your avatar.",
   "Please_enter_your_new_password_below" : "Please enter your new password below:",
