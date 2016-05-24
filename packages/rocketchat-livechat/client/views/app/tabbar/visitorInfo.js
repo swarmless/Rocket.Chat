@@ -200,6 +200,8 @@ Template.visitorInfo.events({
 					timer: 1000,
 					showConfirmButton: false
 				});
+
+				$('.input-message').attr('disabled', true);
 			});
 		});
 
