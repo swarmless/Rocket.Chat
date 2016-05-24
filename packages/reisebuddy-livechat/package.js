@@ -9,4 +9,5 @@ Package.describe({
 
 Package.onUse(function(api) {
 	api.addFiles('server/startup/settings.js', 'server');
+	api.addFiles('lib/duration.js', 'client');
 });

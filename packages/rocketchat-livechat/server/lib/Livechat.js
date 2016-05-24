@@ -209,14 +209,19 @@ RocketChat.Livechat = {
 		}
 		return RocketChat.models.Users.saveUserById(_id, updateData);
 	},
-
+	calculateDuration(rid){
+		const lastMessage = RocketChat.models.Messages.findVisibleByRoomId(rid, {sort: { ts: -1 }, limit :1}).fetch()[0];;
+		const firstMessage = RocketChat.models.Messages.findVisibleByRoomId(rid, {sort: { ts: 1 }, limit :1}).fetch()[0];;
+		return lastMessage.ts - firstMessage.ts;
+	},
 	closeRoom({user, room, closeProps}) {
 		RocketChat.models.Rooms.closeByRoomId(room._id);
 
 		RocketChat.models.Rooms.update(room._id, {
 			$set: {
 				topic: closeProps.topic,
-				tags: closeProps.tags
+				tags: closeProps.tags,
+				duration: this.calculateDuration(room._id)
 			}
 		});
 

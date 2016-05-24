@@ -283,6 +283,7 @@
   "Duplicate_archived_channel_name" : "An archived Channel with name '%s' exists",
   "Duplicate_archived_private_group_name" : "An archived Private Group with name '%s' exists",
   "Duplicate_private_group_name" : "A Private Group with name '%s' exists",
+  "Duration": "Duration",
   "Edit" : "Edit",
   "Edit_Custom_Field" : "Edit Custom Field",
   "Edit_Department" : "Edit Department",

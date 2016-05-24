@@ -19,7 +19,16 @@ Template.visitorInfo.helpers({
 	},
 
 	room() {
-		return ChatRoom.findOne({_id: this.rid});
+		let room = ChatRoom.findOne({_id: this.rid});
+		const padZero = function(i){
+			return ( i < 10 ? "0" + i : i );
+		}
+		if (room.duration){
+			let date = new Date(room.duration);
+			room.formattedDuration = Math.floor(room.duration/3600000) + ':' + padZero(date.getMinutes()) + ':' + padZero(date.getSeconds());
+									//new Duration(room.duration).toHHMMSS( ); don't get Duration imported though
+		}
+		return room;
 	},
 
 	joinTags() {

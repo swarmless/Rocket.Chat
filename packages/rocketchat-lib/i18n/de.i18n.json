@@ -284,6 +284,7 @@
   "Duplicate_archived_channel_name" : "Ein archivierter Kanal mit dem Namen '%s' existiert bereits.",
   "Duplicate_archived_private_group_name" : "Eine archivierte private Gruppe mit dem Namen '%s' existiert bereits.",
   "Duplicate_private_group_name" : "Eine private Gruppe mit dem Namen '%s' existiert bereits.",
+  "Duration" : "Dauer",
   "Edit" : "Bearbeiten",
   "Edit_Custom_Field" : "Benutzerdefinierte Felder bearbeiten",
   "Edit_Department" : "Abteilung bearbeiten",
