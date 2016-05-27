@@ -45,3 +45,5 @@ Template.flexTabBar.onCreated ->
 				RocketChat.TabBar.closeFlex ->
 					variable = $('.flex-tab-bar .initialOpen:not(.hidden)')
 					variable.click();
+			else
+				$('.flex-tab-bar .initialOpen:not(.active)').click()
