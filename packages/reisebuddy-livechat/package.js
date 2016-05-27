@@ -8,6 +8,11 @@ Package.describe({
 });
 
 Package.onUse(function(api) {
+	api.use('ecmascript');
+
 	api.addFiles('server/startup/settings.js', 'server');
+	api.addFiles('lib/core.js');
 	api.addFiles('lib/duration.js', 'client');
+
+	api.export('_dbs');
 });

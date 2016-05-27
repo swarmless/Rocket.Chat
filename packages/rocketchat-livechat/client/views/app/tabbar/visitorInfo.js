@@ -20,13 +20,9 @@ Template.visitorInfo.helpers({
 
 	room() {
 		let room = ChatRoom.findOne({_id: this.rid});
-		const padZero = function(i){
-			return ( i < 10 ? "0" + i : i );
-		}
 		if (room.duration){
 			let date = new Date(room.duration);
-			room.formattedDuration = Math.floor(room.duration/3600000) + ':' + padZero(date.getMinutes()) + ':' + padZero(date.getSeconds());
-									//new Duration(room.duration).toHHMMSS( ); don't get Duration imported though
+			room.formattedDuration = new _dbs.Duration(room.duration).toHHMMSS( );
 		}
 		return room;
 	},
@@ -108,88 +104,69 @@ Template.visitorInfo.helpers({
 });
 
 class ClosingDialog {
-	constructor(room, onValidatedOk) {
+	constructor(room) {
 		this.room = room;
-		this.action = undefined;
-		this.onValidatedOk = onValidatedOk;
-	}
-
-	getAction() {
-		return this.action;
 	}
 
 	display() {
 		var self = this;
-		swal.withFormAsync({
-			title: t('Closing_chat'),
-			formFields: [
-				{
+		return new Promise(function (resolve) {
+			swal.withForm({
+				title: t('Closing_chat'),
+				formFields: [{
 					id: 'comment',
 					type: 'input',
 					placeholder: t('Please_add_a_comment')
-				},
-				{
+				}, {
 					id: 'topic',
-					value: this.room.topic,
+					value: self.room.topic,
 					type: 'input',
 					placeholder: t('Please_add_a_topic')
-				},
-				{
+				}, {
 					id: 'tags',
-					value: this.room.tags ? this.room.tags.join(", ") : "",
+					value: self.room.tags ? self.room.tags.join(", ") : "",
 					type: 'input',
 					placeholder: t('Please_add_a_tag')
-				}
-			],
+				}],
+				showCancelButton: true,
+				closeOnConfirm: false
+			}, function () {
+				let form = this.swalForm;
 
-			showCancelButton: true,
-			closeOnConfirm: false
-		}).then(function (context) {
-			if (context._isConfirm) {
-				let errorMessage = '';
-				if (!context.swalForm.comment || s.trim(context.swalForm.comment) === '') {
-					errorMessage = t('Please_add_a_comment_to_close_the_room');
+				for (let key in  form) {
+					if (!form.hasOwnProperty(key)) {
+						continue;
+					}
+					if (!form[key]) {
+						swal.showInputError(t('Please_add_a_' + key + '_to_close_the_room'));
+						$('.sa-input-error').hide();
+						return false;
+					}
 				}
-
-				if (!errorMessage && (!context.swalForm.topic || s.trim(context.swalForm.topic) === '')) {
-					errorMessage = t('Please_add_a_topic_to_close_the_room');
-				}
-
-				if (!errorMessage && (!context.swalForm.tags || s.trim(context.swalForm.tags) === '')) {
-					errorMessage = t('Please_add_a_tag_to_close_the_room');
-				}
-
-				if (errorMessage) {
-					self.action = undefined;
-					//somehow propagate the erroneous form elements to the swal. Maybe. In future.
-					self.display();
-				} else {
-					self.action = 'ok';
-					self.onValidatedOk({
-						comment: context.swalForm.comment,
-						topic: context.swalForm.topic,
-						tags: context.swalForm.tags.split(",") //trimming is done somewhere internally
-					});
-				}
-			}
-			else self.action = 'cancel';
-		});
+				resolve(form);
+			});
+		}).then((r) => {
+				$('.sa-input-error').show();
+				return r;
+			});
 	}
 }
 
 Template.visitorInfo.events({
-	'click .edit-livechat'(event, instance) {
+	'click .edit-livechat': function(event, instance) {
 		event.preventDefault();
 
 		instance.editing.set(true);
 	},
-	'click .close-livechat'(event) {
+	'click .close-livechat': function (event) {
 		event.preventDefault();
 
-		const room = RocketChat.models.Rooms.findOne({_id: this.rid});
-		const closingDialog = new ClosingDialog(room, function (closingProps) {
+		var room = RocketChat.models.Rooms.findOne({_id: this.rid});
+		new ClosingDialog(room).display().then(function(form) {
+			let closingProps = form;
+			closingProps.tags = form.tags.split(',');
 
-			Meteor.call('livechat:closeRoom', this.room._id, closingProps, function (error/*, result*/) {
+			Meteor.call('livechat:closeRoom', room._id, closingProps, function (error/*, result*/) {
 				if (error) {
 					return handleError(error);
 				}
@@ -204,8 +181,6 @@ Template.visitorInfo.events({
 				$('.input-message').attr('disabled', true);
 			});
 		});
-
-		closingDialog.display();
 	}
 });
 

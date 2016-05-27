@@ -1,13 +1,20 @@
+/* globals _dbs */
+
 class Duration {
 	constructor(ms) {
 		this.ms = ms;
 		this.date = new Date(ms);
 	}
-	padZero(i){
+
+	static padZero(i) {
 		return ( i < 10 ? "0" + i : i );
 	}
+
 	toHHMMSS() {
-		return Math.floor(this.ms/3600000) + ':' + this.padZero(this.date.getMinutes()) + ':' + this.padZero(this.date.getSeconds())
+		return Math.floor(this.ms / 3600000) + ':' + Duration.padZero(this.date.getMinutes()) + ':' +
+			   Duration.padZero(this.date.getSeconds())
 	}
 
 }
+
+_dbs.Duration = Duration;
