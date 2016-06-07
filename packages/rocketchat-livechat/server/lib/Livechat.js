@@ -33,6 +33,12 @@ class ApiAiAdapter {
 }
 
 RocketChat.Livechat = {
+	logger: new Logger('Livechat', {
+		sections: {
+			webhook: 'Webhook'
+		}
+	}),
+
 	getNextAgent(department) {
 		if (department) {
 			return RocketChat.models.LivechatDepartmentAgents.getNextAgentForDepartment(department);
@@ -40,7 +46,7 @@ RocketChat.Livechat = {
 			return RocketChat.models.Users.getNextAgent();
 		}
 	},
-	sendMessage({guest, message, roomInfo}) {
+	sendMessage({ guest, message, roomInfo }) {
 		var room = RocketChat.models.Rooms.findOneById(message.rid);
 		var newRoom = false;
 
@@ -79,6 +85,10 @@ RocketChat.Livechat = {
 					_id: guest._id,
 					token: message.token
 				},
+				servedBy: {
+					_id: agent.agentId,
+					username: agent.username
+				},
 				open: true
 			}, roomInfo);
 			let subscriptionData = {
@@ -109,12 +119,12 @@ RocketChat.Livechat = {
 		if (!room) {
 			throw new Meteor.Error('cannot-acess-room');
 		}
-		return _.extend(RocketChat.sendMessage(guest, message, room), {newRoom: newRoom});
+		return _.extend(RocketChat.sendMessage(guest, message, room), { newRoom: newRoom });
 	},
-	registerGuest({token, name, email, department, phone, loginToken, username} = {}) {
+	registerGuest({ token, name, email, department, phone, loginToken, username } = {}) {
 		check(token, String);
 
-		const user = RocketChat.models.Users.getVisitorByToken(token, {fields: {_id: 1}});
+		const user = RocketChat.models.Users.getVisitorByToken(token, { fields: { _id: 1 } });
 
 		if (user) {
 			throw new Meteor.Error('token-already-exists', 'Token already exists');
@@ -172,7 +182,7 @@ RocketChat.Livechat = {
 			if (loginToken) {
 				updateUser.$set.services = {
 					resume: {
-						loginTokens: [loginToken]
+						loginTokens: [ loginToken ]
 					}
 				};
 			}
@@ -180,13 +190,13 @@ RocketChat.Livechat = {
 
 		if (phone) {
 			updateUser.$set.phone = [
-				{phoneNumber: phone.number}
+				{ phoneNumber: phone.number }
 			];
 		}
 
 		if (email && email.trim() !== '') {
 			updateUser.$set.emails = [
-				{address: email}
+				{ address: email }
 			];
 		}
 
@@ -195,7 +205,7 @@ RocketChat.Livechat = {
 		return userId;
 	},
 
-	saveGuest({_id, name, email, phone}) {
+	saveGuest({ _id, name, email, phone }) {
 		let updateData = {};
 
 		if (name) {
@@ -247,6 +257,10 @@ RocketChat.Livechat = {
 			} catch (e) {
 				SystemLogger.error('Error submitting closed conversation to knowledge provider ->', e);
 			}
+		});
+
+		Meteor.defer(() => {
+			RocketChat.callbacks.run('closeLivechat', room);
 		});
 
 		return true;
@@ -326,5 +340,42 @@ RocketChat.Livechat = {
 		if (!_.isEmpty(guestData.name)) {
 			return RocketChat.models.Rooms.setLabelByRoomId(roomData._id, guestData.name) && RocketChat.models.Subscriptions.updateNameByRoomId(roomData._id, guestData.name);
 		}
+	},
+
+	forwardOpenChats(userId) {
+		RocketChat.models.Rooms.findOpenByAgent(userId).forEach((room) => {
+			const guest = RocketChat.models.Users.findOneById(room.v._id);
+
+			const agent = RocketChat.Livechat.getNextAgent(guest.department);
+			if (agent && agent.agentId !== userId) {
+				room.usernames = _.without(room.usernames, room.servedBy.username).concat(agent.username);
+
+				RocketChat.models.Rooms.changeAgentByRoomId(room._id, room.usernames, agent);
+
+				let subscriptionData = {
+					rid: room._id,
+					name: guest.name || guest.username,
+					alert: true,
+					open: true,
+					unread: 1,
+					answered: false,
+					code: room.code,
+					u: {
+						_id: agent.agentId,
+						username: agent.username
+					},
+					t: 'l',
+					desktopNotifications: 'all',
+					mobilePushNotifications: 'all',
+					emailNotifications: 'all'
+				};
+				RocketChat.models.Subscriptions.removeByRoomIdAndUserId(room._id, room.servedBy._id);
+
+				RocketChat.models.Subscriptions.insert(subscriptionData);
+
+				RocketChat.models.Messages.createUserLeaveWithRoomIdAndUser(room._id, { _id: room.servedBy._id, username: room.servedBy.username });
+				RocketChat.models.Messages.createUserJoinWithRoomIdAndUser(room._id, { _id: agent.agentId, username: agent.username });
+			}
+		});
 	}
 };
