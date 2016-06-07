@@ -116,17 +116,17 @@ RocketChat.models.Subscriptions = new class extends RocketChat.models._Base
 		update =
 			$unset:
 				open: false
-		
+
 		return @update query, update
 
-	openByRoomIdAndUserId: (roomId, userId) ->
+	openByRoomIdAndUserId: (roomId, userId, markAsOpen = true) ->
 		query =
 			rid: roomId
 			'u._id': userId
 
 		update =
 			$set:
-				open: true
+				open: markAsOpen
 
 		return @update query, update
 

@@ -41,7 +41,7 @@ currentTracker = undefined
 				if roomDom.classList.contains('room-container')
 					roomDom.querySelector('.messages-box > .wrapper').scrollTop = roomDom.oldScrollTop
 
-			if !room.open
+			if room.t == 'l' && !room.open
 				$('.input-message').attr('disabled', true)
 
 			Session.set 'openedRoom', room._id
@@ -61,7 +61,7 @@ currentTracker = undefined
 			# update user's room subscription
 			sub = ChatSubscription.findOne({rid: room._id})
 			if sub?.open is false
-				Meteor.call 'openRoom', room._id, (err) ->
+				Meteor.call 'openRoom', room._id, room, (err) ->
 					if err
 						return handleError(err)
 

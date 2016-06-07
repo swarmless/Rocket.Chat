@@ -1,5 +1,5 @@
 Meteor.methods
-  openRoom: (rid) ->
+  openRoom: (rid, room) ->
     if not Meteor.userId()
       return false
 
@@ -8,4 +8,4 @@ Meteor.methods
       'u._id': Meteor.userId()
     ,
       $set:
-        open: true
+        open: room.open
