@@ -112,8 +112,12 @@ Importer.Slack = class Importer.Slack extends Importer.Base
 				do (user) =>
 					Meteor.runAsUser startedByUserId, () =>
 						existantUser = RocketChat.models.Users.findOneByEmailAddress user.profile.email
+						if not existantUser
+							existantUser = RocketChat.models.Users.findOneByUsername user.name
+
 						if existantUser
 							user.rocketId = existantUser._id
+							RocketChat.models.Users.update { _id: user.rocketId }, { $addToSet: { importIds: user.id } }
 							@userTags.push
 								slack: "<@#{user.id}>"
 								slackLong: "<@#{user.id}|#{user.name}>"
@@ -132,6 +136,8 @@ Importer.Slack = class Importer.Slack extends Importer.Base
 								# Slack's is -18000 which translates to Rocket.Chat's after dividing by 3600
 								if user.tz_offset
 									Meteor.call 'updateUserUtcOffset', user.tz_offset / 3600
+
+							RocketChat.models.Users.update { _id: userId }, { $addToSet: { importIds: user.id } }
 
 							if user.profile.real_name
 								RocketChat.models.Users.setName userId, user.profile.real_name
@@ -156,6 +162,7 @@ Importer.Slack = class Importer.Slack extends Importer.Base
 							if channel.is_general and channel.name isnt existantRoom?.name
 								Meteor.call 'saveRoomSettings', 'GENERAL', 'roomName', channel.name
 							channel.rocketId = if channel.is_general then 'GENERAL' else existantRoom._id
+							RocketChat.models.Rooms.update { _id: channel.rocketId }, { $addToSet: { importIds: channel.id } }
 						else
 							users = []
 							for member in channel.members when member isnt channel.creator
@@ -186,7 +193,7 @@ Importer.Slack = class Importer.Slack extends Importer.Base
 							if not _.isEmpty(channel.purpose?.value) and channel.purpose.last_set > lastSetTopic
 								roomUpdate.topic = channel.purpose.value
 
-							RocketChat.models.Rooms.update { _id: channel.rocketId }, { $set: roomUpdate }
+							RocketChat.models.Rooms.update { _id: channel.rocketId }, { $set: roomUpdate, $addToSet: { importIds: channel.id } }
 
 						@addCountCompleted 1
 			@collection.update { _id: @channels._id }, { $set: { 'channels': @channels.channels }}
@@ -204,7 +211,7 @@ Importer.Slack = class Importer.Slack extends Importer.Base
 								@updateRecord { 'messagesstatus': "#{channel}/#{date}.#{msgs.messages.length}" }
 								for message in msgs.messages
 									msgDataDefaults =
-										_id: "S#{message.ts}"
+										_id: "#{slackChannel.id}.S#{message.ts}"
 										ts: new Date(parseInt(message.ts.split('.')[0]) * 1000)
 
 									if message.type is 'message'
