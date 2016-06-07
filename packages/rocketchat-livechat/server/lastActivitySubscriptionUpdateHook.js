@@ -9,6 +9,9 @@ RocketChat.callbacks.add('afterSaveMessage', function (message) {
 
 	let lastCustomerActivity = 0;
 	let agentAnsweredAfterwards = false;
+	if (!room.v) {
+		return message;
+	}
 	for (let i = 0; i < roomMessages.length; i++) {
 		if (room.v._id === roomMessages[i].u._id) { // Customer wrote the message
 			lastCustomerActivity = roomMessages[i].ts;

@@ -238,7 +238,12 @@ RocketChat.Livechat = {
 
 		Meteor.defer(() => {
 			try {
-				this.getKnowledgeAdapter().onClose(room);
+				const knowledgeAdapter = this.getKnowledgeAdapter();
+                if (knowledgeAdapter && knowledgeAdapter.onClose) {
+					knowledgeAdapter.onClose(room);
+				} else {
+					SystemLogger.warn('No knowledge provider configured');
+				}
 			} catch (e) {
 				SystemLogger.error('Error submitting closed conversation to knowledge provider ->', e);
 			}
