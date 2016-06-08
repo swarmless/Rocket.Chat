@@ -61,7 +61,7 @@ currentTracker = undefined
 			# update user's room subscription
 			sub = ChatSubscription.findOne({rid: room._id})
 			if sub?.open is false
-				Meteor.call 'openRoom', room._id, room, (err) ->
+				Meteor.call 'openRoom', room._id, room.open, (err) ->
 					if err
 						return handleError(err)
 
