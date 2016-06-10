@@ -621,18 +621,25 @@
 	&.available {
 		opacity: 1;
 	}
-}
-
-.livechat-status {
-	float: right;
-	margin-right: 10px;
-	font-size: 20px;
-	&.available {
-		color: @status-online;
-	}
-	&.not-available {
-		color: @status-offline;
-	}
+    h3 i {
+        float: right;
+    }
+    .livechat-status {
+        margin-right: 10px;
+        font-size: 20px;
+        &.available {
+            color: @status-online;
+        }
+        &.not-available {
+            color: @status-offline;
+        }
+    }
+    h4 {
+        &:extend(.side-nav h3);
+        padding-left: 2em;
+        margin-top: auto;
+        font-style: italic;
+    }
 }
 
 .external-message {
@@ -657,13 +664,4 @@
 			width: auto;
 		}
 	}
-}
-
-.side-nav .livechat-section {
-    h4 {
-        &:extend(.side-nav h3);
-        padding-left: 2em;
-        margin-top: auto;
-        font-style: italic;
-    }
 }

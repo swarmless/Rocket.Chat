@@ -72,11 +72,15 @@ Template.livechat.helpers({
 });
 
 Template.livechat.events({
-	'click .livechat-status'() {
+	'click .livechat-status': function() {
 		Meteor.call('livechat:changeLivechatStatus', (err /*, results*/) => {
 			if (err) {
 				return handleError(err);
 			}
 		});
+	},
+	'click .livechat-section.available h3 .icon-plus': function (e, instance) {
+		SideNav.setFlex("directLivechatMessagesFlex");
+		SideNav.openFlex();
 	}
 });

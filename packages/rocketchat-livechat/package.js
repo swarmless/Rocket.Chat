@@ -19,7 +19,7 @@ Package.onUse(function(api) {
 	api.versionsFrom('1.0');
 
 	api.use(['webapp', 'autoupdate'], 'server');
-	api.use('ecmascript');
+	api.use(['ecmascript', 'underscore', 'coffeescript']);
 	api.use('rocketchat:lib');
 	api.use('rocketchat:authorization');
 	api.use('rocketchat:logger');
@@ -99,6 +99,8 @@ Package.onUse(function(api) {
 	api.addFiles('client/views/sideNav/livechat.js', 'client');
 	api.addFiles('client/views/sideNav/livechatFlex.html', 'client');
 	api.addFiles('client/views/sideNav/livechatFlex.js', 'client');
+	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.html', 'client');
+	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.js', 'client');
 
 	api.addFiles('client/views/app/triggers/livechatTriggerAction.html', 'client');
 	api.addFiles('client/views/app/triggers/livechatTriggerAction.js', 'client');
@@ -129,6 +131,8 @@ Package.onUse(function(api) {
 	api.addFiles('server/methods/sendOfflineMessage.js', 'server');
 	api.addFiles('server/methods/setCustomField.js', 'server');
 	api.addFiles('server/methods/webhookTest.js', 'server');
+
+	api.addFiles('server/methods/createDirectLivechatMessage.coffee', 'server');
 
 	// models
 	api.addFiles('server/models/Users.js', 'server');
@@ -162,6 +166,8 @@ Package.onUse(function(api) {
 	api.addFiles('server/publications/visitorHistory.js', 'server');
 	api.addFiles('server/publications/visitorInfo.js', 'server');
 	api.addFiles('server/publications/visitorPageVisited.js', 'server');
+
+	api.addFiles('server/publications/userCrmAutocomplete.coffee', 'server');
 
 	// api
 	api.addFiles('server/api.js', 'server');
