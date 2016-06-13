@@ -133,6 +133,7 @@ Package.onUse(function(api) {
 	api.addFiles('server/methods/webhookTest.js', 'server');
 
 	api.addFiles('server/methods/createDirectLivechatMessage.coffee', 'server');
+	api.addFiles('server/methods/mergeRooms.js', 'server');
 
 	// models
 	api.addFiles('server/models/Users.js', 'server');
@@ -178,4 +179,14 @@ Package.onUse(function(api) {
 	api.addAssets('public/livechat.css', 'client');
 	api.addAssets('public/livechat.js', 'client');
 	api.addAssets('public/head.html', 'server');
+
+	//i18n
+	var _ = Npm.require('underscore');
+	var fs = Npm.require('fs');
+	var tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/rocketchat-livechat/i18n'), function(filename) {
+		return 'i18n/' + filename;
+	}));
+	api.addFiles(tapi18nFiles);
+
+	api.use('tap:i18n');
 });

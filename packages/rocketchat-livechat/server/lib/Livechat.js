@@ -229,6 +229,7 @@ RocketChat.Livechat = {
 
 		RocketChat.models.Rooms.update(room._id, {
 			$set: {
+				comment: closeProps.comment,
 				topic: closeProps.topic,
 				tags: closeProps.tags,
 				duration: this.calculateDuration(room._id)
