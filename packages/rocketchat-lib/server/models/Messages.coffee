@@ -198,6 +198,7 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base
 
 		return @update query, update
 
+	# Updates all messages with rid = oldRid to newRid
 	updateAllRoomIds: (oldRid, newRid) ->
 		query =
 			'rid': oldRid

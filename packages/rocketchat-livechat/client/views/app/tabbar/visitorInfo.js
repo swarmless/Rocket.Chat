@@ -102,14 +102,20 @@ Template.visitorInfo.helpers({
 	}
 });
 
+/**
+ * Provides a closing dialog with inputs for comment, topic and tags for a given room.
+ */
 class ClosingDialog {
+	/**
+	 * @param room the room to get the values from
+	 * @param properties (optional) SweetAlert options
+	 */
 	constructor(room, properties) {
 		this.room = room;
 		this.properties = _.isObject(properties) ? properties : {};
 	}
 
 	/**
-	 *
 	 * @return Promise (keep in mind that native es6-promises aren't cancelable. So always provide a then & catch)
 	 */
 	display() {

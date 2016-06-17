@@ -1,3 +1,7 @@
+/**
+ * Returns the livechat room to the given room-id if the current user has the permission.
+ * @throws error-not-authorized
+ */
 function getLiveRoomFromId(rid, errorMethod) {
 	if (!Meteor.userId() || !RocketChat.authz.hasPermission(Meteor.userId(), 'view-l-room')) {
 		throw new Meteor.Error('error-not-authorized', 'Not authorized', {method: errorMethod});
@@ -10,6 +14,11 @@ function getLiveRoomFromId(rid, errorMethod) {
 }
 
 Meteor.methods({
+	/**
+	 * @param roomId id of the current livechat room
+	 * @return {Room} the livechat room from the previous conversation
+	 * @throws Meteor.Error if no room is found
+	 */
 	'livechat:getPreviousRoom': function (roomId) {
 		const room = getLiveRoomFromId(roomId, 'livechat:getPreviousRoom');
 		const targetRoom = RocketChat.models.Rooms.findOne({
@@ -24,6 +33,11 @@ Meteor.methods({
 		}
 		return targetRoom;
 	},
+	/**
+	 * Moves all messages from roomToClose to newRoom, increments msg counter on newRoom, removes subscriptions
+	 * on roomToClose, deletes roomToClose, reopens newRoom, attaches subscriptions to newRoom
+	 * @throws Meteor.Error if rooms cannot be accessed
+	 */
 	'livechat:mergeRooms': function (roomToCloseId, newRoomId) {
 		const closeRoom = getLiveRoomFromId(roomToCloseId, 'livechat:mergeRooms');
 		const mergeRoom = getLiveRoomFromId(newRoomId, 'livechat:mergeRooms');
@@ -39,9 +53,9 @@ Meteor.methods({
 		RocketChat.models.Rooms.removeById(roomToCloseId);
 
 		RocketChat.models.Rooms.update(newRoomId, {
-				$set: {open: true},
-				$unset: {comment: ''}
-			});
+			$set: {open: true},
+			$unset: {comment: ''}
+		});
 		RocketChat.models.Subscriptions.update(newRoomId, {$set: {answered: closeRoom.answered}});
 		RocketChat.models.Subscriptions.openByRoomIdAndUserId(newRoomId, Meteor.userId());
 	}
