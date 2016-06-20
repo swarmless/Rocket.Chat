@@ -98,23 +98,35 @@ Template.visitorInfo.helpers({
 
 	roomOpen() {
 		const room = ChatRoom.findOne({_id: this.rid});
-
-		return room.open;
+		return room && room.open;
 	}
 });
 
+/**
+ * Provides a closing dialog with inputs for comment, topic and tags for a given room.
+ */
 class ClosingDialog {
-	constructor(room) {
+	/**
+	 * @param room the room to get the values from
+	 * @param properties (optional) SweetAlert options
+	 */
+	constructor(room, properties) {
 		this.room = room;
+		this.properties = _.isObject(properties) ? properties : {};
 	}
 
+	/**
+	 * @return Promise (keep in mind that native es6-promises aren't cancelable. So always provide a then & catch)
+	 */
 	display() {
 		var self = this;
-		return new Promise(function (resolve) {
-			swal.withForm({
+		return new Promise(function (resolve, reject) {
+			swal.withForm(_.extend({
 				title: t('Closing_chat'),
+				text: '',
 				formFields: [{
 					id: 'comment',
+					value: self.room.comment,
 					type: 'input',
 					placeholder: t('Please_add_a_comment')
 				}, {
@@ -130,16 +142,18 @@ class ClosingDialog {
 				}],
 				showCancelButton: true,
 				closeOnConfirm: false
-			}, function () {
+			}, self.properties), function (isConfirm) {
+				if (!isConfirm) { //on cancel
+					reject();
+				}
 				let form = this.swalForm;
-
 				for (let key in  form) {
 					if (!form.hasOwnProperty(key)) {
 						continue;
 					}
 					if (!form[key]) {
 						swal.showInputError(t('Please_add_a_' + key + '_to_close_the_room'));
-						$('.sa-input-error').hide();
+						$('.sa-input-error').hide(); //hide an unwanted marker
 						return false;
 					}
 				}
@@ -148,7 +162,7 @@ class ClosingDialog {
 		}).then((r) => {
 				$('.sa-input-error').show();
 				return r;
-			});
+			}).catch((reason) => {throw reason});
 	}
 }
 
@@ -178,6 +192,33 @@ Template.visitorInfo.events({
 					showConfirmButton: false
 				});
 			});
+		}).catch(() => {});
+	},
+	'click .merge-livechat': function(event) {
+		event.preventDefault();
+		const self = this;
+		Meteor.call('livechat:getPreviousRoom', self.rid, (error, newRoom) => {
+			if (error) {
+				swal({
+					title: t('Merging_Chat'),
+					text: t('nothing_to_merge'),
+					type: "warning",
+					timer: 2000,
+					showConfirmButton: false
+				})
+			} else {
+				new ClosingDialog(newRoom, {
+					title: t('Merging_Chat'),
+					text: t('title_and_tags_discarded_old_infos'),
+					closeOnConfirm: true
+				}).display().then(() => {
+						Meteor.call('livechat:mergeRooms', self.rid, newRoom._id, (error) => {
+							if (!error) {
+								FlowRouter.go('live', {code: newRoom.code});
+							}
+						});
+					}).catch(() => {});
+			}
 		});
 	}
 });
