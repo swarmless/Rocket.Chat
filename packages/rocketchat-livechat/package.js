@@ -94,6 +94,8 @@ Package.onUse(function(api) {
 	api.addFiles('client/views/app/tabbar/visitorEdit.js', 'client');
 	api.addFiles('client/views/app/tabbar/visitorInfo.html', 'client');
 	api.addFiles('client/views/app/tabbar/visitorInfo.js', 'client');
+	api.addFiles('client/views/app/tabbar/visitorCRM.html', 'client');
+	api.addFiles('client/views/app/tabbar/visitorCRM.js', 'client');
 
 	api.addFiles('client/views/sideNav/livechat.html', 'client');
 	api.addFiles('client/views/sideNav/livechat.js', 'client');
@@ -131,6 +133,7 @@ Package.onUse(function(api) {
 	api.addFiles('server/methods/sendOfflineMessage.js', 'server');
 	api.addFiles('server/methods/setCustomField.js', 'server');
 	api.addFiles('server/methods/webhookTest.js', 'server');
+	api.addFiles('server/methods/getCrmContact.js', 'server');
 
 	api.addFiles('server/methods/createDirectLivechatMessage.coffee', 'server');
 
@@ -166,6 +169,7 @@ Package.onUse(function(api) {
 	api.addFiles('server/publications/visitorHistory.js', 'server');
 	api.addFiles('server/publications/visitorInfo.js', 'server');
 	api.addFiles('server/publications/visitorPageVisited.js', 'server');
+	api.addFiles('server/publications/visitorCrm.js', 'server');
 
 	api.addFiles('server/publications/userCrmAutocomplete.coffee', 'server');
 

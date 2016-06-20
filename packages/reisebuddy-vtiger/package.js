@@ -11,11 +11,12 @@ Package.describe({
 });
 
 Npm.depends({
-	"vtiger-client": "https://github.com/mrsimpson/vtiger-client/archive/7377fcdfa68322a07f380091d983c09a1524ea3b.tar.gz"
+	"vtiger-client": "https://github.com/mrsimpson/vtiger-client/archive/ff9e74a7e72877ad5de8ed1ce629b1ba170eb4b2.tar.gz"
 });
 
 Package.onUse(function (api) {
 	api.use('ecmascript');
+	api.addFiles('server/startup/settings.js', 'server');
 	api.addFiles('reisebuddy-vtiger.js', 'server');
 
 	api.export('_vtiger', 'server');

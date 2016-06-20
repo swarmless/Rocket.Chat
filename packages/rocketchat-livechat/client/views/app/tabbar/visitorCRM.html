@@ -1,0 +1,33 @@
+<template name="visitorCRM">
+    <div class="content">
+        <div class="list-view">
+            <h4>{{_ "CRM_Contact"}}</h4>
+            <div class="crm-contact">
+				{{#if loadingFromCRM}}
+					{{_ "Loading..."}}
+				{{else}}
+                    <div class="about clearfix">
+						{{#with crmInfo}}
+							{{#with contact}}
+                                <div class="info">
+                                    <h3 title="{{lastname}}">{{firstname}} {{lastname}}</h3>
+                                    <ul>
+										{{#if email}}
+                                            <li><i class="icon-mail"></i> {{email}}</li> {{/if}}
+										{{#if mobile}}
+                                            <li><i class="icon-phone"></i> {{mobile}}</li> {{/if}}
+                                    </ul>
+                                </div>
+							{{else}}
+								{{#unless crmError}}
+									<button>Create CRM-Contact</button>
+								{{/unless}}
+							{{/with}}
+						{{/with}}
+                    </div>
+				{{/if}}
+            </div>
+        </div>
+
+    </div>
+</template>
