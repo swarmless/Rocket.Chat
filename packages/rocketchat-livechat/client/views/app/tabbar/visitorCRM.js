@@ -30,6 +30,7 @@ Template.visitorCRM.onCreated(function () {
 			}
 		});
 
+		this.subscribe('livechat:visitorInfo', {rid: currentData.rid});
 		this.subscribe('livechat:visitorCrm', {rid: currentData.rid});
 	}
 
