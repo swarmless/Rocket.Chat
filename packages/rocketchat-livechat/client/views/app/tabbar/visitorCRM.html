@@ -1,32 +1,46 @@
 <template name="visitorCRM">
-    <div class="content">
+    <div class="about">
         <div class="list-view">
-            <h4>{{_ "CRM_Contact"}}</h4>
-            <div class="crm-contact">
-				{{#if loadingFromCRM}}
-					{{_ "Loading..."}}
-				{{else}}
-                    <div class="about clearfix">
+            <h3>{{_ "crm_contact_information"}}</h3>
+			{{#if isEditing}}
+                {{#unless crmInfo.crmError}}
+					{{> visitorCRMEdit (editDetails)}}
+                {{/unless}}
+			{{else}}
+                <div class="crm-contact">
+					{{#if isLoading}}
+						{{_ "Loading..."}}
+					{{else}}
 						{{#with crmInfo}}
 							{{#with contact}}
-                                <div class="info">
-                                    <h3 title="{{lastname}}">{{firstname}} {{lastname}}</h3>
+                                <div class="clearfix">
+                                    <h4 title="{{lastname}}">{{firstname}} {{lastname}}</h4>
                                     <ul>
 										{{#if email}}
                                             <li><i class="icon-mail"></i> {{email}}</li> {{/if}}
+										{{#if phone}}
+                                            <li><i class="icon-phone"></i> {{phone}}</li> {{/if}}
 										{{#if mobile}}
                                             <li><i class="icon-phone"></i> {{mobile}}</li> {{/if}}
                                     </ul>
+                                    <nav class="centered-buttons">
+                                        <button class='button edit-contact button-block'>
+                                            <span>{{_ "edit_contact"}}</span>
+                                        </button>
+                                    </nav>
                                 </div>
 							{{else}}
 								{{#unless crmError}}
-									<button>Create CRM-Contact</button>
+                                    <nav class="centered-buttons">
+                                        <button class='button create-contact button-block'>
+                                            <span>{{_ "create-contact"}}</span></button>
+                                    </nav>
 								{{/unless}}
 							{{/with}}
 						{{/with}}
-                    </div>
-				{{/if}}
-            </div>
+					{{/if}}
+                </div>
+			{{/if}}
         </div>
 
     </div>
