@@ -2,8 +2,12 @@
     <form class="edit-form" autocomplete="off">
 		{{#with contact}}
             <div class="input-line">
+                <label for="firstname">{{_ "firstame"}}</label>
+                <input type="text" name="firstname" autocomplete="off" value="{{firstname}}">
+            </div>
+            <div class="input-line">
                 <label for="lastname">{{_ "lastame"}}</label>
-                <input type="text" name="lastname" autocomplete="off" value="{{name}}">
+                <input type="text" name="lastname" autocomplete="off" value="{{lastname}}">
             </div>
             <div class="input-line">
                 <label for="email">{{_ "Email"}}</label>

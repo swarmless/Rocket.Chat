@@ -1,47 +1,48 @@
 <template name="visitorCRM">
     <div class="about">
         <div class="list-view">
-            <h3>{{_ "crm_contact_information"}}</h3>
-			{{#if isEditing}}
-                {{#unless crmInfo.crmError}}
-					{{> visitorCRMEdit (editDetails)}}
-                {{/unless}}
-			{{else}}
-                <div class="crm-contact">
-					{{#if isLoading}}
-						{{_ "Loading..."}}
+			{{#with crmInfo}}
+				{{#if error}}
+                    <div class="crm-error">{{_ "crm_communication_error"}}</div>
+				{{else}}
+                    <h3>{{_ "crm_contact_information"}}</h3>
+					{{#if isEditing}}
+						{{> visitorCRMEdit (editDetails)}}
 					{{else}}
-						{{#with crmInfo}}
-							{{#with contact}}
-                                <div class="clearfix">
-                                    <h4 title="{{lastname}}">{{firstname}} {{lastname}}</h4>
-                                    <ul>
-										{{#if email}}
-                                            <li><i class="icon-mail"></i> {{email}}</li> {{/if}}
-										{{#if phone}}
-                                            <li><i class="icon-phone"></i> {{phone}}</li> {{/if}}
-										{{#if mobile}}
-                                            <li><i class="icon-phone"></i> {{mobile}}</li> {{/if}}
-                                    </ul>
-                                    <nav class="centered-buttons">
-                                        <button class='button edit-contact button-block'>
-                                            <span>{{_ "edit_contact"}}</span>
-                                        </button>
-                                    </nav>
-                                </div>
+                        <div class="crm-contact">
+							{{#if isLoading}}
+								{{_ "Loading..."}}
 							{{else}}
-								{{#unless crmError}}
-                                    <nav class="centered-buttons">
-                                        <button class='button create-contact button-block'>
-                                            <span>{{_ "create-contact"}}</span></button>
-                                    </nav>
-								{{/unless}}
-							{{/with}}
-						{{/with}}
+								{{#with crmInfo}}
+									{{#with contact}}
+                                        <div class="clearfix">
+                                            <h4 title="{{lastname}}">{{firstname}} {{lastname}}</h4>
+                                            <ul>
+												{{#if email}}
+                                                    <li><i class="icon-mail"></i> {{email}}</li> {{/if}}
+												{{#if phone}}
+                                                    <li><i class="icon-phone"></i> {{phone}}</li> {{/if}}
+												{{#if mobile}}
+                                                    <li><i class="icon-phone"></i> {{mobile}}</li> {{/if}}
+                                            </ul>
+                                            <nav class="centered-buttons">
+                                                <button class='button edit-contact button-block'>
+                                                    <span>{{_ "edit_contact"}}</span>
+                                                </button>
+                                            </nav>
+                                        </div>
+									{{else}}
+                                        <nav class="centered-buttons">
+                                            <button class='button create-contact button-block'>
+                                                <span>{{_ "create-contact"}}</span></button>
+                                        </nav>
+									{{/with}}
+								{{/with}}
+							{{/if}}
+                        </div>
 					{{/if}}
-                </div>
-			{{/if}}
+				{{/if}}
+			{{/with}}
         </div>
-
     </div>
 </template>

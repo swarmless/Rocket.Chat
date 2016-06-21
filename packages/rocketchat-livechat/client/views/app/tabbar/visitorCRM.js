@@ -18,9 +18,9 @@ Template.visitorCRM.helpers({
 		const contact = instance.crmContact.get();
 		return {
 			contact,
-			save() {
+			save(contact) {
 				instance.isEditing.set(false);
-				Meteor.call('livechat:updateCrmContact', instance.contact.get());
+				Meteor.call('livechat:updateCrmContact', contact);
 			},
 			cancel() {
 				instance.isEditing.set(false);
@@ -79,7 +79,7 @@ Template.visitorCRM.onCreated(function () {
 					}
 					else {
 						this.crmContactCount.set(contacts.length);
-						this.crmError.set({});
+						this.crmError.set(false);
 						if (contacts) {
 							this.crmContact.set(contacts[0]);
 						}

@@ -7,6 +7,9 @@ Meteor.methods({
 			email: user.email || ( user.mobile ? (user.mobile + "@sms.db.de" ) : "" )
 		};
 
-		return _vtiger.getAdapter().createContactPromise(contact);
+		return _vtiger.getAdapter().createContactPromise(contact)
+			.catch((err)=> {
+				throw new Meteor.Error(err)
+			});
 	}
 });

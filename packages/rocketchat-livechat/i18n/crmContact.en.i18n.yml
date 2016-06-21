@@ -1,4 +1,5 @@
+create_contact: create contact
+crm_communication_error: Error talking to CRM
 crm_contact_information: CRM contact
 edit_contact: edit contact
-create_contact: create contact
 update_contact: update contact
