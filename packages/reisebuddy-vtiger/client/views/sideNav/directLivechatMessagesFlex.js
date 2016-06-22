@@ -9,12 +9,11 @@ Template.directLivechatMessagesFlex.helpers({
 				collection: 'UserAndRoom',
 				subscription: 'userCrmAutocomplete',
 				field: 'username',
-				template: Template.userSearch,
+				template: Template.directLivechatMessageUserSearch,
 				noMatchTemplate: Template.userSearchEmpty,
 				matchAll: true,
 				filter: {
-					exceptions: [Meteor.user().username],
-					types: ['visitor']
+					exceptions: [Meteor.user().username]
 				},
 				selector: function (match) {
 					return {username: match}
@@ -27,7 +26,7 @@ Template.directLivechatMessagesFlex.helpers({
 
 Template.directLivechatMessagesFlex.events({
 	'autocompleteselect #who': function (event, instance, doc) {
-		instance.selectedUser.set(doc.username);
+		instance.selectedUser.set(doc);
 		event.currentTarget.focus();
 	},
 	'click .cancel-direct-message': function (e, instance) {
@@ -53,11 +52,11 @@ Template.directLivechatMessagesFlex.events({
 	'click .save-direct-message': function (e, instance) {
 		const err = SideNav.validate();
 		if (!err) {
-			const username = instance.selectedUser.get();
-			if (!username) {
+			const user = instance.selectedUser.get();
+			if (!user.username) {
 				return;
 			}
-			Meteor.call('createDirectLivechatMessage', username, function (err, result) {
+			Meteor.call('createDirectLivechatMessage', user, function (err, result) {
 				if (err) {
 					return handleError(err)
 				}

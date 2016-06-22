@@ -88,13 +88,9 @@ RocketChat.models.Users = new class extends RocketChat.models._Base
 		return @find query, options
 
 	findActiveByUsernameRegexWithExceptions: (username, exceptions = [], options = {}) ->
-		return @findActiveByUsernameRegexAndTypesWithExceptions username, exceptions, ['user', 'bot'], options
-
-	findActiveByUsernameRegexAndTypesWithExceptions: (username, exceptions = [], types = ['user', 'bot'], options = {}) ->
 		if not _.isArray exceptions
 			exceptions = [ exceptions ]
-		if (not _.isArray types) || types.length < 1
-			types = ['user', 'bot']
+
 		usernameRegex = new RegExp username, "i"
 		query =
 			$and: [
@@ -103,7 +99,7 @@ RocketChat.models.Users = new class extends RocketChat.models._Base
 				{ username: usernameRegex }
 			]
 			type:
-				$in: types
+				$in: ['user', 'bot']
 
 		return @find query, options
 

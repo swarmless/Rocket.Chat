@@ -121,7 +121,7 @@ RocketChat.Livechat = {
 		}
 		return _.extend(RocketChat.sendMessage(guest, message, room), { newRoom: newRoom });
 	},
-	registerGuest({ token, name, email, department, phone, loginToken, username } = {}) {
+	registerGuest({ token, name, email, department, phone, loginToken, username, other } = {}) {
 		check(token, String);
 
 		const user = RocketChat.models.Users.getVisitorByToken(token, { fields: { _id: 1 } });
@@ -198,6 +198,10 @@ RocketChat.Livechat = {
 			updateUser.$set.emails = [
 				{ address: email }
 			];
+		}
+
+		if (other) {
+			updateUser.$set = _.extend(updateUser.$set, other);
 		}
 
 		Meteor.users.update(userId, updateUser);
