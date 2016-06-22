@@ -2,7 +2,6 @@ Template.visitorCRM.helpers({
 	crmInfo() {
 		return {
 			contact: Template.instance().crmContact.get(),
-			count: Template.instance().crmContactCount.get(),
 			error: Template.instance().crmError.get()
 		}
 	},
@@ -30,19 +29,22 @@ Template.visitorCRM.helpers({
 });
 
 Template.visitorCRM.events({
-	'click .edit-contact': function(event, instance){
+	'click .edit-contact': function (event, instance) {
 		instance.isEditing.set(true);
 	},
 
-	'click .create-contact': function(event, instance){
-		Meteor.call('livechat:createCrmContact', this.user);
+	'click .create-contact': function (event, instance) {
+		Meteor.call('livechat:createCrmContact', instance.user.get(), (err, data)=> {
+			if (err) {
+				console.error(err);
+			}
+		});
 	}
 });
 
 Template.visitorCRM.onCreated(function () {
 	this.visitorId = new ReactiveVar(null);
 	this.crmContact = new ReactiveVar({});
-	this.crmContactCount = new ReactiveVar(0);
 	this.crmError = new ReactiveVar({});
 	this.user = new ReactiveVar({});
 	this.isLoading = new ReactiveVar(true);
@@ -67,24 +69,29 @@ Template.visitorCRM.onCreated(function () {
 
 	this.autorun(()=> {
 		if (this.visitorId) {
-			this.user.set(Meteor.users.findOne({'_id': this.visitorId.get()})); //could reside within an autorun to capture changes in parallel sessions
+			this.user.set(Meteor.users.findOne({'_id': this.visitorId.get()}));
 
 			if (this.user.get()) {
-				Meteor.call('livechat:getCrmContact', this.user.get().id, (err, contacts) => {
-					this.isLoading.set(false);
-					if (err) {
-						this.crmContact.set({});
-						this.crmContactCount.set(-1);
-						this.crmError.set(err);
-					}
-					else {
-						this.crmContactCount.set(contacts.length);
-						this.crmError.set(false);
-						if (contacts) {
-							this.crmContact.set(contacts[0]);
+				if (this.user.get().crmContactId) {
+					Meteor.call('livechat:getCrmContact', this.user.get().crmContactId, (err, contact) => {
+						this.isLoading.set(false);
+						if (err) {
+							this.crmContact.set({});
+							this.crmError.set(err);
 						}
-					}
-				});
+						else {
+							this.crmError.set(false);
+							if (contact) {
+								this.crmContact.set(contact);
+							}
+						}
+					});
+				}
+				else {
+					this.isLoading.set(false);
+					this.crmContact.set(undefined);
+					this.crmError.set(false);
+				}
 			}
 		}
 	})

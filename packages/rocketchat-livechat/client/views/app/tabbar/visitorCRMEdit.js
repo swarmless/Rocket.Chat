@@ -4,7 +4,7 @@ Template.visitorCRMEdit.helpers({
 	}
 });
 
-Template.visitorCRMEdit.onCreated(function() {
+Template.visitorCRMEdit.onCreated(function () {
 	this.contact = new ReactiveVar(Template.currentData().contact);
 });
 
@@ -12,18 +12,21 @@ Template.visitorCRMEdit.events({
 	'submit form'(event, instance) {
 		event.preventDefault();
 
+		let contact = instance.contact.get();
+
+		contact.firstname = event.currentTarget.elements['firstname'].value;
 		contact.lastname = event.currentTarget.elements['lastname'].value;
 		contact.email = event.currentTarget.elements['email'].value;
 		contact.phone = event.currentTarget.elements['phone'].value;
-		contact.mobile = event.currentTarget.elements['phone'].value;
+		contact.mobile = event.currentTarget.elements['mobile'].value;
 
-		this.contact.set(contact);
+		instance.contact.set(contact);
+
+		this.save(this.contact);
 	},
 
 	'click .save'() {
-		if (this.contact){
-			this.save(this.contact);
-		}
+		this.save(this.contact);
 	},
 
 	'click .cancel'() {

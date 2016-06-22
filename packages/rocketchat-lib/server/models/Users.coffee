@@ -330,6 +330,12 @@ RocketChat.models.Users = new class extends RocketChat.models._Base
 			else
 				unsetData.phone = 1
 
+		if data.crmContactId?
+			if not _.isEmpty(s.trim(data.crmContactId))
+				setData.crmContactId = data.crmContactId
+			else
+				unsetData.crmContactId = 1
+
 		update = {}
 
 		if not _.isEmpty setData

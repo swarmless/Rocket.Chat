@@ -3,13 +3,20 @@ Meteor.methods({
 
 		const contact = {
 			lastname: 'Neuer Benutzer',
-			mobile: user.mobile || "",
-			email: user.email || ( user.mobile ? (user.mobile + "@sms.db.de" ) : "" )
+			phone: user.phone? user.phone[0].phoneNumber : "",
+			email: user.email ? user.email[0] : ( user.phone ? (user.phone[0].phoneNumber + "@sms.db.de" ) : "" )
 		};
 
-		return _vtiger.getAdapter().createContactPromise(contact)
-			.catch((err)=> {
-				throw new Meteor.Error(err)
-			});
+		try {
+			const crmContact = Promise.await(_vtiger.getAdapter().createContactPromise(contact));
+
+			let updateData = {};
+			updateData.crmContactId = crmContact.id;
+
+			return RocketChat.models.Users.saveUserById(user._id, updateData);
+		}
+		catch(err){
+			console.error("Couldn't create contact in crm system", err);
+		}
 	}
 });
