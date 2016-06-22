@@ -1,0 +1,30 @@
+<template name="visitorCRMEdit">
+    <form class="edit-form" autocomplete="off">
+		{{#with contact}}
+            <div class="input-line">
+                <label for="firstname">{{_ "firstame"}}</label>
+                <input type="text" name="firstname" autocomplete="off" value="{{firstname}}">
+            </div>
+            <div class="input-line">
+                <label for="lastname">{{_ "lastame"}}</label>
+                <input type="text" name="lastname" autocomplete="off" value="{{lastname}}">
+            </div>
+            <div class="input-line">
+                <label for="email">{{_ "Email"}}</label>
+                <input type="email" name="email" autocomplete="off" value="{{email}}">
+            </div>
+            <div class="input-line">
+                <label for="phone">{{_ "Phone"}}</label>
+                <input type="text" name="phone" autocomplete="off" value="{{phone}}">
+            </div>
+            <div class="input-line">
+                <label for="mobile">{{_ "mobile"}}</label>
+                <input type="text" name="mobile" autocomplete="off" value="{{mobile}}">
+            </div>
+		{{/with}}
+        <nav>
+            <button class='button button-block blue save'><span>{{_ "Save"}}</span></button>
+            <button class='button button-block cancel secondary' type="button"><span>{{_ "Cancel"}}</span></button>
+        </nav>
+    </form>
+</template>

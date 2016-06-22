@@ -1,33 +1,48 @@
 <template name="visitorCRM">
-    <div class="content">
+    <div class="about">
         <div class="list-view">
-            <h4>{{_ "CRM_Contact"}}</h4>
-            <div class="crm-contact">
-				{{#if loadingFromCRM}}
-					{{_ "Loading..."}}
+			{{#with crmInfo}}
+				{{#if error}}
+                    <div class="crm-error">{{_ "crm_communication_error"}}</div>
 				{{else}}
-                    <div class="about clearfix">
-						{{#with crmInfo}}
-							{{#with contact}}
-                                <div class="info">
-                                    <h3 title="{{lastname}}">{{firstname}} {{lastname}}</h3>
-                                    <ul>
-										{{#if email}}
-                                            <li><i class="icon-mail"></i> {{email}}</li> {{/if}}
-										{{#if mobile}}
-                                            <li><i class="icon-phone"></i> {{mobile}}</li> {{/if}}
-                                    </ul>
-                                </div>
+                    <h3>{{_ "crm_contact_information"}}</h3>
+					{{#if isEditing}}
+						{{> visitorCRMEdit (editDetails)}}
+					{{else}}
+                        <div class="crm-contact">
+							{{#if isLoading}}
+								{{_ "Loading..."}}
 							{{else}}
-								{{#unless crmError}}
-									<button>Create CRM-Contact</button>
-								{{/unless}}
-							{{/with}}
-						{{/with}}
-                    </div>
+								{{#with crmInfo}}
+									{{#with contact}}
+                                        <div class="clearfix">
+                                            <h4 title="{{lastname}}">{{firstname}} {{lastname}}</h4>
+                                            <ul>
+												{{#if email}}
+                                                    <li><i class="icon-mail"></i> {{email}}</li> {{/if}}
+												{{#if phone}}
+                                                    <li><i class="icon-phone"></i> {{phone}}</li> {{/if}}
+												{{#if mobile}}
+                                                    <li><i class="icon-phone"></i> {{mobile}}</li> {{/if}}
+                                            </ul>
+                                            <nav class="centered-buttons">
+                                                <button class='button edit-contact button-block'>
+                                                    <span>{{_ "edit_contact"}}</span>
+                                                </button>
+                                            </nav>
+                                        </div>
+									{{else}}
+                                        <nav class="centered-buttons">
+                                            <button class='button create-contact button-block'>
+                                                <span>{{_ "create-contact"}}</span></button>
+                                        </nav>
+									{{/with}}
+								{{/with}}
+							{{/if}}
+                        </div>
+					{{/if}}
 				{{/if}}
-            </div>
+			{{/with}}
         </div>
-
     </div>
 </template>
