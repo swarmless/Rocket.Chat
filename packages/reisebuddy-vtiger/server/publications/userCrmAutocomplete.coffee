@@ -1,20 +1,12 @@
-# see \server\publications\userAutocomplete.coffee
+###
+  Publication containing visitors with username containing selector.username and the results from the crm-search
+  @see \server\publications\userAutocomplete.coffee
+###
 Meteor.publish 'userCrmAutocomplete', (selector) ->
 	unless this.userId
 		return this.ready()
 
 	pub = this
-	exceptions = selector.exceptions or []
-
-	options =
-		fields:
-			name: 1
-			username: 1
-			status: 1
-			crmContactId: 1
-		limit: 10
-		sort:
-			name: 1
 
 	if selector.username
 		_vtiger.getAdapter().findContactsFulltextPromise('%'+selector.username+'%').then((records) =>
@@ -36,6 +28,17 @@ Meteor.publish 'userCrmAutocomplete', (selector) ->
 						});
 		).catch (resp) ->
 			SystemLogger.error "unable to query crm for user autocomplete: " + resp
+
+	exceptions = selector.exceptions or []
+	options =
+		fields:
+			name: 1
+			username: 1
+			status: 1
+			crmContactId: 1
+		limit: 10
+		sort:
+			name: 1
 
 	#using the crmId as publicationId allows updating the RC-userproxies
 	cursorHandle = RocketChat.models.Users.findVisitorsByUsername(selector.username, exceptions, options).observeChanges
