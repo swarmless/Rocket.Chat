@@ -8,7 +8,7 @@ RocketChat.theme.addPublicColor "quaternary-font-color", "#ffffff"
 
 RocketChat.theme.addPublicColor "action-buttons-color", "#13679a"
 RocketChat.theme.addPublicColor "active-channel-background-color", "rgba(255, 255, 255, 0.075)"
-RocketChat.theme.addPublicColor "active-channel-font-color", "rgba(255, 255, 255, 0.75)"
+RocketChat.theme.addPublicColor "active-channel-font-color", "rgba(255, 255, 255, 1.0)"
 RocketChat.theme.addPublicColor "blockquote-background", "#cccccc"
 RocketChat.theme.addPublicColor "clean-buttons-color", "rgba(0, 0, 0, 0.25)"
 RocketChat.theme.addPublicColor "code-background", "#f8f8f8"
