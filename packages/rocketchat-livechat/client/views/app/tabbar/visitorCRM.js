@@ -2,20 +2,53 @@ Template.visitorCRM.helpers({
 	crmInfo() {
 		return {
 			contact: Template.instance().crmContact.get(),
-			count: Template.instance().crmContactCount.get(),
 			error: Template.instance().crmError.get()
 		}
+	},
+	isLoading(){
+		return Template.instance().isLoading.get();
+	},
+	isEditing(){
+		return Template.instance().isEditing.get();
+	},
+	editDetails(){
+		//Helper object propagated to editing-template in order to operate on the same instance with respect to "isEditing"
+		const instance = Template.instance();
+		const contact = instance.crmContact.get();
+		return {
+			contact,
+			save(contact) {
+				instance.isEditing.set(false);
+				Meteor.call('livechat:updateCrmContact', contact);
+			},
+			cancel() {
+				instance.isEditing.set(false);
+			}
+		};
 	}
 });
 
-Template.visitorCRM.events({});
+Template.visitorCRM.events({
+	'click .edit-contact': function (event, instance) {
+		instance.isEditing.set(true);
+	},
+
+	'click .create-contact': function (event, instance) {
+		Meteor.call('livechat:createCrmContact', instance.user.get(), (err, data)=> {
+			if (err) {
+				console.error(err);
+			}
+		});
+	}
+});
 
 Template.visitorCRM.onCreated(function () {
 	this.visitorId = new ReactiveVar(null);
 	this.crmContact = new ReactiveVar({});
-	this.crmContactCount = new ReactiveVar(0);
 	this.crmError = new ReactiveVar({});
 	this.user = new ReactiveVar({});
+	this.isLoading = new ReactiveVar(true);
+	this.isEditing = new ReactiveVar(false);
 
 	const currentData = Template.currentData();
 
@@ -36,23 +69,29 @@ Template.visitorCRM.onCreated(function () {
 
 	this.autorun(()=> {
 		if (this.visitorId) {
-			this.user.set(Meteor.users.findOne({'_id': this.visitorId.get()})); //could reside within an autorun to capture changes in parallel sessions
+			this.user.set(Meteor.users.findOne({'_id': this.visitorId.get()}));
 
 			if (this.user.get()) {
-				Meteor.call('livechat:getCrmContact', this.user.get().id, (err, contacts) => {
-					if (err) {
-						this.crmContact.set({});
-						this.crmContactCount.set(-1);
-						this.crmError.set(err);
-					}
-					else {
-						this.crmContactCount.set(contacts.length);
-						this.crmError.set({});
-						if (contacts) {
-							this.crmContact.set(contacts[0]);
+				if (this.user.get().crmContactId) {
+					Meteor.call('livechat:getCrmContact', this.user.get().crmContactId, (err, contact) => {
+						this.isLoading.set(false);
+						if (err) {
+							this.crmContact.set({});
+							this.crmError.set(err);
 						}
-					}
-				});
+						else {
+							this.crmError.set(false);
+							if (contact) {
+								this.crmContact.set(contact);
+							}
+						}
+					});
+				}
+				else {
+					this.isLoading.set(false);
+					this.crmContact.set(undefined);
+					this.crmError.set(false);
+				}
 			}
 		}
 	})

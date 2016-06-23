@@ -79,7 +79,7 @@ Template.livechat.events({
 			}
 		});
 	},
-	'click .livechat-section.available h3 .icon-plus': function (e, instance) {
+	'click .livechat-section.available h3 .icon-plus': function () {
 		SideNav.setFlex("directLivechatMessagesFlex");
 		SideNav.openFlex();
 	}

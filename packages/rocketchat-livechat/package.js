@@ -95,14 +95,14 @@ Package.onUse(function(api) {
 	api.addFiles('client/views/app/tabbar/visitorInfo.html', 'client');
 	api.addFiles('client/views/app/tabbar/visitorInfo.js', 'client');
 	api.addFiles('client/views/app/tabbar/visitorCRM.html', 'client');
+	api.addFiles('client/views/app/tabbar/visitorCRMEdit.html', 'client');
 	api.addFiles('client/views/app/tabbar/visitorCRM.js', 'client');
+	api.addFiles('client/views/app/tabbar/visitorCRMEdit.js', 'client');
 
 	api.addFiles('client/views/sideNav/livechat.html', 'client');
 	api.addFiles('client/views/sideNav/livechat.js', 'client');
 	api.addFiles('client/views/sideNav/livechatFlex.html', 'client');
 	api.addFiles('client/views/sideNav/livechatFlex.js', 'client');
-	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.html', 'client');
-	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.js', 'client');
 
 	api.addFiles('client/views/app/triggers/livechatTriggerAction.html', 'client');
 	api.addFiles('client/views/app/triggers/livechatTriggerAction.js', 'client');
@@ -134,8 +134,9 @@ Package.onUse(function(api) {
 	api.addFiles('server/methods/setCustomField.js', 'server');
 	api.addFiles('server/methods/webhookTest.js', 'server');
 	api.addFiles('server/methods/getCrmContact.js', 'server');
+	api.addFiles('server/methods/createCrmContact.js', 'server');
+	api.addFiles('server/methods/updateCrmContact.js', 'server');
 
-	api.addFiles('server/methods/createDirectLivechatMessage.coffee', 'server');
 	api.addFiles('server/methods/mergeRooms.js', 'server');
 
 	// models
@@ -171,8 +172,6 @@ Package.onUse(function(api) {
 	api.addFiles('server/publications/visitorInfo.js', 'server');
 	api.addFiles('server/publications/visitorPageVisited.js', 'server');
 	api.addFiles('server/publications/visitorCrm.js', 'server');
-
-	api.addFiles('server/publications/userCrmAutocomplete.coffee', 'server');
 
 	// api
 	api.addFiles('server/api.js', 'server');
