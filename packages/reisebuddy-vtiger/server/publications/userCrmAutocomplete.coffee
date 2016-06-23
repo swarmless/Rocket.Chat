@@ -11,30 +11,43 @@ Meteor.publish 'userCrmAutocomplete', (selector) ->
 			name: 1
 			username: 1
 			status: 1
+			crmContactId: 1
 		limit: 10
 		sort:
 			name: 1
-	#todo handle duplicates
+
 	if selector.username
 		_vtiger.getAdapter().findContactsFulltextPromise('%'+selector.username+'%').then((records) =>
 			for rec in records
 				do (rec) ->
-					pub.added("autocompleteRecords", Random.id(), {
-						name: rec.lastname + ', ' + rec.firstname
-						username: rec.email
-						crmContactId: rec.id
-						status: 'offline'
-					});
+					try
+						pub.changed("autocompleteRecords", rec.id, {
+								name: rec.lastname + ', ' + rec.firstname
+								username: rec.email
+								crmContactId: rec.id
+								status: 'offline'
+						});
+					catch noUpdate
+						pub.added("autocompleteRecords", rec.id, {
+								name: rec.lastname + ', ' + rec.firstname
+								username: rec.email
+								crmContactId: rec.id
+								status: 'offline'
+						});
 		).catch (resp) ->
 			SystemLogger.error "unable to query crm for user autocomplete: " + resp
 
+	#using the crmId as publicationId allows updating the RC-userproxies
 	cursorHandle = RocketChat.models.Users.findVisitorsByUsername(selector.username, exceptions, options).observeChanges
 		added: (_id, record) ->
-			pub.added("autocompleteRecords", _id, record)
+			id = if record.crmContactId then record.crmContactId else _id
+			pub.added("autocompleteRecords", id, record)
 		changed: (_id, record) ->
-			pub.changed("autocompleteRecords", _id, record)
+			id = if record.crmContactId then record.crmContactId else _id
+			pub.changed("autocompleteRecords", id, record)
 		removed: (_id, record) ->
-			pub.removed("autocompleteRecords", _id, record)
+			id = id = if record.crmContactId then record.crmContactId else _id
+			pub.removed("autocompleteRecords", id, record)
 	@ready()
 	@onStop ->
 		cursorHandle.stop()

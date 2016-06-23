@@ -1,12 +1,14 @@
 Meteor.methods({
 	/**
-	 * Creates a direct livechat message to a contact. Verifies that the given username.
+	 * Creates a livechat message room and subscription to a contact.
 	 * If no user with the given name or crmId is found, but the crmId exists in the CRM, a new guest will be created.
 	 * @param username
-	 * @param crmId [Optional]
+	 * @param crmContactId [Optional]
 	 * @see server/methods/createDirectMessage.coffee
+	 * @return the newly created room, or existing room if already served by the requesting agent
+	 * @throws Error if user couldn't be found or there is an already open conversation with another agent
 	 */
-	createDirectLivechatMessage: function ({username, crmId}) {
+	createDirectLivechatMessage: function ({username, crmContactId}) {
 		if (!Meteor.userId()) {
 			throw new Meteor.Error('error-invalid-user', "Invalid user", {method: 'createDirectLivechatMessage'});
 		}
@@ -16,28 +18,43 @@ Meteor.methods({
 		}
 
 		let to = RocketChat.models.Users.findOneByUsername(username);
-		if (!to && crmId) {
-			SystemLogger.debug("lookup user by crmID " + crmId);
-			to = RocketChat.models.Users.findOneVisitorByCrmContactId(crmId);
+		if (!to && crmContactId) {
+			SystemLogger.debug("lookup user by crmID " + crmContactId);
+			to = RocketChat.models.Users.findOneVisitorByCrmContactId(crmContactId);
 			if (!to) {
-				SystemLogger.debug("try to create new guest for crmId " + crmId);
-				to = Meteor.wrapAsync(() => {
-					_vtiger.getAdapter().retrievePromise(crmId).then((contact) => {
-						SystemLogger.debug("crm item found, try to create guest " + contact.id);
-						return RocketChat.Livechat.registerGuest({
-							username: contact.email,
-							token: Random.id(),
-							other: {crmContactId: contact.id}
-						});
-					}).catch((err) => {
-						SystemLogger.warn("unable to register new guest: " + err);
-						return undefined;
-					})
-				})();
+				SystemLogger.debug("try to create new guest for crmId " + crmContactId);
+				try {
+					const contact = Promise.await(_vtiger.getAdapter().retrievePromise(crmContactId));
+                    to =  RocketChat.Livechat.registerGuest({
+						username: contact.email,
+						token: Random.id(),
+						other: {crmContactId: contact.id}
+					});
+				} catch (err) {
+					SystemLogger.warn("unable to register new guest: " + err);
+				}
 			}
 		}
 		if (!to) {
 			throw new Meteor.Error('error-invalid-user', "Invalid user", {method: 'createDirectLivechatMessage'})
+		}
+
+		const existingRoom = RocketChat.models.Rooms.findOne({
+			t: 'l',
+			open: true,
+			'v._id': to._id
+		});
+
+		if (existingRoom) {
+			if (existingRoom.servedBy && existingRoom.servedBy._id === Meteor.userId()) {
+				return existingRoom;
+			}
+			throw new Meteor.Error('error-served-by-other',
+				"Served by other agent",
+				{
+					method: 'createDirectLivechatMessage',
+					agent: existingRoom.servedBy.username
+				});
 		}
 
 		const rid = Random.id();

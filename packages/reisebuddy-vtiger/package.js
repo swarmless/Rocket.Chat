@@ -31,5 +31,15 @@ Package.onUse(function (api) {
 	api.addFiles('server/models/Users.coffee', 'server');
 
 	api.addFiles('server/publications/userCrmAutocomplete.coffee', 'server');
+
+	//i18n
+	var _ = Npm.require('underscore');
+	var fs = Npm.require('fs');
+	var tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/reisebuddy-vtiger/i18n'), function(filename) {
+		return 'i18n/' + filename;
+	}));
+	api.addFiles(tapi18nFiles);
+
+	api.use('tap:i18n');
 });
 
