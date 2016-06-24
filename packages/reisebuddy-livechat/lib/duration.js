@@ -15,6 +15,9 @@ class Duration {
 			   Duration.padZero(this.date.getSeconds())
 	}
 
+	toMM() { //todo for retrospective - switch to minutes only
+		return Duration.padZero(Math.floor(this.ms / 1000));
+	}
 }
 
 _dbs.Duration = Duration;

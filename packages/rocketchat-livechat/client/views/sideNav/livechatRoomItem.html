@@ -1,0 +1,14 @@
+<template name="livechatRoomItem">
+    <li class="link-room-{{rid}} {{active}} {{#if unread}}has-unread{{/if}} {{#if alert}}has-alert{{/if}}">
+        <a class="open-room" href="{{route}}" title="{{name}}">
+            <i class="{{roomIcon}} {{userStatus}}" aria-label=""></i>
+            <span class='name'>{{name}}</span>
+            <span class="unread">{{sinceLastActivity}}</span>
+            <span class='opt'>
+				{{#if $not unread}}
+                    <i class="icon-eye-off hide-room" title="{{_ "Hide_room"}}" aria-label="{{_ "Hide_room"}}"></i>
+				{{/if}}
+            </span>
+        </a>
+    </li>
+</template>
