@@ -35,4 +35,4 @@ RocketChat.callbacks.add('afterSaveMessage', function (message) {
 	});
 
 	return message;
-}, RocketChat.callbacks.priority.LOW);
+}, RocketChat.callbacks.priority.HIGH);

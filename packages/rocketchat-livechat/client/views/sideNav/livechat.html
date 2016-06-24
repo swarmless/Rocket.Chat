@@ -11,7 +11,7 @@
 		<h4>{{_ "Unanswered"}}</h4>
 		<ul>
 			{{#each roomsUnanswered}}
-				{{> chatRoomItem }}
+				{{> livechatRoomItem }}
 			{{else}}
 				<p class="empty">{{_ "No_unanswered_livechats" }}</p>
 			{{/each}}
@@ -19,7 +19,7 @@
 		<h4>{{_ "Answered"}}</h4>
 		<ul>
 			{{#each roomsAnswered}}
-				{{> chatRoomItem }}
+				{{> livechatRoomItem }}
 			{{else}}
 				<p class="empty">{{_ "No_answered_livechats" }}</p>
 			{{/each}}

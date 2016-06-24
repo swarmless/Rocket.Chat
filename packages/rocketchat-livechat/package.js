@@ -104,6 +104,9 @@ Package.onUse(function(api) {
 	api.addFiles('client/views/sideNav/livechatFlex.html', 'client');
 	api.addFiles('client/views/sideNav/livechatFlex.js', 'client');
 
+	api.addFiles('client/views/sideNav/livechatRoomItem.html', 'client');
+	api.addFiles('client/views/sideNav/livechatRoomItem.js', 'client');
+
 	api.addFiles('client/views/app/triggers/livechatTriggerAction.html', 'client');
 	api.addFiles('client/views/app/triggers/livechatTriggerAction.js', 'client');
 	api.addFiles('client/views/app/triggers/livechatTriggerCondition.html', 'client');
