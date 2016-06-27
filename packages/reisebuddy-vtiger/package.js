@@ -11,7 +11,7 @@ Package.describe({
 });
 
 Npm.depends({
-	"vtiger-client": "https://github.com/mrsimpson/vtiger-client/archive/ff9e74a7e72877ad5de8ed1ce629b1ba170eb4b2.tar.gz"
+	"vtiger-client": "https://github.com/mrsimpson/vtiger-client/archive/8fb59002938c914a9fbb2b0f1b7479972528bced.tar.gz"
 });
 
 Package.onUse(function (api) {
@@ -27,6 +27,7 @@ Package.onUse(function (api) {
 	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.js', 'client');
 
 	api.addFiles('server/methods/createDirectLivechatMessage.js', 'server');
+	api.addFiles('server/ContactCreationOnDemand.js', 'server');
 
 	api.addFiles('server/models/Users.coffee', 'server');
 
