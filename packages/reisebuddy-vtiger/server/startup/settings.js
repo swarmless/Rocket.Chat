@@ -15,6 +15,13 @@ Meteor.startup(function() {
 		i18nLabel: 'DBRB_vtiger_username'
 	});
 
+	RocketChat.settings.add('CRM_vtiger_user_id', true, {
+		type: 'string',
+		group: 'CRM',
+		public: true,
+		i18nLabel: 'DBRB_vtiger_user_id'
+	});
+
 	RocketChat.settings.add('CRM_vtiger_userAccessKey', true, {
 		type: 'string',
 		group: 'CRM',

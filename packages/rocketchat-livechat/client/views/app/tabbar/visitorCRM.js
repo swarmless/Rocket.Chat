@@ -11,6 +11,10 @@ Template.visitorCRM.helpers({
 	isEditing(){
 		return Template.instance().isEditing.get();
 	},
+	hasAddress(){
+		const contact = Template.instance().crmContact.get();
+		return (contact.mailingcity || contact.mailingzip || contact.mailingstreet);
+	},
 	editDetails(){
 		//Helper object propagated to editing-template in order to operate on the same instance with respect to "isEditing"
 		const instance = Template.instance();

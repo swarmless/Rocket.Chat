@@ -24,6 +24,7 @@ Package.onUse(function (api) {
 	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.js', 'client');
 
 	api.addFiles('server/methods/createDirectLivechatMessage.js', 'server');
+	api.addFiles('server/ContactCreationOnDemand.js', 'server');
 
 	api.addFiles('server/models/Users.coffee', 'server');
 

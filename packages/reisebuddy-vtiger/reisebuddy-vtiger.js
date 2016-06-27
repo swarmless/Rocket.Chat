@@ -6,6 +6,7 @@ _vtiger.getAdapter = function() {
 		let basePath = '';
 		let username = '';
 		let userAccessKey = '';
+		let userId = '';
 
 		RocketChat.settings.get('CRM_vtiger_url', function (key, value) {
 			basePath = value;
@@ -15,13 +16,17 @@ _vtiger.getAdapter = function() {
 			username = value;
 		});
 
+		RocketChat.settings.get('CRM_vtiger_user_id', function (key, value) {
+			userId = value;
+		});
+
 		RocketChat.settings.get('CRM_vtiger_userAccessKey', function (key, value) {
 			userAccessKey = value;
 		});
 
-		if (!(basePath && username && userAccessKey)) throw 'CRM adapter configuration missing';
+		if (!(basePath && username && userAccessKey && userId)) throw 'CRM adapter configuration missing';
 
-		_vtiger.singleton = new _vtiger.VTigerCrmAdapter(basePath, username, userAccessKey);
+		_vtiger.singleton = new _vtiger.VTigerCrmAdapter(basePath, username, userAccessKey, userId);
 	}
 
 	return _vtiger.singleton;

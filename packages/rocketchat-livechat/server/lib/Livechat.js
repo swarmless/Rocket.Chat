@@ -112,6 +112,8 @@ RocketChat.Livechat = {
 			RocketChat.models.Rooms.insert(room);
 			RocketChat.models.Subscriptions.insert(subscriptionData);
 
+			Meteor.defer(RocketChat.callbacks.run('afterCreateLivechat', guest, room));
+
 			newRoom = true;
 		} else {
 			room = Meteor.call('canAccessRoom', message.rid, guest._id);
@@ -224,8 +226,8 @@ RocketChat.Livechat = {
 		return RocketChat.models.Users.saveUserById(_id, updateData);
 	},
 	calculateDuration(rid){
-		const lastMessage = RocketChat.models.Messages.findVisibleByRoomId(rid, {sort: { ts: -1 }, limit :1}).fetch()[0];;
-		const firstMessage = RocketChat.models.Messages.findVisibleByRoomId(rid, {sort: { ts: 1 }, limit :1}).fetch()[0];;
+		const lastMessage = RocketChat.models.Messages.findVisibleByRoomId(rid, {sort: { ts: -1 }, limit :1}).fetch()[0];
+		const firstMessage = RocketChat.models.Messages.findVisibleByRoomId(rid, {sort: { ts: 1 }, limit :1}).fetch()[0];
 		return lastMessage.ts - firstMessage.ts;
 	},
 	closeRoom({user, room, closeProps}) {
@@ -319,15 +321,14 @@ RocketChat.Livechat = {
 				return this.apiaiAdapter;
 				break;
 			case KNOWLEDGE_SRC_REDLINK:
-				RocketChat.settings.get('Livechat_Knowledge_Redlink_URL', function (key, value) {
-					adapterProps.url = value;
-				});
-				RocketChat.settings.get('Livechat_Knowledge_Redlink_Auth_Token', function (key, value) {
-					adapterProps.token = value;
-				});
-
 				if (this.redlinkAdapter) return this.redlinkAdapter;
 				else {
+					RocketChat.settings.get('Livechat_Knowledge_Redlink_URL', function (key, value) {
+						adapterProps.url = value;
+					});
+					RocketChat.settings.get('Livechat_Knowledge_Redlink_Auth_Token', function (key, value) {
+						adapterProps.token = value;
+					});
 					if (process.env.NODE_ENV === 'development') { //use mock
 						this.redlinkAdapter = new RedlinkMock(adapterProps);
 					} else {
