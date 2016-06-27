@@ -643,15 +643,67 @@
 }
 
 .external-message {
-	padding: 10px;
 	position: relative;
 	&:after {
 		content: " ";
 		position: absolute;
-		border-bottom: 1px solid #CCC;
+		border-bottom: 1px solid #444;
 		left: 10px;
 		right: 10px;
 		bottom: 0;
+	}
+	.knowledge-title {
+		background-color: #ccc;
+		font-weight: 700;
+		font-style: italic;
+		padding: 10px 20px;
+		margin-bottom: 8px;
+	}
+	.knowledge-informations-wrapper {
+		margin: 0 20px 20px;
+		.knowledge-base-label {
+			font-weight: bold;
+			margin-bottom: 4px;
+		}
+		.knowledge-base-value {
+			font-weight: 400;
+			background-color: #efefef;
+			border: 1px solid #ccc;
+			padding: 5px;
+			width: 80%;
+			margin-bottom: 8px;
+		}
+	}
+
+	.knowledge-queries-wrapper {
+		margin: 0 20px 20px;
+		padding-bottom: 10px;
+		.knowledge-item {
+			margin: 0 0 10px;
+			padding: 0 0 5px;
+			border-bottom: 1px solid #CCC;
+			position: relative;
+			.icon-wrapper {
+				position: absolute;
+			}
+			.knowledge-item-url {
+				display: inline-block;
+				padding-left: 25px;
+				color: #444;
+				&:hover {
+					color: #999;
+				}
+			}
+			&:last-child {
+				border-bottom: none;
+			}
+			.knowledge-item-title {
+				line-height: 20px;
+				margin-bottom: 5px;
+				color: #444;
+				font-weight: bold;
+			}
+		}
 	}
 }
 
