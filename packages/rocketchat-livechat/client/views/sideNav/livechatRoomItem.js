@@ -37,9 +37,12 @@ Template.livechatRoomItem.onRendered(function () {
 	}
 
 	const self = this;
-	const timestamp = this.data.unread === 0 ? this.data.lastCustomerActivity : this.data.lastActivity;
+	let lastDate = this.data.unread === 0 ? this.data.lastCustomerActivity : this.data.lastActivity;
+	if (!_.isDate(lastDate)) {
+		lastDate = new Date();
+	}
 	this.timerId = Meteor.setInterval(() => {
-		self.lastActivityTimer.set(new _dbs.Duration(new Date() - timestamp).toMM());
+		self.lastActivityTimer.set(new _dbs.Duration(new Date() - lastDate).toMM());
 	}, 1000);
 });
 
