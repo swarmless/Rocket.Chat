@@ -1,0 +1,5 @@
+Reisebuddy_MailConf: Reisebuddy-Emailkonfiguration
+Mail_Reisebuddy_defaultSender: Standardabsender
+Mail_Reisebuddy_defaultSubject: Standardbetreff
+Mail_Reisebuddy_username: Auth-Endpoint Username
+Mail_Reisebuddy_authToken: Auth-Endpoint Token
