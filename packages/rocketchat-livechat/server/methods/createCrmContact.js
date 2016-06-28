@@ -3,8 +3,10 @@ Meteor.methods({
 
 		const contact = {
 			lastname: 'Neuer Benutzer',
-			phone: user.phone? user.phone[0].phoneNumber : "",
-			email: user.email ? user.email[0] : ( user.phone ? (user.phone[0].phoneNumber + "@sms.db.de" ) : "" )
+			phone: user.phone ? user.phone[0].phoneNumber : "",
+			email: user.emails ?
+				   user.emails[0].address :
+				   ( user.phone ? (user.phone[0].phoneNumber + "@sms.db.de" ) : "" )
 		};
 
 		try {
@@ -14,8 +16,7 @@ Meteor.methods({
 			updateData.crmContactId = crmContact.id;
 
 			return RocketChat.models.Users.saveUserById(user._id, updateData);
-		}
-		catch(err){
+		} catch (err) {
 			console.error("Couldn't create contact in crm system", err);
 		}
 	}

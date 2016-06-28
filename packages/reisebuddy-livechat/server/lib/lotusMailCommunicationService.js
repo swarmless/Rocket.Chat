@@ -40,7 +40,7 @@ class LotusMailCommunicationService {
 	 * @return {string} value "(sms-)mail" if it is a regular mail or an sms
 	 */
 	getRoomType(mailAddr) {
-		return mailAddr.endsWith("sms.db.de") ? 'sms-mail' : 'mail';
+		return mailAddr && mailAddr.endsWith("sms.db.de") ? 'sms-mail' : 'mail';
 	}
 
 	/**
@@ -52,7 +52,7 @@ class LotusMailCommunicationService {
 	}
 
 	/**
-	 * Converts and verifies payload
+	 * Converts and verifies payload to message stub
 	 * @return {{from: {}, body: {}, subject: {}}}
 	 * @throws Match.Error id
 	 */
@@ -63,8 +63,20 @@ class LotusMailCommunicationService {
 			from: sender,
 			body: body,
 			subject: subject
-
 		};
+	}
+
+	/**
+	 * Merge the request infos into a the user to be created.
+	 * @param stub userStub
+	 * @param requestBody JSON
+	 * @return {*} stub
+	 */
+	extendNewUser(stub, requestBody) {
+		stub.emails = {
+			address: requestBody.sender
+		};
+		return stub;
 	}
 
 	/**
@@ -83,21 +95,19 @@ class LotusMailCommunicationService {
 			subject: Match.Optional(String)
 		});
 		const self = this;
-		Meteor.defer(() => {
-			const logId = Random.id();
-			SystemLogger.debug("send mail to " + to + " --- logId: " + logId);
-			try {
-				Email.send({
-					from:    sender || self.defaultSender,
-					to: to,
-					subject: subject || self.defaultSubject,
-					text:    message || ''
-				});
-				SystemLogger.debug("mail successfully send " + to + " --- logId: " + logId);
-			} catch (e) {
-				SystemLogger.error("unable to send mail to " + to + " -- " + e);
-			}
-		});
+		SystemLogger.debug("send mail to " + to);
+		try {
+			Email.send({
+				from:    sender || self.defaultSender,
+				to: to,
+				subject: subject || self.defaultSubject,
+				text:    message || ''
+			});
+			SystemLogger.debug("mail successfully send " + to);
+		} catch (e) {
+			SystemLogger.error("unable to send mail to " + to + " -- " + e);
+			throw e;
+		}
 	}
 }
 

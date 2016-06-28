@@ -56,7 +56,11 @@ Meteor.methods({
 			$set: {open: true},
 			$unset: {comment: ''}
 		});
-		RocketChat.models.Subscriptions.update(newRoomId, {$set: {answered: closeRoom.answered}});
+		let settings = {answered: closeRoom.answered};
+		if(closeRoom.rbInfo) {
+			settings.rbInfo = closeRoom.rbInfo;
+		}
+        RocketChat.models.Subscriptions.update(newRoomId, {$set: settings});
 		RocketChat.models.Subscriptions.openByRoomIdAndUserId(newRoomId, Meteor.userId());
 	}
 });
