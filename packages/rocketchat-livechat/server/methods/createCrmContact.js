@@ -4,7 +4,7 @@ Meteor.methods({
 		const contact = {
 			lastname: 'Neuer Benutzer',
 			phone: user.phone? user.phone[0].phoneNumber : "",
-			email: user.email ? user.email[0] : ( user.phone ? (user.phone[0].phoneNumber + "@sms.db.de" ) : "" )
+			email: user.email ? user.email[0].address : ( user.phone ? (user.phone[0].phoneNumber + "@sms.db.de" ) : "" )
 		};
 
 		try {
