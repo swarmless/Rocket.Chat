@@ -16,24 +16,24 @@ RB_API.addRoute('incoming/:service', {
 	post() {
 		const service = _dbs.getCommunicationService(this.urlParams.service);
 		if (!service) {
-			return {statusCode: 404};
+			return {statusCode: 404, message: "no service found"};
 		}
 		if (!service.verifyAuthentification(this.request.headers['authorization'])) {
-			return {statusCode: 401};
+			return {statusCode: 401, message: "Authentification failed. Check configuration of consumer and server"};
 		}
 		let message;
 		try {
 			message = service.parse(this.bodyParams);
 		} catch (e) {
 			SystemLogger.warn("rejected malformed request");
-			return {statusCode: 401};
+			return {statusCode: 401, message: "malformed request"};
 		}
 
 		let visitor = RocketChat.models.Users.findOneByUsername(message.from);
 		let sendStub = {
 			message: {
 				_id: Random.id(),
-				msg: message.body
+				msg: service.getCombinedMessage(message.subject, message.body)
 			},
 			roomInfo: {
 				rbInfo: {
@@ -65,7 +65,7 @@ RB_API.addRoute('incoming/:service', {
 		RocketChat.Livechat.sendMessage(sendStub);
 		return {
 			statusCode: 200,
-			body: {received: new Date().getTime()}
+			body: {received: new Date() }
 		};
 	}
 });

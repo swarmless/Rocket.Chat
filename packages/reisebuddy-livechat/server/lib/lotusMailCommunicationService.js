@@ -17,6 +17,20 @@ class LotusMailCommunicationService {
 		return 'lotusMail';
 	}
 
+	getCombinedMessage(subject, body){
+		if(subject && !body){
+			return subject;
+		}
+
+		if(!subject && body){
+			return body;
+		}
+
+		if(subject && body){
+			return subject + ": " + body;
+		}
+	}
+
 	getServiceName() {
 		return LotusMailCommunicationService.SERVICE_NAME();
 	}

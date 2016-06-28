@@ -16,7 +16,7 @@ Package.onUse(function(api) {
 
 	api.addFiles('server/config.js', 'server');
 	api.addFiles('server/lib/lotusMailCommunicationService.js', 'server');
-	api.addFiles('server/reisebuddyIncommingApi.js', 'server');
+	api.addFiles('server/reisebuddyIncomingApi.js', 'server');
 	api.addFiles('server/sendMessageByService.js', 'server');
 
 	api.export('_dbs');
