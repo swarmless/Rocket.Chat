@@ -26,7 +26,7 @@ RB_API.addRoute('incoming/:service', {
 			message = service.parse(this.bodyParams);
 		} catch (e) {
 			SystemLogger.warn("rejected malformed request");
-			return {statusCode: 401, message: "malformed request"};
+			return {statusCode: 500, message: "malformed request"};
 		}
 
 		let visitor = RocketChat.models.Users.findOneByUsername(message.from);
