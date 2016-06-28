@@ -26,7 +26,7 @@ class LotusMailCommunicationService {
 	 * @return {string} value "(sms-)mail" if it is a regular mail or an sms
 	 */
 	getRoomType(mailAddr) {
-		return mailAddr.endsWith("sms.db.de") ? 'sms-mail' : 'mail';
+		return mailAddr && mailAddr.endsWith("sms.db.de") ? 'sms-mail' : 'mail';
 	}
 
 	/**
@@ -59,7 +59,9 @@ class LotusMailCommunicationService {
 	 * @return {*} stub
 	 */
 	extendNewUser(stub, requestBody) {
-		stub.email = requestBody.sender;
+		stub.emails = {
+			address: requestBody.sender
+		};
 		return stub;
 	}
 

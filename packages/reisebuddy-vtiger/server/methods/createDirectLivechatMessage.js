@@ -27,6 +27,7 @@ Meteor.methods({
 					const contact = Promise.await(_vtiger.getAdapter().retrievePromise(crmContactId));
                     to =  RocketChat.Livechat.registerGuest({
 						username: contact.email,
+						email: contact.email,
 						token: Random.id(),
 						other: {crmContactId: contact.id}
 					});
@@ -38,6 +39,7 @@ Meteor.methods({
 		if (!to) {
 			throw new Meteor.Error('error-invalid-user', "Invalid user", {method: 'createDirectLivechatMessage'})
 		}
+		to = RocketChat.models.Users.findOneById(to);
 
 		const existingRoom = RocketChat.models.Rooms.findOne({
 			t: 'l',
@@ -60,9 +62,31 @@ Meteor.methods({
 		const rid = Random.id();
 		const now = new Date();
 		const roomCode = RocketChat.models.Rooms.getNextLivechatRoomCode();
-		//todo this should be a switch for multiple inbound channels
-		const communicationService = _dbs.getCommunicationService('lotusMail');
+        const $setOnInsert = {
+            t: 'l',
+            msgs: 0,
+            ts: now,
+            lm: now,
+            open: true,
+            label: to.name || to.username,
+            code: roomCode,
+            v: {_id: to._id},
+            servedBy: {
+                _id: me._id,
+                username: me.username
+            }
+        };
 
+		//todo this should be a switch for multiple inbound channels, maybe user field defaultCommunication
+		const toMailAddr = to.emails ? to.emails[0].address : '';
+		if(toMailAddr && toMailAddr !== '') {
+			const communicationService = _dbs.getCommunicationService('lotusMail');
+			$setOnInsert.rbInfo = {
+				source: communicationService.getRoomType(toMailAddr),
+				visitorSendInfo: toMailAddr,
+				serviceName: communicationService.getServiceName()
+			};
+		}
 		// Make sure we have a room
 		RocketChat.models.Rooms.upsert({
 			_id: rid
@@ -70,25 +94,7 @@ Meteor.methods({
 			$set: {
 				usernames: [me.username, to.username]
 			},
-			$setOnInsert: {
-				t: 'l',
-				msgs: 0,
-				ts: now,
-				lm: now,
-				open: true,
-				label: to.name || to.username,
-				code: roomCode,
-				v: {_id: to._id},
-				servedBy: {
-					_id: me._id,
-					username: me.username
-				},
-				rbInfo: {
-					source: communicationService.getRoomType(to.email),
-					visitorSendInfo: to.email,
-					serviceName: communicationService.getServiceName()
-				}
-			}
+			$setOnInsert: $setOnInsert
 		});
 		//Make agent have a subscription to this room
 		RocketChat.models.Subscriptions.upsert({
