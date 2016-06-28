@@ -37,7 +37,7 @@ Template.livechatRoomItem.onRendered(function () {
 	}
 
 	const self = this;
-	let lastDate = this.data.unread === 0 ? this.data.lastCustomerActivity : this.data.lastActivity;
+	let lastDate = this.data.answered ?this.data.lastActivity :  this.data.lastCustomerActivity;
 	if (!_.isDate(lastDate)) {
 		lastDate = new Date();
 	}
