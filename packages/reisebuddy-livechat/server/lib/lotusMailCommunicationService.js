@@ -81,21 +81,19 @@ class LotusMailCommunicationService {
 			subject: Match.Optional(String)
 		});
 		const self = this;
-		Meteor.defer(() => {
-			const logId = Random.id();
-			SystemLogger.debug("send mail to " + to + " --- logId: " + logId);
-			try {
-				Email.send({
-					from:    sender || self.defaultSender,
-					to: to,
-					subject: subject || self.defaultSubject,
-					text:    message || ''
-				});
-				SystemLogger.debug("mail successfully send " + to + " --- logId: " + logId);
-			} catch (e) {
-				SystemLogger.error("unable to send mail to " + to + " -- " + e);
-			}
-		});
+		SystemLogger.debug("send mail to " + to);
+		try {
+			Email.send({
+				from:    sender || self.defaultSender,
+				to: to,
+				subject: subject || self.defaultSubject,
+				text:    message || ''
+			});
+			SystemLogger.debug("mail successfully send " + to);
+		} catch (e) {
+			SystemLogger.error("unable to send mail to " + to + " -- " + e);
+			throw e;
+		}
 	}
 }
 
