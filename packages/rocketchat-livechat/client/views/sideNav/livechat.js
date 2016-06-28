@@ -40,7 +40,7 @@ Template.livechat.helpers({
 		return ChatSubscription.find({
 			t: 'l',
 			open: true,
-			answered: true
+			answered: {$ne: false}
 		}, {
 			sort: {lastActivity: -1}
 		});
