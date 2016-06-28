@@ -228,7 +228,7 @@ RocketChat.Livechat = {
 	calculateDuration(rid){
 		const lastMessage = RocketChat.models.Messages.findVisibleByRoomId(rid, {sort: { ts: -1 }, limit :1}).fetch()[0];
 		const firstMessage = RocketChat.models.Messages.findVisibleByRoomId(rid, {sort: { ts: 1 }, limit :1}).fetch()[0];
-		return lastMessage.ts - firstMessage.ts;
+		return (lastMessage && lastMessage.ts && firstMessage && firstMessage.ts) ? lastMessage.ts - firstMessage.ts : 0;
 	},
 	closeRoom({user, room, closeProps}) {
 		RocketChat.models.Rooms.closeByRoomId(room._id);
