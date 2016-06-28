@@ -659,6 +659,37 @@
 		padding: 10px 20px;
 		margin-bottom: 8px;
 	}
+	.token-container {
+		.token-list {
+			float: left;
+			margin-right: 10px;
+			margin-bottom: 10px;
+			.token {
+				display: inline-block;
+				flex-shrink: 0;
+				flex-grow: 0;
+				padding: 4px 10px;
+				border-radius: 12px;
+				background-color: #eee;
+
+				&.Train {
+					background-color: #d3d3d3;
+				}
+				&.Date {
+					background-color: #ffb6c1;
+				}
+				&.Topic {
+					background-color: #add8e6;
+				}
+				&.Place {
+					background-color: #90ee90;
+				}
+				.confidence {
+					font-size: 0.7rem;
+				}
+			}
+		}
+	}
 	.knowledge-informations-wrapper {
 		margin: 0 20px 20px;
 		.knowledge-base-label {
