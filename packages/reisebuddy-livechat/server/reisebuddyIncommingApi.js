@@ -55,10 +55,11 @@ RB_API.addRoute('incoming/:service', {
 			sendStub.message.rid = Random.id();
 			sendStub.message.token = Random.id();
 
-			let userId = RocketChat.Livechat.registerGuest({
+			const guestInfo = service.extendNewUser({
 				username: message.from,
 				token: sendStub.message.token
-			});
+            }, this.bodyParams);
+            const userId = RocketChat.Livechat.registerGuest(guestInfo);
 			visitor = RocketChat.models.Users.findOneById(userId);
 		}
 		sendStub.guest = visitor;

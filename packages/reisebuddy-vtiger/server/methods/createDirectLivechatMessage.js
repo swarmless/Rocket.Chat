@@ -60,6 +60,8 @@ Meteor.methods({
 		const rid = Random.id();
 		const now = new Date();
 		const roomCode = RocketChat.models.Rooms.getNextLivechatRoomCode();
+		//todo this should be a switch for multiple inbound channels
+		const communicationService = _dbs.getCommunicationService('lotusMail');
 
 		// Make sure we have a room
 		RocketChat.models.Rooms.upsert({
@@ -80,6 +82,11 @@ Meteor.methods({
 				servedBy: {
 					_id: me._id,
 					username: me.username
+				},
+				rbInfo: {
+					source: communicationService.getRoomType(to.email),
+					visitorSendInfo: to.email,
+					serviceName: communicationService.getServiceName()
 				}
 			}
 		});

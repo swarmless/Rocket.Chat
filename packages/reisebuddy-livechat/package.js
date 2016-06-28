@@ -9,13 +9,15 @@ Package.describe({
 
 Package.onUse(function(api) {
 	api.use(['ecmascript', 'underscore']);
-	api.use(['nimble:restivus', 'rocketchat:lib'], 'server');
+	api.use(['nimble:restivus', 'rocketchat:lib', 'rocketchat:authorization'], 'server');
 
 	api.addFiles('lib/core.js');
 	api.addFiles('lib/duration.js', 'client');
-
 	api.addFiles('server/config.js', 'server');
+
 	api.addFiles('server/lib/lotusMailCommunicationService.js', 'server');
+	api.addFiles('server/methods/mergeRooms.js', 'server');
+
 	api.addFiles('server/reisebuddyIncommingApi.js', 'server');
 	api.addFiles('server/sendMessageByService.js', 'server');
 

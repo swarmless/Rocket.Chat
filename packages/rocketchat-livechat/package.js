@@ -140,8 +140,6 @@ Package.onUse(function(api) {
 	api.addFiles('server/methods/createCrmContact.js', 'server');
 	api.addFiles('server/methods/updateCrmContact.js', 'server');
 
-	api.addFiles('server/methods/mergeRooms.js', 'server');
-
 	// models
 	api.addFiles('server/models/Users.js', 'server');
 	api.addFiles('server/models/Rooms.js', 'server');

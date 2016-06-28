@@ -38,7 +38,7 @@ class LotusMailCommunicationService {
 	}
 
 	/**
-	 * Converts and verifies payload
+	 * Converts and verifies payload to message stub
 	 * @return {{from: {}, body: {}, subject: {}}}
 	 * @throws Match.Error id
 	 */
@@ -49,8 +49,18 @@ class LotusMailCommunicationService {
 			from: sender,
 			body: body,
 			subject: subject
-
 		};
+	}
+
+	/**
+	 * Merge the request infos into a the user to be created.
+	 * @param stub userStub
+	 * @param requestBody JSON
+	 * @return {*} stub
+	 */
+	extendNewUser(stub, requestBody) {
+		stub.email = requestBody.sender;
+		return stub;
 	}
 
 	/**
