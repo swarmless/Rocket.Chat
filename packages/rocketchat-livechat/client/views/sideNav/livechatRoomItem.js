@@ -45,7 +45,7 @@ Template.livechatRoomItem.onRendered(function () {
 
 	this.timerId = Meteor.setInterval(() => {
 		actualizeTimer(self);
-	}, 60000);
+	}, 1000);
 });
 
 function actualizeTimer(instance) {
