@@ -69,11 +69,11 @@
 		position: absolute;
 		width: 100%;
 		padding: 0 20px;
-		height: 350px;
+		height: 300px;
 		bottom: 0;
 
 		@header-min-height: 30px;
-		@footer-min-height: 42px;
+		@footer-min-height: 55px;
 		@link-font-color: #008CE3;
 		@primary-font-color: #444444;
 		@secondary-font-color: #7f7f7f;
@@ -427,7 +427,7 @@
 				border-right: 1px solid #E7E7E7;
 
 				.input-wrapper {
-					padding: 6px;
+					padding: 6px 6px 0 6px;
 					padding-right: 30px;
 					textarea {
 						display: block;
@@ -555,8 +555,8 @@
 
 .user-view {
 	li {
-		color: @secondary-font-color;
-		line-height: 18px;
+		color: @primary-font-color;
+		line-height: 28px;
 		font-size: 12px;
 		font-weight: 300;
 	}
@@ -659,6 +659,37 @@
 		padding: 10px 20px;
 		margin-bottom: 8px;
 	}
+	.token-container {
+		.token-list {
+			float: left;
+			margin-right: 10px;
+			margin-bottom: 10px;
+			.token {
+				display: inline-block;
+				flex-shrink: 0;
+				flex-grow: 0;
+				padding: 4px 10px;
+				border-radius: 12px;
+				background-color: #eee;
+
+				&.Train {
+					background-color: #d3d3d3;
+				}
+				&.Date {
+					background-color: #ffb6c1;
+				}
+				&.Topic {
+					background-color: #add8e6;
+				}
+				&.Place {
+					background-color: #90ee90;
+				}
+				.confidence {
+					font-size: 0.7rem;
+				}
+			}
+		}
+	}
 	.knowledge-informations-wrapper {
 		margin: 0 20px 20px;
 		.knowledge-base-label {
@@ -678,6 +709,11 @@
 	.knowledge-queries-wrapper {
 		margin: 0 20px 20px;
 		padding-bottom: 10px;
+		.confidence {
+			font-size: 0.7rem;
+			display: inline-block;
+			margin-left: 5px;
+		}
 		.knowledge-item {
 			margin: 0 0 10px;
 			padding: 0 0 5px;

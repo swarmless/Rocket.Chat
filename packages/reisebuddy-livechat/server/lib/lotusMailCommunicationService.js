@@ -1,6 +1,6 @@
 /**
  * Encapsulates communication to smsGateway and LotusNotes
- * Should not be used as singleton. (Update of user settings). Don't make the methods static
+ * Should not be used as singleton for verifyAuthentification. (Update of user settings). Don't make the methods static
  * @author jakobpannier
  */
 class LotusMailCommunicationService {
@@ -39,7 +39,7 @@ class LotusMailCommunicationService {
 
 	/**
 	 * Converts and verifies payload to message stub
-	 * @return {{from: {}, body: {}, subject: {}}}
+	 * @return {{from: {}, body: {}}}
 	 * @throws Match.Error id
 	 */
 	parse({sender, body, subject} = {}) {
@@ -47,8 +47,7 @@ class LotusMailCommunicationService {
 		check(body, String);
 		return {
 			from: sender,
-			body: body,
-			subject: subject
+			body: _.filter([subject, body], (e) => !!e).join(': ') // filter with boolean existence check
 		};
 	}
 
