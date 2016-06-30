@@ -385,3 +385,27 @@ RocketChat.Livechat = {
 		});
 	}
 };
+
+/**
+ * Refreshes the adapter instances on change of the configuration
+ */
+Meteor.autorun(()=> {
+	RocketChat.settings.get('Livechat_Knowledge_Source', function (key, value) {
+		RocketChat.Livechat.apiaiAdapter = undefined;
+		RocketChat.Livechat.redlinkAdapter = undefined;
+	});
+
+	RocketChat.settings.get('Livechat_Knowledge_Apiai_Key', function (key, value) {
+		RocketChat.Livechat.apiaiAdapter = undefined;
+	});
+
+	RocketChat.settings.get('Livechat_Knowledge_Apiai_Language', function (key, value) {
+		RocketChat.Livechat.apiaiAdapter = undefined;
+	});
+	RocketChat.settings.get('Livechat_Knowledge_Redlink_URL', function (key, value) {
+		RocketChat.Livechat.redlinkAdapter = undefined;
+	});
+	RocketChat.settings.get('Livechat_Knowledge_Redlink_Auth_Token', function (key, value) {
+		RocketChat.Livechat.redlinkAdapter = undefined;
+	});
+});
