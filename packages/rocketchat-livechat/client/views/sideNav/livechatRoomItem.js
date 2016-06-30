@@ -15,8 +15,12 @@ Template.livechatRoomItem.helpers({
 		return 'status-' + stat ? stat : 'offline';
 	},
 	name() {
-		return this.name;
+		return Template.instance().visitorName.get();
 	},
+	isLoadingCrmName() {
+		return Template.instance().isLoadingCrmName.get();
+	}
+	,
 	roomIcon() {
 		return RocketChat.roomTypes.getIcon(this.t);
 	},
@@ -37,21 +41,86 @@ Template.livechatRoomItem.onRendered(function () {
 	}
 
 	const self = this;
-	let lastDate;
-	
+	actualizeTimer(self);
+
 	this.timerId = Meteor.setInterval(() => {
-		lastDate = this.data.answered ? this.data.lastActivity :  this.data.lastCustomerActivity;
-
-		if (!_.isDate(lastDate)) {
-			lastDate = new Date();
-		}
-
-		self.lastActivityTimer.set(new _dbs.Duration(new Date() - lastDate).toMM());
-	}, 1000);
+		actualizeTimer(self);
+	}, 60000);
 });
+
+function actualizeTimer(instance) {
+	let lastDate = instance.data.answered ? instance.data.lastActivity : instance.data.lastCustomerActivity;
+
+	if (!_.isDate(lastDate)) {
+		lastDate = new Date();
+	}
+
+	instance.lastActivityTimer.set(new _dbs.Duration(new Date() - lastDate).toMM());
+}
 
 Template.livechatRoomItem.onCreated(function () {
 	this.lastActivityTimer = new ReactiveVar(0);
+	this.isLoadingCrmName = new ReactiveVar(true);
+
+	const self = this;
+	const currentData = self.data;
+
+	this.visitorName = new ReactiveVar(currentData.name);
+
+	if (currentData && currentData.rid) {
+		this.subscribe('livechat:visitorInfo', {rid: currentData.rid});
+		this.subscribe('livechat:visitorCrm', {rid: currentData.rid});
+		this.subscribe('livechat:rooms', {rid: currentData.rid});
+	}
+
+	this.autorun(()=> {
+		if (Template.instance().subscriptionsReady()) {
+			console.log("subready", "tada");
+
+			let room = ChatRoom.findOne(currentData.rid);
+			console.log("room", room);
+
+			if (room && room.v && room.v._id) {
+				let visitorId = room.v._id;
+				console.log("visitorId", visitorId);
+
+
+				if (visitorId) {
+					let user = Meteor.users.findOne({'_id': visitorId});
+					console.log("user", user);
+
+					if (user && user.crmContactId) {
+						console.log("call", "getcrmcontact");
+
+						Meteor.call('livechat:getCrmContact', user.crmContactId, (err, contact) => {
+							self.isLoadingCrmName.set(false);
+							console.log("err", err);
+							console.log("contact", contact);
+
+							if (!err && contact) {
+								console.log("contact", contact);
+
+
+								let crmName =
+									(contact.firstname ? contact.firstname : '') +
+									(contact.firstname && contact.lastname ? ', ' : '') +
+									(contact.lastname ? contact.lastname : '');
+
+								console.log("crmName", crmName);
+
+								if (crmName && crmName.length > 0) {
+									self.visitorName.set(crmName);
+								}
+							}
+						});
+					}
+					else {
+						self.isLoadingCrmName.set(false);
+					}
+				}
+			}
+		}
+	})
 });
 
 Template.livechatRoomItem.onDestroyed(function () {
