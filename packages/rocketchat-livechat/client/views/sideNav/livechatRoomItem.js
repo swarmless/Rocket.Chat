@@ -75,38 +75,23 @@ Template.livechatRoomItem.onCreated(function () {
 
 	this.autorun(()=> {
 		if (Template.instance().subscriptionsReady()) {
-			console.log("subready", "tada");
-
 			let room = ChatRoom.findOne(currentData.rid);
-			console.log("room", room);
 
 			if (room && room.v && room.v._id) {
 				let visitorId = room.v._id;
-				console.log("visitorId", visitorId);
-
 
 				if (visitorId) {
 					let user = Meteor.users.findOne({'_id': visitorId});
-					console.log("user", user);
 
 					if (user && user.crmContactId) {
-						console.log("call", "getcrmcontact");
-
 						Meteor.call('livechat:getCrmContact', user.crmContactId, (err, contact) => {
 							self.isLoadingCrmName.set(false);
-							console.log("err", err);
-							console.log("contact", contact);
 
 							if (!err && contact) {
-								console.log("contact", contact);
-
-
 								let crmName =
 									(contact.firstname ? contact.firstname : '') +
 									(contact.firstname && contact.lastname ? ', ' : '') +
 									(contact.lastname ? contact.lastname : '');
-
-								console.log("crmName", crmName);
 
 								if (crmName && crmName.length > 0) {
 									self.visitorName.set(crmName);
