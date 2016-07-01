@@ -34,6 +34,7 @@ Package.onUse(function(api) {
 	api.use('rocketchat:sms');
 	api.use('less@2.5.1');
 	api.use(['reisebuddy:livechat', 'reisebuddy:vtiger']);
+	//api.use('aldeed:tabular', 'client');
 
 	api.addFiles('livechat.js', 'server');
 	api.addFiles('server/startup.js', 'server');
