@@ -6,65 +6,54 @@
 		<div class="external-messages">
 			{{#each messages}}
 				<div class="external-message">
-					{{#if url}}
-                        <button class="pick-message"><i class="icon-link-ext"></i></button>
-                        <a target="_blank" href="{{url}}">{{msg}}</a>
+					{{#if redlinkQuery}}
+                        <div class="external-message">
+							<!--
+                            <div class="knowledge-title">Tokens</div>
+                            <div class="knowledge-informations-wrapper">
+                                <ul class="token-container clearfix">
+                                    <li class="token-list"><span class="token Date"><i class="icon-clock"></i> 28.06.2016 10:00 <span class="confidence">(90%)</span></span></li>
+                                    <li class="token-list"><span class="token Train"><i class="icon-travel"></i> Zug <span class="confidence">(100%)</span></span></li>
+                                    <li class="token-list"><span class="token Topic"><i class="icon-book"></i> Reiseplanung <span class="confidence">(98%)</span></span></li>
+                                    <li class="token-list"><span class="token Place"><i class="icon-location"></i> Frankfurt <span class="confidence">(15%)</span></span></li>
+                                    <li class="token-list"><span class="token Place"><i class="icon-location"></i> Mannheim <span class="confidence">(15%)</span></span></li>
+                                </ul>
+                            </div>
+							!-->
+
+							{{#each filledQueryTemplate}}
+                                <div class="knowledge-title">{{filledQueryType}}</div>
+                                <div class="knowledge-informations-wrapper">
+									{{#each filledQuerySlots }}
+                                        <div class="knowledge-base-label">{{role}}</div>
+                                        <div class="knowledge-base-value">{{clientValue}}</div>
+									{{/each}}
+                                </div>
+							{{/each}}
+
+							{{#if redlinkQuery}}
+								<div class="knowledge-title">Queries</div>
+								<div class="knowledge-queries-wrapper">
+									{{#each redlinkQuery.queries}}
+										<div class="knowledge-item">
+											<span class="icon-wrapper"><i class="icon-link-ext"></i></span>
+											<a class="knowledge-item-url" href="{{url}}" target="_blank">
+												<span class="query-servicename">{{serviceName}}</span>
+												<span class="confidence">{{confidence}}</span>
+											</a>
+										</div>
+									{{/each}}
+								</div>
+							{{/if}}
+                        </div>
+
 					{{else}}
                         <button class="pick-message"><i class="icon-edit"></i></button>
-						{{msg}}
+						{{knowledgeProvider}} read failed
 					{{/if}}
 				</div>
 			{{/each}}
 
-
-			<!-- TODO: example HTML Template -->
-			<div class="external-message">
-                <div class="knowledge-title">Tokens</div>
-                <div class="knowledge-informations-wrapper">
-					<ul class="token-container clearfix">
-                        <li class="token-list"><span class="token Date"><i class="icon-clock"></i> 28.06.2016 10:00 <span class="confidence">(90%)</span></span></li>
-                        <li class="token-list"><span class="token Train"><i class="icon-travel"></i> Zug <span class="confidence">(100%)</span></span></li>
-                        <li class="token-list"><span class="token Topic"><i class="icon-book"></i> Reiseplanung <span class="confidence">(98%)</span></span></li>
-                        <li class="token-list"><span class="token Place"><i class="icon-location"></i> Frankfurt <span class="confidence">(15%)</span></span></li>
-                        <li class="token-list"><span class="token Place"><i class="icon-location"></i> Mannheim <span class="confidence">(15%)</span></span></li>
-					</ul>
-				</div>
-				<div class="knowledge-title">Reiseplanung</div>
-				<div class="knowledge-informations-wrapper">
-					<div class="knowledge-base-label">von</div>
-					<div class="knowledge-base-value">Frankfurt</div>
-					<div class="knowledge-base-label">nach</div>
-					<div class="knowledge-base-value">Mannheim</div>
-					<div class="knowledge-base-label">Zeitpunkt</div>
-					<div class="knowledge-base-value">Tue Jun 28 2016 10:00:00 GMT+0200</div>
-				</div>
-
-                <div class="knowledge-title">Queries</div>
-				<div class="knowledge-queries-wrapper">
-					<div class="knowledge-item">
-						<span class="icon-wrapper"><i class="icon-link-ext"></i></span>
-						<a class="knowledge-item-url" href="https://reiseauskunft.bahn.de/bin/query.exe/dn?country=DEU&S=Frankfurt&Z=Mannheim&timesel=depart&date=Di%2C+28.06.16+&time=10%3A00&start=1" target="_blank">
-							<span class="query-servicename">Bahn.de: Frankfurt -> Mannheim (Abfahrt Di, 28.06.2016 10:00)</span>
-                            <span class="confidence">(98%)</span>
-						</a>
-					</div>
-
-					<div class="knowledge-item">
-						<span class="icon-wrapper"><i class="icon-link-ext"></i></span>
-						<a class="knowledge-item-url" href="https://www.qixxit.de/bin/abt/query-abt.exe/dn?L=vs_qixxit&protocol=https%3A&getstop=1&REQ0JourneyStopsS0G=FRANKFURT%28MAIN%29&REQ0JourneyStopsS0ID=A%3D1%40O%3DFRANKFURT%28MAIN%29%40X%3D8663785%40Y%3D50107149%40U%3D80%40L%3D008096021%40B%3D1%40p%3D1465942746%40&REQ0JourneyStopsS0A=255&REQ0JourneyStopsZ0G=Mannheim+Hbf&REQ0JourneyStopsZ0ID=A%3D1%40O%3DMannheim+Hbf%40X%3D8468917%40Y%3D49479351%40U%3D80%40L%3D008000244%40B%3D1%40p%3D1465942746%40&REQ0JourneyStopsZ0A=255&REQ0JourneyTime=10%3A00%3A00&REQ0JourneyDate=28.06.2016&differentDateIsSet=yes" target="_blank">
-                            <span class="query-servicename">Quixxit: FRANKFURT(MAIN) -> Mannheim Hbf (Di, 28.06.2016 10:00)</span>
-                            <span class="confidence">(98%)</span>
-						</a>
-					</div>
-					<div class="knowledge-item">
-						<span class="icon-wrapper"><i class="icon-link-ext"></i></span>
-						<a class="knowledge-item-url" href="https://www.expedia.de/Flights-Search?trip=oneway&mode=search&passengers=children%3A0%2Cadults%3A1%2Cseniors%3A0%2Cinfantinlap%3AY&leg1=from%3AFrankfurt%2Cto%3AMannheim%2Cdeparture%3A28.06.2016TANYT" target="_blank">
-                            <span class="query-servicename">Expedia: Flug Frankfurt -> Mannheim (28.06.16)</span>
-                            <span class="confidence">(98%)</span>
-						</a>
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
 </template>
