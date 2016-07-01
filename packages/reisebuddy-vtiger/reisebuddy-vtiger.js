@@ -31,3 +31,29 @@ _vtiger.getAdapter = function() {
 
 	return _vtiger.singleton;
 };
+
+_vtiger.isEnabled = function(){
+	return Boolean(_vtiger.getAdapter());
+};
+
+/**
+ * Invalidate singelton on change of configuration
+ */
+Meteor.autorun(()=>{
+	RocketChat.settings.get('CRM_vtiger_url', function (key, value) {
+		_vtiger.singleton = undefined;
+	});
+
+	RocketChat.settings.get('CRM_vtiger_username', function (key, value) {
+		_vtiger.singleton = undefined;
+	});
+
+	RocketChat.settings.get('CRM_vtiger_user_id', function (key, value) {
+		_vtiger.singleton = undefined;
+	});
+
+	RocketChat.settings.get('CRM_vtiger_userAccessKey', function (key, value) {
+		_vtiger.singleton = undefined;
+	});
+
+});

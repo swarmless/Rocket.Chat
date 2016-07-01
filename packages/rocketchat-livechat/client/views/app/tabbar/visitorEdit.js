@@ -23,19 +23,35 @@ Template.visitorEdit.helpers({
 
 	joinTags() {
 		return this.tags ? this.tags.join(', ') : '';
+	},
+
+	crmIntegrationActive(){
+		return Template.instance().crmIntegrationActive.get();
+
 	}
 });
 
-Template.visitorEdit.onCreated(function() {
+Template.visitorEdit.onCreated(function () {
 	this.visitor = new ReactiveVar();
 	this.room = new ReactiveVar();
+	this.crmIntegrationActive = new ReactiveVar(true);
 
 	this.autorun(() => {
-		this.visitor.set(Meteor.users.findOne({ _id: Template.currentData().visitorId }));
+		this.visitor.set(Meteor.users.findOne({_id: Template.currentData().visitorId}));
 	});
 
 	this.autorun(() => {
-		this.room.set(ChatRoom.findOne({ _id: Template.currentData().roomId }));
+		this.room.set(ChatRoom.findOne({_id: Template.currentData().roomId}));
+	});
+
+	this.autorun(() => {
+		Meteor.call('isCrmEnabled', (err, data)=> {
+			if (err) {
+				this.crmIntegrationActive.set(false);
+			} else {
+				this.crmIntegrationActive.set(data);
+			}
+		});
 	});
 });
 
@@ -43,8 +59,8 @@ Template.visitorEdit.events({
 	'submit form'(event, instance) {
 		console.log('this ->', this);
 		event.preventDefault();
-		let userData = { _id: instance.visitor.get()._id };
-		let roomData = { _id: instance.room.get()._id };
+		let userData = {_id: instance.visitor.get()._id};
+		let roomData = {_id: instance.room.get()._id};
 
 		userData.name = event.currentTarget.elements['name'].value;
 		userData.email = event.currentTarget.elements['email'].value;
