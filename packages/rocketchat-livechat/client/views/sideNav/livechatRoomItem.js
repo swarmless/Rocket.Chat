@@ -50,7 +50,7 @@ Template.livechatRoomItem.onRendered(function () {
 
 Template.livechatRoomItem.onCreated(function () {
 	this.lastActivityTimer = new ReactiveVar(0);
-	this.isLoadingCrmName = new ReactiveVar(false);
+	this.isLoadingCrmName = new ReactiveVar(true);
 
 	const self = this;
 	const currentData = self.data;
@@ -74,8 +74,6 @@ Template.livechatRoomItem.onCreated(function () {
 		});
 
 		function gatherAndDisplayAdditionalUserData(user) {
-			self.isLoadingCrmName.set(true);
-
 			if (user.emails && user.emails[0] && user.emails[0].address) {
 				self.visitorName.set(user.emails[0].address);
 			}
