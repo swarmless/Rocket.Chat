@@ -23,8 +23,8 @@ Meteor.methods({
 
 			if(createContactResult.messages){
 				const immediatedMessagesString = createContactResult.messages.reduce(function (reduced, current){
-						if(current[0] === SEND_IMMEDIATELY) {
-							return reduced ? reduced + current[1] : current[1];
+						if(current.processingInstruction === SEND_IMMEDIATELY) {
+							return reduced ? reduced + current.message : current.message;
 						}	else {
 							return reduced;
 						}
