@@ -25,7 +25,7 @@ RB_API.addRoute('incoming/:service', {
 		try {
 			message = service.parse(this.bodyParams);
 		} catch (e) {
-			SystemLogger.warn("rejected malformed request");
+			SystemLogger.warn("rejected malformed request: " + JSON.stringify(this.bodyParams));
 			return {statusCode: 500, message: "malformed request"};
 		}
 
@@ -33,7 +33,7 @@ RB_API.addRoute('incoming/:service', {
 		let sendStub = {
 			message: {
 				_id: Random.id(),
-				msg: service.getCombinedMessage(message.subject, message.body)
+				msg: message.body
 			},
 			roomInfo: {
 				rbInfo: {
