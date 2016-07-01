@@ -2,6 +2,27 @@ Template.externalSearch.helpers({
 	messages() {
 		return RocketChat.models.LivechatExternalMessage.findByRoomId(this.rid, { ts: 1 });
 	},
+	dynamicTemplateExists() {
+		return !!Template['dynamic_redlink_'+this.filledQueryType];
+	},
+	queryTemplate() {
+		return 'dynamic_redlink_'+this.filledQueryType;
+	},
+	/*
+	If you want to create dynamic helpers use {{>UI.dynamic template=queryTemplate data=myTemplateData }}
+	 myTemplateData() {
+	 var data = UI._templateInstance().data || {};
+
+	 //Add the helpers onto the existing data (if any)
+	 _(data).extend({
+	 color: function() {
+	 return "#f00";
+	 }
+	 });
+
+	 return data;
+	 },
+	 */
 	filledQueryTemplate() {
 		var roomessages = RocketChat.models.LivechatExternalMessage.findByRoomId(this.rid, { ts: 1 }).fetch(),
 			filledTemplate = [], tokens = [];

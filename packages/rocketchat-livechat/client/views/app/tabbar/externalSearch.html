@@ -22,13 +22,11 @@
 							!-->
 
 							{{#each filledQueryTemplate}}
-                                <div class="knowledge-title">{{filledQueryType}}</div>
-                                <div class="knowledge-informations-wrapper">
-									{{#each filledQuerySlots }}
-                                        <div class="knowledge-base-label">{{role}}</div>
-                                        <div class="knowledge-base-value">{{clientValue}}</div>
-									{{/each}}
-                                </div>
+								{{#if dynamicTemplateExists}}
+									{{>UI.dynamic template=queryTemplate }}
+								{{else}}
+									{{>dynamic_redlink_default }}
+								{{/if}}
 							{{/each}}
 
 							{{#if redlinkQuery}}
@@ -56,4 +54,24 @@
 
 		</div>
 	</div>
+</template>
+
+<template name="dynamic_redlink_default">
+    <div class="knowledge-title">{{filledQueryType}}</div>
+    <div class="knowledge-informations-wrapper">
+		{{#each filledQuerySlots }}
+            <div class="knowledge-base-label">{{role}}</div>
+            <div class="knowledge-base-value">{{clientValue}}</div>
+		{{/each}}
+    </div>
+</template>
+
+<template name="dynamic_redlink_Reiseplanung">
+    <div class="knowledge-title">{{filledQueryType}}</div>
+    <div class="knowledge-informations-wrapper" style="background-color: white">
+		{{#each filledQuerySlots }}
+            <div class="knowledge-base-label">{{role}}</div>
+            <div class="knowledge-base-value">{{clientValue}}</div>
+		{{/each}}
+    </div>
 </template>
