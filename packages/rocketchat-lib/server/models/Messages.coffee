@@ -22,6 +22,15 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base
 
 		return @findOne query, options
 
+	findFirstMessageFromUser: (userId) ->
+		query =
+			'u._id': userId
+		options = {}
+		options.sort = { ts: 1 }
+		options.limit = 1
+
+		return @findOne query, options
+
 	# FIND
 	findByMention: (username, options) ->
 		query =

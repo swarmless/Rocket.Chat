@@ -38,9 +38,10 @@ Template.visitorCRM.events({
 	},
 
 	'click .create-contact': function (event, instance) {
-		Meteor.call('livechat:createCrmContact', instance.user.get(), (err, data)=> {
+		Meteor.call('livechat:createCrmContact', instance.user.get(), instance.data.rid, (err, data)=> {
 			if (err) {
 				console.error(err);
+				toastr.error(t('crm_communication_error'));
 			}
 		});
 	}
@@ -53,6 +54,7 @@ Template.visitorCRM.onCreated(function () {
 	this.user = new ReactiveVar({});
 	this.isLoading = new ReactiveVar(true);
 	this.isEditing = new ReactiveVar(false);
+	this.room = new ReactiveVar();
 
 	const currentData = Template.currentData();
 
