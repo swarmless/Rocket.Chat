@@ -3,7 +3,7 @@
         <a class="open-room" href="{{route}}" title="{{name}}">
             <i class="{{roomIcon}} {{userStatus}}" aria-label=""></i>
             <span class='name'>{{name}}</span>
-			{{#if isLoadingCrmName }}
+			{{#if isLoading }}
                 <i class='icon-spinner animate-spin' style="width: auto; height: auto;" ></i>
 			{{/if}}
             <span class="unread" title="Eingang vor {{sinceLastActivity}} Minuten">{{sinceLastActivity}}</span>

@@ -17,7 +17,7 @@ Template.livechatRoomItem.helpers({
 	name() {
 		return Template.instance().visitorName.get();
 	},
-	isLoadingCrmName() {
+	isLoading() {
 		return Template.instance().isLoadingCrmName.get();
 	}
 	,
@@ -48,19 +48,9 @@ Template.livechatRoomItem.onRendered(function () {
 	}, 1000);
 });
 
-function actualizeTimer(instance) {
-	let lastDate = instance.data.answered ? instance.data.lastActivity : instance.data.lastCustomerActivity;
-
-	if (!_.isDate(lastDate)) {
-		lastDate = new Date();
-	}
-
-	instance.lastActivityTimer.set(new _dbs.Duration(new Date() - lastDate).toMM());
-}
-
 Template.livechatRoomItem.onCreated(function () {
 	this.lastActivityTimer = new ReactiveVar(0);
-	this.isLoadingCrmName = new ReactiveVar(true);
+	this.isLoadingCrmName = new ReactiveVar(false);
 
 	const self = this;
 	const currentData = self.data;
@@ -69,43 +59,44 @@ Template.livechatRoomItem.onCreated(function () {
 
 	if (currentData && currentData.rid) {
 		this.subscribe('livechat:visitorInfo', {rid: currentData.rid});
-		this.subscribe('livechat:visitorCrm', {rid: currentData.rid});
 		this.subscribe('livechat:rooms', {rid: currentData.rid});
-	}
 
-	this.autorun(()=> {
-		if (Template.instance().subscriptionsReady()) {
+		this.autorun(() => {
 			let room = ChatRoom.findOne(currentData.rid);
 
 			if (room && room.v && room.v._id) {
-				let visitorId = room.v._id;
+				let user = Meteor.users.findOne({'_id': room.v._id});
 
-				if (visitorId) {
-					let user = Meteor.users.findOne({'_id': visitorId});
-
-					if (user && user.crmContactId) {
-						Meteor.call('livechat:getCrmContact', user.crmContactId, (err, contact) => {
-							self.isLoadingCrmName.set(false);
-
-							if (!err && contact) {
-								let crmName =
-									(contact.firstname ? contact.firstname : '') +
-									(contact.firstname && contact.lastname ? ', ' : '') +
-									(contact.lastname ? contact.lastname : '');
-
-								if (crmName && crmName.length > 0) {
-									self.visitorName.set(crmName);
-								}
-							}
-						});
-					}
-					else {
-						self.isLoadingCrmName.set(false);
-					}
+				if(user) {
+					gatherAndDisplayAdditionalUserData(user);
 				}
 			}
+		});
+
+		function gatherAndDisplayAdditionalUserData(user) {
+			self.isLoadingCrmName.set(true);
+
+			if (user.emails && user.emails[0] && user.emails[0].address) {
+				self.visitorName.set(user.emails[0].address);
+			}
+
+			if (user.crmContactId) {
+				Meteor.call('livechat:getCrmContact', user.crmContactId, (err, contact) => {
+					self.isLoadingCrmName.set(false);
+
+					if (!err && contact) {
+						let crmName = extractFirstAndLastname(contact);
+
+						if (crmName && crmName.length > 0) {
+							self.visitorName.set(crmName);
+						}
+					}
+				});
+			} else {
+				self.isLoadingCrmName.set(false);
+			}
 		}
-	})
+	}
 });
 
 Template.livechatRoomItem.onDestroyed(function () {
@@ -143,3 +134,19 @@ Template.livechatRoomItem.events({
 		});
 	}
 });
+
+function actualizeTimer(instance) {
+	let lastDate = instance.data.answered ? instance.data.lastActivity : instance.data.lastCustomerActivity;
+
+	if (!_.isDate(lastDate)) {
+		lastDate = new Date();
+	}
+
+	instance.lastActivityTimer.set(new _dbs.Duration(new Date() - lastDate).toMM());
+}
+
+function extractFirstAndLastname(crmContact) {
+	return (crmContact.lastname ? crmContact.lastname : '') +
+		(crmContact.lastname && crmContact.firstname ? ', ' : '') +
+		(crmContact.firstname ? crmContact.firstname : '');
+}
