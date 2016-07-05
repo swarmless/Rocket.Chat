@@ -8,18 +8,6 @@
 				<div class="external-message">
 					{{#if result}}
                         <div class="external-message">
-							<!--
-                            <div class="knowledge-title">Tokens</div>
-                            <div class="knowledge-informations-wrapper">
-                                <ul class="token-container clearfix">
-                                    <li class="token-list"><span class="token Date"><i class="icon-clock"></i> 28.06.2016 10:00 <span class="confidence">(90%)</span></span></li>
-                                    <li class="token-list"><span class="token Train"><i class="icon-travel"></i> Zug <span class="confidence">(100%)</span></span></li>
-                                    <li class="token-list"><span class="token Topic"><i class="icon-book"></i> Reiseplanung <span class="confidence">(98%)</span></span></li>
-                                    <li class="token-list"><span class="token Place"><i class="icon-location"></i> Frankfurt <span class="confidence">(15%)</span></span></li>
-                                    <li class="token-list"><span class="token Place"><i class="icon-location"></i> Mannheim <span class="confidence">(15%)</span></span></li>
-                                </ul>
-                            </div>
-							!-->
 							{{#each filledQueryTemplate}}
 								{{#if dynamicTemplateExists}}
 									{{>UI.dynamic template=queryTemplate }}

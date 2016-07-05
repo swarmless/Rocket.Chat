@@ -729,7 +729,32 @@
 				border: 1px dotted #444;
 			}
 		}
-	}
+        .knowledge-base-tooltip {
+            display: none;
+            position: absolute;
+            height: 100px;
+            width: 200px;
+            background-color: white;
+            margin-top: -10px;
+            border-radius: 10px;
+            padding: 5px;
+            z-index: 100;
+            box-shadow: 0 0 5px 4px rgba(0,0,0,0.1);
+            &::after {
+                bottom: 100%;
+                left: 50%;
+                content: "";
+                position: absolute;
+                border: solid transparent;
+                border-bottom-color: white;
+                border-width: 10px;
+                margin-left: -10px;
+            }
+        }
+        .knowledge-base-value:hover + .knowledge-base-tooltip, .knowledge-base-tooltip:hover {
+            display: block;
+        }
+    }
 
 	.knowledge-queries-wrapper {
 		margin: 0 20px 20px;
