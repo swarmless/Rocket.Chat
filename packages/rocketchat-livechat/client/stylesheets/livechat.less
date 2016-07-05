@@ -723,6 +723,7 @@
 			display: inline-block;
 			min-width: 100px;
 			cursor: pointer;
+			position: relative;
 			&.empty-style {
 				background-color: #efefef;
 				color: #666;
@@ -732,17 +733,16 @@
         .knowledge-base-tooltip {
             display: none;
             position: absolute;
-            height: 100px;
+            height: auto;
             width: 200px;
             background-color: white;
-            margin-top: -10px;
-            border-radius: 10px;
-            padding: 5px;
+			color: #444;
+            margin-top: 4px;
             z-index: 100;
             box-shadow: 0 0 5px 4px rgba(0,0,0,0.1);
             &::after {
                 bottom: 100%;
-                left: 50%;
+                left: 20%;
                 content: "";
                 position: absolute;
                 border: solid transparent;
@@ -750,8 +750,17 @@
                 border-width: 10px;
                 margin-left: -10px;
             }
+			.knowledge-context-menu-item {
+				padding: 6px;
+				cursor: pointer;
+				border-bottom: 1px solid #ccc;
+				&:hover {
+					background-color: #097425;
+					color: #fff;
+				}
+			}
         }
-        .knowledge-base-value:hover + .knowledge-base-tooltip, .knowledge-base-tooltip:hover {
+        .knowledge-base-value:hover .knowledge-base-tooltip, .knowledge-base-tooltip:hover {
             display: block;
         }
     }
