@@ -3,7 +3,7 @@ for (var tpl in Template) {
 		Template[tpl].onRendered(function () {
 			this.$('.knowledge-base-value').append('<div class="knowledge-base-tooltip">' +
 				'<div class="knowledge-context-menu-item"><span class="icon-pencil"></span> Editieren</div>' +
-				'<div class="knowledge-context-menu-item"><span class="icon-trash"></span> Löschen</div>' +
+				'<div class="knowledge-context-menu-item knowledge-context-menu-delete-item"><span class="icon-trash"></span> Löschen</div>' +
 				'<div class="knowledge-context-menu-item"><span class="icon-chat"></span> Nachfragen</div></div>');
 		});
 	}
