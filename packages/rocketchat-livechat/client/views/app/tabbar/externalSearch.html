@@ -25,7 +25,7 @@
 								{{#if dynamicTemplateExists}}
 									{{>UI.dynamic template=queryTemplate }}
 								{{else}}
-									{{>dynamic_redlink_default }}
+									{{>dynamic_redlink_default  }}
 								{{/if}}
 							{{/each}}
 
@@ -66,9 +66,19 @@
     </div>
 </template>
 
+<template name="dynamic_redlink_Produkt">
+    <div class="knowledge-title">Product: {{filledQueryType}}</div>
+    <div class="knowledge-informations-wrapper">
+        <div class="knowledge-base-label">Topic</div>
+        <div class="knowledge-base-value">{{item 'topic'}}</div>
+        <div class="knowledge-base-label">Product</div>
+        <div class="knowledge-base-value">{{item 'product'}}</div>
+    </div>
+</template>
+
 <template name="dynamic_redlink_Reiseplanung">
     <div class="knowledge-title">{{filledQueryType}}</div>
-    <div class="knowledge-informations-wrapper" style="background-color: white">
+    <div class="knowledge-informations-wrapper">
 		{{#each filledQuerySlots }}
             <div class="knowledge-base-label">{{role}}</div>
             <div class="knowledge-base-value">{{clientValue}}</div>

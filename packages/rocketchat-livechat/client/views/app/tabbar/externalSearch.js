@@ -1,3 +1,9 @@
+Template.dynamic_redlink_default.helpers({
+
+});
+Template.dynamic_redlink_default.onRendered(function() {
+});
+
 Template.externalSearch.helpers({
 	messages() {
 		return RocketChat.models.LivechatExternalMessage.findByRoomId(this.rid, { ts: 1 });
@@ -8,21 +14,6 @@ Template.externalSearch.helpers({
 	queryTemplate() {
 		return 'dynamic_redlink_'+this.filledQueryType;
 	},
-	/*
-	If you want to create dynamic helpers use {{>UI.dynamic template=queryTemplate data=myTemplateData }}
-	 myTemplateData() {
-	 var data = UI._templateInstance().data || {};
-
-	 //Add the helpers onto the existing data (if any)
-	 _(data).extend({
-	 color: function() {
-	 return "#f00";
-	 }
-	 });
-
-	 return data;
-	 },
-	 */
 	filledQueryTemplate() {
 		var knowledgebaseSuggestions = RocketChat.models.LivechatExternalMessage.findByRoomId(this.rid, { ts: -1 }).fetch(),
 			filledTemplate = [], tokens = [];
@@ -51,6 +42,9 @@ Template.externalSearch.helpers({
 
 				slotItem.filledQueryType = valTmpl.queryType;
 				slotItem.filledQuerySlots = filledQuerySlots;
+				slotItem.item = function (itm) {
+					return slotItem.filledQuerySlots.filter((ele) => ele.role === itm)[0]['clientValue'] //todo npe-checks
+				};
 
 				filledTemplate.push(slotItem);
 			});
@@ -60,7 +54,7 @@ Template.externalSearch.helpers({
 });
 
 Template.externalSearch.events({
-	'click button.pick-message'(event, instance) {
+	'click button.pick-message': function(event, instance) {
 		event.preventDefault();
 
 		$('#chat-window-' + instance.roomId + ' .input-message').val(this.msg).focus();
