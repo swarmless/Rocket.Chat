@@ -19,13 +19,13 @@ Template.externalSearch.helpers({
 		return 'dynamic_redlink_' + this.filledQueryType;
 	},
 	filledQueryTemplate() {
-		var knowledgebaseSuggestions = RocketChat.models.LivechatExternalMessage.findByRoomId(this.rid, { ts: -1 }).fetch(),
+		var knowledgebaseSuggestions = Template.instance().externalMessages.get(),
 			filledTemplate = [], tokens = [];
 
 		if(knowledgebaseSuggestions.length > 0) {
 			tokens = knowledgebaseSuggestions[0].result.tokens;
 			$(knowledgebaseSuggestions[0].result.queryTemplates).each(function (indxTmpl, valTmpl) {
-
+				valTmpl.queries = knowledgebaseSuggestions[0].result.queries;	//todo: wieder entfernen, sobald die Queries Teil der Tempoplates sind
 				let slotItem = {}, filledQuerySlots = [], querySlots = valTmpl.querySlots, currentToken;
 
 				/* tokens und queryTemplates mergen */
@@ -79,6 +79,12 @@ Template.externalSearch.events({
 		event.preventDefault();
 		$('#chat-window-' + instance.roomId + ' .input-message').val(this.msg).focus();
 	},
+	'click button.update-result': function(event, instance) {
+		event.preventDefault();
+
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get()[0]);
+
+	},
 	'click .knowledge-base-tooltip .icon-edit': function (event, inst) {
 		console.log("1234569: " +
 					RocketChat.models.LivechatExternalMessage.findOne({rid: inst.roomId}, {sort: {ts: -1}}));
@@ -90,10 +96,12 @@ Template.externalSearch.events({
 	}
 });
 
-Template.externalSearch.onCreated(function () {
+Template.externalSearch.onCreated(function() {
+	this.externalMessages = new ReactiveVar([]);
 	this.roomId = null;
 	this.autorun(() => {
 		this.roomId = Template.currentData().rid;
 		this.subscribe('livechat:externalMessages', Template.currentData().rid);
+		this.externalMessages.set(RocketChat.models.LivechatExternalMessage.findByRoomId(Template.currentData().rid, { ts: -1 }).fetch());
 	});
 });
