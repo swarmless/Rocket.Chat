@@ -2,9 +2,9 @@ for (var tpl in Template) {
 	if (Template.hasOwnProperty(tpl) && tpl.startsWith('dynamic_redlink_')) {
 		Template[tpl].onRendered(function () {
 			this.$('.knowledge-base-value').append('<div class="knowledge-base-tooltip">' +
-				'<div class="knowledge-context-menu-item"><span class="icon-pencil"></span> Editieren</div>' +
-				'<div class="knowledge-context-menu-item knowledge-context-menu-delete-item"><span class="icon-trash"></span> Löschen</div>' +
-				'<div class="knowledge-context-menu-item"><span class="icon-chat"></span> Nachfragen</div></div>');
+				'<div class="knowledge-context-menu-item edit-item"><span class="icon-pencil"></span> Editieren</div>' +
+				'<div class="knowledge-context-menu-item delete-item"><span class="icon-trash"></span> Löschen</div>' +
+				'<div class="knowledge-context-menu-item chat-item"><span class="icon-chat"></span> Nachfragen</div></div>');
 		});
 	}
 }
@@ -86,14 +86,14 @@ Template.externalSearch.events({
 		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get()[0]);
 
 	},
-	'click .knowledge-base-tooltip .icon-edit': function (event, inst) {
+	'click .knowledge-base-tooltip .edit-item': function (event, inst) {
 		console.log("1234569: " +
 					RocketChat.models.LivechatExternalMessage.findOne({rid: inst.roomId}, {sort: {ts: -1}}));
 	},
-	'click .knowledge-base-tooltip .icon-mail': function (event, inst) {
+	'click .knowledge-base-tooltip .chat-item': function (event, inst) {
 		const rlData = RocketChat.models.LivechatExternalMessage.findOne({rid: inst.roomId},
 			{sort: {ts: -1}}).redlinkQuery;
-		$('.input-message').text("TODO");
+		$('#chat-window-' + inst.roomId + ' .input-message').val(this.msg).focus();
 	}
 });
 
