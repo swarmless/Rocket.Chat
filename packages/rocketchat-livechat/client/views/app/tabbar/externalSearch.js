@@ -87,9 +87,25 @@ Template.externalSearch.events({
 
 	},
 	'click .knowledge-base-tooltip .edit-item': function (event, inst) {
-		
-		$(event.currentTarget).closest(".field-with-label").addClass("editing");
+		let inputWrapper = $(event.currentTarget).closest(".field-with-label"),
+			originalValue = $(inputWrapper).find(".knowledge-base-value").val(),
+			saveValue = "";
+		$(".field-with-label.editing").find(".icon-cancel").click();
+		$(".field-with-label.editing").removeClass("editing");
 
+		inputWrapper.addClass("editing");
+		$(inputWrapper).find(".knowledge-base-value").focus().select();
+		$(inputWrapper).find(".icon-cancel").off("click").on("click", (event, inst) => {
+			inputWrapper.removeClass("editing");
+			$(inputWrapper).find(".knowledge-base-value").val(originalValue);
+		});
+		$(inputWrapper).find(".icon-floppy").off("click").on("click", (event, inst) => {
+			inputWrapper.removeClass("editing");
+			saveValue = $(inputWrapper).find(".knowledge-base-value").val();
+			console.log(event);
+			console.log(inst);
+			console.log("saveValue = " + saveValue);
+		});
 		/*console.log("1234569: " +
 					RocketChat.models.LivechatExternalMessage.findOne({rid: inst.roomId}, {sort: {ts: -1}}));*/
 	},

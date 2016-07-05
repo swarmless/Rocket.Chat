@@ -711,13 +711,23 @@
 						width: 78%;
 						padding: 0;
 						margin: 0;
+						.knowledge-base-value {
+							width: 80%;
+							background-color: #fff;
+							color: #444;
+							font-weight: bold;
+						}
 					}
 					.knowledge-base-label {
 						padding: 0 2%;
 						width: 18%;
 					}
 					.edit-icons-set {
+						cursor: pointer;
 						display: inline-block;
+					}
+					.knowledge-input-wrapper:hover .knowledge-base-tooltip, .knowledge-base-tooltip:hover {
+						display: none;
 					}
 				}
 			}
@@ -730,15 +740,15 @@
 		.icon-wrapper {
 			display: inline-block;
 			background-color: #efefef;
-			padding: 5px 10px;
+			padding: 5px 6px;
 			border-radius: 5px;
-			margin: 0 10px;
+			margin: 0 3px;
 			cursor: pointer;
 		}
 
 		.knowledge-base-label {
 			font-weight: bold;
-			margin-right: 8px;
+			margin-right: 5px;
 			display: inline-block;
 		}
 		.knowledge-input-wrapper {
@@ -780,7 +790,7 @@
 			font-weight: 400;
 			background-color: #097425;
 			color: #fff;
-			padding: 5px 10px;
+			padding: 5px;
 			border-radius: 5px;
 			margin-bottom: 8px;
 			display: inline-block;
