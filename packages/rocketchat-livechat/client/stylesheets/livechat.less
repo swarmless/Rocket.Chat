@@ -697,6 +697,25 @@
 
 		.value-line-wrapper {
 			padding: 0 10px 2px;
+			position: relative;
+			.field-with-label {
+				display: inline-block;
+				&.editing {
+					position: absolute;
+					width: 100%;
+					left: 0;
+					top: 0;
+					.knowledge-base-value {
+						width: 78%;
+						padding: 0;
+						margin: 0;
+					}
+					.knowledge-base-label {
+						padding: 0 2%;
+						width: 18%;
+					}
+				}
+			}
 		}
 
 		.icon-wrapper {
@@ -713,6 +732,41 @@
 			margin-right: 8px;
 			display: inline-block;
 		}
+		.knowledge-input-wrapper {
+			position: relative;
+			display: inline-block;
+			.knowledge-base-tooltip {
+				display: none;
+				position: absolute;
+				height: auto;
+				width: 200px;
+				background-color: white;
+				left: -45px;
+				color: #444;
+				margin-top: 4px;
+				z-index: 100;
+				box-shadow: 0 0 5px 4px rgba(0,0,0,0.1);
+				&::after {
+					bottom: 100%;
+					left: 40%;
+					content: "";
+					position: absolute;
+					border: solid transparent;
+					border-bottom-color: white;
+					border-width: 10px;
+					margin-left: -10px;
+				}
+				.knowledge-context-menu-item {
+					padding: 6px;
+					cursor: pointer;
+					border-bottom: 1px solid #ccc;
+					&:hover {
+						background-color: #097425;
+						color: #fff;
+					}
+				}
+			}
+		}
 		.knowledge-base-value {
 			font-weight: 400;
 			background-color: #097425;
@@ -722,6 +776,7 @@
 			margin-bottom: 8px;
 			display: inline-block;
 			min-width: 100px;
+			width: auto;
 			cursor: pointer;
 			position: relative;
 			&.empty-style {
@@ -733,38 +788,8 @@
 				}
 			}
 		}
-        .knowledge-base-tooltip {
-            display: none;
-            position: absolute;
-            height: auto;
-            width: 200px;
-            background-color: white;
-			left: -45px;
-			color: #444;
-            margin-top: 4px;
-            z-index: 100;
-            box-shadow: 0 0 5px 4px rgba(0,0,0,0.1);
-            &::after {
-                bottom: 100%;
-                left: 40%;
-                content: "";
-                position: absolute;
-                border: solid transparent;
-                border-bottom-color: white;
-                border-width: 10px;
-                margin-left: -10px;
-            }
-			.knowledge-context-menu-item {
-				padding: 6px;
-				cursor: pointer;
-				border-bottom: 1px solid #ccc;
-				&:hover {
-					background-color: #097425;
-					color: #fff;
-				}
-			}
-        }
-        .knowledge-base-value:hover .knowledge-base-tooltip, .knowledge-base-tooltip:hover {
+
+        .knowledge-input-wrapper:hover .knowledge-base-tooltip, .knowledge-base-tooltip:hover {
             display: block;
         }
     }
