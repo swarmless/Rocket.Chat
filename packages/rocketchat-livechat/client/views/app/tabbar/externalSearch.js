@@ -25,8 +25,8 @@ Template.externalSearch.helpers({
 		if(knowledgebaseSuggestions.length > 0) {
 			tokens = knowledgebaseSuggestions[0].result.tokens;
 			$(knowledgebaseSuggestions[0].result.queryTemplates).each(function (indxTmpl, valTmpl) {
-				valTmpl.queries = knowledgebaseSuggestions[0].result.queries;	//todo: wieder entfernen, sobald die Queries Teil der Tempoplates sind
 				let slotItem = {}, filledQuerySlots = [], querySlots = valTmpl.querySlots, currentToken;
+				slotItem.resultingQueries = valTmpl.queries ? valTmpl.queries : knowledgebaseSuggestions[0].result.queries;	//todo: wieder entfernen, sobald die Queries Teil der Templates sind
 
 				/* tokens und queryTemplates mergen */
 				$(querySlots).each(function (indxSlot, valSlot) {
