@@ -31,7 +31,7 @@ class RedlinkAdapter {
 			// therefore we need to validate we're operating with a Redlink-result
 
 			analyzedUntil = latestKnowledgeProviderResult.originMessage ? latestKnowledgeProviderResult.originMessage.ts : 0;
-			conversation = latestKnowledgeProviderResult.result.messages;
+			conversation = latestKnowledgeProviderResult.result.messages ? latestKnowledgeProviderResult.result.messages : [];
 		}
 
 		const room = RocketChat.models.Rooms.findOneById(rid);
@@ -54,7 +54,7 @@ class RedlinkAdapter {
 
 		try {
 			const responseRedlinkQuery = HTTP.post(this.properties.url + '/query', {
-				data: modifiedRedlinkResult,
+				data: modifiedRedlinkResult.result,
 				headers: this.headers
 			});
 
@@ -63,7 +63,7 @@ class RedlinkAdapter {
 					_id: modifiedRedlinkResult._id
 				},
 				{ $set: {
-					result: responseRedlinkQuery
+					result: responseRedlinkQuery.data
 				}
 			});
 
@@ -112,7 +112,7 @@ class RedlinkAdapter {
 	}
 
 	getKnowledgeProviderCursor(roomId) {
-		return RocketChat.models.LivechatExternalMessage.findByRoomId(roomId.rid, {ts: -1});
+		return RocketChat.models.LivechatExternalMessage.findByRoomId(roomId, {ts: -1});
 	}
 
 	onClose(room) { //async
