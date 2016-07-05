@@ -87,7 +87,7 @@ Template.externalSearch.events({
 
 	},
 	'click .knowledge-base-tooltip .edit-item': function (event, inst) {
-
+		
 		$(event.currentTarget).closest(".field-with-label").addClass("editing");
 
 		/*console.log("1234569: " +
