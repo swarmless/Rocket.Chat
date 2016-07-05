@@ -333,7 +333,7 @@ RocketChat.Livechat = {
 					RocketChat.settings.get('Livechat_Knowledge_Redlink_Auth_Token', function (key, value) {
 						adapterProps.token = value;
 					});
-					if (process.env.NODE_ENV === 'development') { //use mock
+					if (process.env.NODE_ENV === 'testing') { //use mock
 						this.redlinkAdapter = new RedlinkMock(adapterProps);
 					} else {
 						this.redlinkAdapter = new RedlinkAdapter(adapterProps);

@@ -7,12 +7,38 @@ class RedlinkAdapter {
 		};
 	}
 
-	getConversation(rid) {
+	createRedlinkStub(rid, latestKnowledgeProviderResult) {
+		const latestRedlinkResult = (latestKnowledgeProviderResult && latestKnowledgeProviderResult.knowledgeProvider === 'redlink')
+									? latestKnowledgeProviderResult.result
+									: {};
+		return {
+			id: latestRedlinkResult.id ? latestRedlinkResult.id : rid,
+			meta: latestRedlinkResult.meta ? latestRedlinkResult.meta : {},
+			user: latestRedlinkResult.user ? latestRedlinkResult.user : {},
+			messages: latestRedlinkResult.messages ? latestRedlinkResult.messages : [],
+			tokens: latestRedlinkResult.tokens ? latestRedlinkResult.tokens : [],
+			queryTemplates: latestRedlinkResult.queryTemplates ? latestRedlinkResult.queryTemplates : []
+		}
+	}
+
+	getConversation(rid, latestKnowledgeProviderResult) {
+
+		let analyzedUntil = 0;
 		let conversation = [];
+
+		if (latestKnowledgeProviderResult && latestKnowledgeProviderResult.knowledgeProvider === 'redlink') {
+			//there might have been another provider configures, e. g. if API.ai was entered earlier
+			// therefore we need to validate we're operating with a Redlink-result
+
+			analyzedUntil = latestKnowledgeProviderResult.originMessage ? latestKnowledgeProviderResult.originMessage.ts : 0;
+			conversation = latestKnowledgeProviderResult.result.messages;
+		}
+
 		const room = RocketChat.models.Rooms.findOneById(rid);
-		RocketChat.models.Messages.findVisibleByRoomId(rid).forEach(visibleMessage => {
+		RocketChat.models.Messages.find({rid: rid, _hidden: { $ne: true }, ts: {$gt: new Date(analyzedUntil)}}).forEach(visibleMessage => {
 			conversation.push({
 				content: visibleMessage.msg,
+				time: visibleMessage.ts,
 				origin: (room.v._id === visibleMessage.u._id) ? 'User' : 'Agent' //in livechat, the owner of the room is the user
 			});
 		});
@@ -20,57 +46,38 @@ class RedlinkAdapter {
 	}
 
 	onMessage(message) {
-		const conversation = this.getConversation(message.rid);
+		const knowledgeProviderResultCursor = RocketChat.models.LivechatExternalMessage.findByRoomId(message.rid, {ts: -1});
+		const latestKnowledgeProviderResult = knowledgeProviderResultCursor.fetch()[0];
+
+		const requestBody = this.createRedlinkStub(message.rid, latestKnowledgeProviderResult);
+		requestBody.messages = this.getConversation(message.rid, latestKnowledgeProviderResult);
+
 		const responseRedlinkPrepare = HTTP.post(this.properties.url + '/prepare', {
-			data: {
-				messages: conversation,
-				user: {
-					id: message.u._id
-				}
-			},
+			data: requestBody,
 			headers: this.headers
 		});
 
 		try {
 			if (responseRedlinkPrepare.data && responseRedlinkPrepare.statusCode === 200) {
+
+
 				//delete suggestions proposed so far - Redlink will always analyze the complete conversation
-				RocketChat.models.LivechatExternalMessage.findByRoomId(message.rid).forEach((oldSuggestion) => {
+				knowledgeProviderResultCursor.forEach((oldSuggestion) => {
 					RocketChat.models.LivechatExternalMessage.remove(oldSuggestion._id);
 				});
 
 				RocketChat.models.LivechatExternalMessage.insert({
 					rid: message.rid,
 					knowledgeProvider: "redlink",
-					orig: message._id,
-					redlinkQuery: responseRedlinkPrepare.data,
+					originMessage: {_id: message._id, ts: message.ts},
+					result: responseRedlinkPrepare.data,
 					ts: new Date()
 				});
 			}
-		} catch(e) {
+		} catch (e) {
 			//todo Redlink-API und Implementierung sind noch nicht wirklich stabil =>
 			SystemLogger.error('Redlink-Prepare/Query with results from prepare did not succeed -> ', e);
-		}
-
-		/*
-		 if (responseRedlinkQuery.data && responseRedlinkQuery.statusCode === 200) {
-
-		 //delete suggestions proposed so far - Redlink will always analyze the complete conversation
-		 RocketChat.models.LivechatExternalMessage.findByRoomId(message.rid).forEach((oldSuggestion) => {
-		 RocketChat.models.LivechatExternalMessage.remove(oldSuggestion._id);
-		 });
-
-		 for (let i = 0; i < responseRedlinkQuery.data.queries.length; i++) {
-		 RocketChat.models.LivechatExternalMessage.insert({
-		 rid: message.rid,
-		 msg: responseRedlinkQuery.data.queries[i].serviceName,
-		 url: responseRedlinkQuery.data.queries[i].url,
-		 orig: message._id,
-		 redlinkPrepare: responseRedlinkPrepare.data,
-		 ts: new Date()
-		 });
-		 }
-		 }
-		 */
+		} 
 	}
 
 	onClose(room) { //async
