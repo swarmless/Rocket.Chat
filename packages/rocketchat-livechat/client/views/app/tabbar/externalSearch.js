@@ -19,8 +19,8 @@ Template.externalSearch.helpers({
 			filledTemplate = [], tokens = [];
 
 		if(knowledgebaseSuggestions.length > 0) {
-			tokens = knowledgebaseSuggestions[0].redlinkQuery.tokens;
-			$(knowledgebaseSuggestions[0].redlinkQuery.queryTemplates).each(function (indxTmpl, valTmpl) {
+			tokens = knowledgebaseSuggestions[0].result.tokens;
+			$(knowledgebaseSuggestions[0].result.queryTemplates).each(function (indxTmpl, valTmpl) {
 
 				let slotItem = {}, filledQuerySlots = [], querySlots = valTmpl.querySlots, currentToken;
 
@@ -29,13 +29,13 @@ Template.externalSearch.helpers({
 					if (valSlot.tokenIndex != -1) {
 						currentToken = tokens[valSlot.tokenIndex];
 						if(currentToken.type === "Date" && typeof currentToken.value === "object") {
-							valSlot.clientValue = new Date(currentToken.value.date);
+							valSlot.clientValue = moment(currentToken.value.date).format("L LT");
 						} else {
 							valSlot.clientValue = currentToken.value;
 						}
 						valSlot.tokenVal = currentToken;
 					} else {
-						valSlot.clientValue = "-";
+						valSlot.clientValue = "?";
 					}
 					filledQuerySlots.push(valSlot);
 				});
@@ -43,7 +43,14 @@ Template.externalSearch.helpers({
 				slotItem.filledQueryType = valTmpl.queryType;
 				slotItem.filledQuerySlots = filledQuerySlots;
 				slotItem.item = function (itm) {
-					return slotItem.filledQuerySlots.filter((ele) => ele.role === itm)[0]['clientValue'] //todo npe-checks
+					let returnValue = "?", filteredArray = [];
+					if(typeof slotItem.filledQuerySlots === "object") {
+						filteredArray = slotItem.filledQuerySlots.filter((ele) => ele.role === itm);
+						if(filteredArray.length > 0) {
+							returnValue = filteredArray[0]['clientValue'];
+						}
+					}
+					return returnValue;
 				};
 
 				filledTemplate.push(slotItem);

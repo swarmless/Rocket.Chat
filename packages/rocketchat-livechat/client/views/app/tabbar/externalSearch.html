@@ -6,7 +6,7 @@
 		<div class="external-messages">
 			{{#each messages}}
 				<div class="external-message">
-					{{#if redlinkQuery}}
+					{{#if result}}
                         <div class="external-message">
 							<!--
                             <div class="knowledge-title">Tokens</div>
@@ -20,7 +20,6 @@
                                 </ul>
                             </div>
 							!-->
-
 							{{#each filledQueryTemplate}}
 								{{#if dynamicTemplateExists}}
 									{{>UI.dynamic template=queryTemplate }}
@@ -29,10 +28,10 @@
 								{{/if}}
 							{{/each}}
 
-							{{#if redlinkQuery}}
+							{{#if result}}
 								<div class="knowledge-title">Queries</div>
 								<div class="knowledge-queries-wrapper">
-									{{#each redlinkQuery.queries}}
+									{{#each result.queries}}
 										<div class="knowledge-item">
 											<span class="icon-wrapper"><i class="icon-link-ext"></i></span>
 											<a class="knowledge-item-url" href="{{url}}" target="_blank">
@@ -57,31 +56,81 @@
 </template>
 
 <template name="dynamic_redlink_default">
-    <div class="knowledge-title">{{filledQueryType}}</div>
     <div class="knowledge-informations-wrapper">
-		{{#each filledQuerySlots }}
-            <div class="knowledge-base-label">{{role}}</div>
-            <div class="knowledge-base-value">{{clientValue}}</div>
-		{{/each}}
-    </div>
+		<div class="knowledge-title">{{filledQueryType}}</div>
+		<div class="knowledge-informations-wrapper">
+			{{#each filledQuerySlots }}
+				<div class="knowledge-base-label">{{role}}</div>
+				<div class="knowledge-base-value">{{clientValue}}</div>
+			{{/each}}
+		</div>
+	</div>
 </template>
 
 <template name="dynamic_redlink_Produkt">
-    <div class="knowledge-title">Product: {{filledQueryType}}</div>
     <div class="knowledge-informations-wrapper">
-        <div class="knowledge-base-label">Topic</div>
-        <div class="knowledge-base-value">{{item 'topic'}}</div>
-        <div class="knowledge-base-label">Product</div>
-        <div class="knowledge-base-value">{{item 'product'}}</div>
+		<div class="knowledge-title">{{filledQueryType}}</div>
+		<div class="value-line-wrapper">
+			<div class="knowledge-base-label">Produkt</div><div class="knowledge-base-value">{{item 'product'}}</div>
+			<div class="knowledge-base-label">Was</div><div class="knowledge-base-value">{{item 'was'}}</div>
+		</div>
     </div>
 </template>
 
+
 <template name="dynamic_redlink_Reiseplanung">
-    <div class="knowledge-title">{{filledQueryType}}</div>
     <div class="knowledge-informations-wrapper">
-		{{#each filledQuerySlots }}
-            <div class="knowledge-base-label">{{role}}</div>
-            <div class="knowledge-base-value">{{clientValue}}</div>
-		{{/each}}
+		<div class="knowledge-title">{{filledQueryType}}</div>
+		<div class="value-line-wrapper">
+			<div class="knowledge-base-label">Von</div><div class="knowledge-base-value">{{item 'from'}}</div>
+            <span class="icon-wrapper"><i class="icon-exchange"></i></span>
+			<div class="knowledge-base-label">Nach</div><div class="knowledge-base-value">{{item 'to'}}</div>
+		</div>
+		<div class="value-line-wrapper">
+			<div class="knowledge-base-label">Abfahrt</div><div class="knowledge-base-value">{{item 'depart'}}</div>
+            <span class="icon-wrapper"><i class="icon-exchange"></i></span>
+			<div class="knowledge-base-label">Ankunft</div><div class="knowledge-base-value">{{item 'arrive'}}</div>
+		</div>
+    </div>
+</template>
+
+
+<template name="dynamic_redlink_Zuginformation">
+    <div class="knowledge-informations-wrapper">
+		<div class="knowledge-title">{{filledQueryType}}</div>
+
+		<div class="value-line-wrapper">
+			<div class="knowledge-base-label">Zug</div><div class="knowledge-base-value">{{item 'train'}}</div>
+		</div>
+		<div class="value-line-wrapper">
+			<div class="knowledge-base-label">Wann</div><div class="knowledge-base-value">{{item 'date'}}</div>
+		</div>
+		<div class="value-line-wrapper">
+			<div class="knowledge-base-label">Von</div><div class="knowledge-base-value">{{item 'from'}}</div>
+            <span class="icon-wrapper"><i class="icon-exchange"></i></span>
+			<div class="knowledge-base-label">Nach</div><div class="knowledge-base-value">{{item 'to'}}</div>
+		</div>
+		<div class="value-line-wrapper">
+			<div class="knowledge-base-label">Was</div><div class="knowledge-base-value">{{item 'was'}}</div>
+		</div>
+    </div>
+</template>
+
+
+<template name="dynamic_redlink_Umkreissuche">
+    <div class="knowledge-informations-wrapper">
+		<div class="knowledge-title">{{filledQueryType}}</div>
+
+		<div class="value-line-wrapper">
+			<div class="knowledge-base-label">Ort</div><div class="knowledge-base-value">{{item 'location'}}</div>
+		</div>
+		<div class="value-line-wrapper">
+			<div class="knowledge-base-label">Von</div><div class="knowledge-base-value">{{item 'start'}}</div>
+            <span class="icon-wrapper"><i class="icon-exchange"></i></span>
+			<div class="knowledge-base-label">Bis</div><div class="knowledge-base-value">{{item 'end'}}</div>
+		</div>
+		<div class="value-line-wrapper">
+			<div class="knowledge-base-label">Was</div><div class="knowledge-base-value">{{item 'was'}}</div>
+		</div>
     </div>
 </template>
