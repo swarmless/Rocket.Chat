@@ -24,12 +24,12 @@ Template.externalSearch.helpers({
 	 },
 	 */
 	filledQueryTemplate() {
-		var roomessages = RocketChat.models.LivechatExternalMessage.findByRoomId(this.rid, { ts: 1 }).fetch(),
+		var knowledgebaseSuggestions = RocketChat.models.LivechatExternalMessage.findByRoomId(this.rid, { ts: -1 }).fetch(),
 			filledTemplate = [], tokens = [];
 
-		if(roomessages.length > 0) {
-			tokens = roomessages[0].redlinkQuery.tokens;
-			$(roomessages[0].redlinkQuery.queryTemplates).each(function (indxTmpl, valTmpl) {
+		if(knowledgebaseSuggestions.length > 0) {
+			tokens = knowledgebaseSuggestions[0].redlinkQuery.tokens;
+			$(knowledgebaseSuggestions[0].redlinkQuery.queryTemplates).each(function (indxTmpl, valTmpl) {
 
 				let slotItem = {}, filledQuerySlots = [], querySlots = valTmpl.querySlots, currentToken;
 
