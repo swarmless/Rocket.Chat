@@ -52,6 +52,16 @@ Template.externalSearch.helpers({
 					}
 					return returnValue;
 				};
+				slotItem.itemStyle = function (itm) {
+					let returnValue = "empty-style", filteredArray = [];
+					if(typeof slotItem.filledQuerySlots === "object") {
+						filteredArray = slotItem.filledQuerySlots.filter((ele) => ele.role === itm);
+						if(filteredArray.length > 0 && filteredArray[0]['clientValue'] !== "" && filteredArray[0]['clientValue'] !== "?") {
+							returnValue = "";
+						}
+					}
+					return returnValue;
+				};
 
 				filledTemplate.push(slotItem);
 			});

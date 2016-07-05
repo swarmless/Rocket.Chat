@@ -647,7 +647,7 @@
 	&:after {
 		content: " ";
 		position: absolute;
-		border-bottom: 1px solid #444;
+		border-bottom: 1px solid #666;
 		left: 10px;
 		right: 10px;
 		bottom: 0;
@@ -655,7 +655,6 @@
 	.knowledge-title {
 		background-color: #ccc;
 		font-weight: 700;
-		font-style: italic;
 		padding: 10px 20px;
 		margin-bottom: 8px;
 	}
@@ -691,26 +690,44 @@
 		}
 	}
 	.knowledge-informations-wrapper {
-		margin: 0 20px 10px;
+		margin: 0 15px 10px;
 		background-color: #fff;
 		border: 1px solid #ccc;
+		color: #666;
 
 		.value-line-wrapper {
 			padding: 0 20px 2px;
 		}
 
+		.icon-wrapper {
+			display: inline-block;
+			background-color: #efefef;
+			padding: 5px 10px;
+			border-radius: 5px;
+			margin: 0 10px;
+			cursor: pointer;
+		}
+
 		.knowledge-base-label {
 			font-weight: bold;
-			margin-right: 4px;
+			margin-right: 8px;
 			display: inline-block;
 		}
 		.knowledge-base-value {
 			font-weight: 400;
-			background-color: #efefef;
-			padding: 5px;
+			background-color: #097425;
+			color: #fff;
+			padding: 5px 10px;
 			border-radius: 5px;
 			margin-bottom: 8px;
 			display: inline-block;
+			min-width: 100px;
+			cursor: pointer;
+			&.empty-style {
+				background-color: #efefef;
+				color: #666;
+				border: 1px dotted #444;
+			}
 		}
 	}
 
@@ -733,7 +750,7 @@
 			.knowledge-item-url {
 				display: inline-block;
 				padding-left: 25px;
-				color: #444;
+				color: #666;
 				&:hover {
 					color: #999;
 				}
@@ -744,7 +761,7 @@
 			.knowledge-item-title {
 				line-height: 20px;
 				margin-bottom: 5px;
-				color: #444;
+				color: #666;
 				font-weight: bold;
 			}
 		}
