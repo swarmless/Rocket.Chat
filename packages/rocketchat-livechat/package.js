@@ -140,6 +140,7 @@ Package.onUse(function(api) {
 	api.addFiles('server/methods/getCrmContact.js', 'server');
 	api.addFiles('server/methods/createCrmContact.js', 'server');
 	api.addFiles('server/methods/updateCrmContact.js', 'server');
+	api.addFiles('server/methods/updateKnowledgeProviderResult.js', 'server');
 
 	// models
 	api.addFiles('server/models/Users.js', 'server');

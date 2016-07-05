@@ -9,8 +9,8 @@ class RedlinkAdapter {
 
 	createRedlinkStub(rid, latestKnowledgeProviderResult) {
 		const latestRedlinkResult = (latestKnowledgeProviderResult && latestKnowledgeProviderResult.knowledgeProvider === 'redlink')
-									? latestKnowledgeProviderResult.result
-									: {};
+			? latestKnowledgeProviderResult.result
+			: {};
 		return {
 			id: latestRedlinkResult.id ? latestRedlinkResult.id : rid,
 			meta: latestRedlinkResult.meta ? latestRedlinkResult.meta : {},
@@ -35,7 +35,11 @@ class RedlinkAdapter {
 		}
 
 		const room = RocketChat.models.Rooms.findOneById(rid);
-		RocketChat.models.Messages.find({rid: rid, _hidden: { $ne: true }, ts: {$gt: new Date(analyzedUntil)}}).forEach(visibleMessage => {
+		RocketChat.models.Messages.find({
+			rid: rid,
+			_hidden: {$ne: true},
+			ts: {$gt: new Date(analyzedUntil)}
+		}).forEach(visibleMessage => {
 			conversation.push({
 				content: visibleMessage.msg,
 				time: visibleMessage.ts,
@@ -45,26 +49,46 @@ class RedlinkAdapter {
 		return conversation;
 	}
 
+	onResultModified(modifiedRedlinkResult) {
+		const knowledgeProviderResultCursor = this.getKnowledgeProviderCursor(modifiedRedlinkResult.rid);
+
+		try {
+			const responseRedlinkQuery = HTTP.post(this.properties.url + '/query', {
+				data: modifiedRedlinkResult,
+				headers: this.headers
+			});
+
+			RocketChat.models.LivechatExternalMessage.update(
+				{
+					_id: modifiedRedlinkResult._id
+				},
+				{ $set: {
+					result: responseRedlinkQuery
+				}
+			});
+
+		} catch (err) {
+			console.error('Updating redlink results (via QUERY) did not succeed -> ', err);
+		}
+	}
+
 	onMessage(message) {
-		const knowledgeProviderResultCursor = RocketChat.models.LivechatExternalMessage.findByRoomId(message.rid, {ts: -1});
+		const knowledgeProviderResultCursor = this.getKnowledgeProviderCursor(message.rid);
 		const latestKnowledgeProviderResult = knowledgeProviderResultCursor.fetch()[0];
 
 		const requestBody = this.createRedlinkStub(message.rid, latestKnowledgeProviderResult);
 		requestBody.messages = this.getConversation(message.rid, latestKnowledgeProviderResult);
 
-		const responseRedlinkPrepare = HTTP.post(this.properties.url + '/prepare', {
-			data: requestBody,
-			headers: this.headers
-		});
-
 		try {
+
+			const responseRedlinkPrepare = HTTP.post(this.properties.url + '/prepare', {
+				data: requestBody,
+				headers: this.headers
+			});
+
 			if (responseRedlinkPrepare.data && responseRedlinkPrepare.statusCode === 200) {
 
-
-				//delete suggestions proposed so far - Redlink will always analyze the complete conversation
-				knowledgeProviderResultCursor.forEach((oldSuggestion) => {
-					RocketChat.models.LivechatExternalMessage.remove(oldSuggestion._id);
-				});
+				this.purgePreviousResults(knowledgeProviderResultCursor);
 
 				RocketChat.models.LivechatExternalMessage.insert({
 					rid: message.rid,
@@ -76,8 +100,19 @@ class RedlinkAdapter {
 			}
 		} catch (e) {
 			//todo Redlink-API und Implementierung sind noch nicht wirklich stabil =>
-			SystemLogger.error('Redlink-Prepare/Query with results from prepare did not succeed -> ', e);
-		} 
+			console.error('Redlink-Prepare/Query with results from prepare did not succeed -> ', e);
+		}
+	}
+
+	purgePreviousResults(knowledgeProviderResultCursor) {
+		//delete suggestions proposed so far - Redlink will always analyze the complete conversation
+		knowledgeProviderResultCursor.forEach((oldSuggestion) => {
+			RocketChat.models.LivechatExternalMessage.remove(oldSuggestion._id);
+		});
+	}
+
+	getKnowledgeProviderCursor(roomId) {
+		return RocketChat.models.LivechatExternalMessage.findByRoomId(roomId.rid, {ts: -1});
 	}
 
 	onClose(room) { //async
