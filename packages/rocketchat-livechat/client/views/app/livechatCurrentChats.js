@@ -1,44 +1,77 @@
 Template.livechatCurrentChats.helpers({
-/*	openChats() {
-		return new Tabular.Table({
-			name: "openChats",
-			collection: ChatRoom,
-			columns: [
-				{data: "label", title: "Name"},
-				{data: "startedAt()", title: "Started_At"},
-				{data: "lastMessage()", title: "Last_Message_At"},
-				{data: "medium()", title: "Medium"},
-				{data: "topic", title: "Topic"},
-				{data: "agents()", title: "Agents"}
-			]
-		});
-	},*/
 	closedLivechatRoom() {
-		return ChatRoom.find({ t: 'l', open: {$ne: true} }, { sort: { ts: -1 } });
+		return ChatRoom.find({t: 'l', open: {$ne: true}}, {sort: {ts: -1}});
 	},
 	openLivechatRoom() {
-		return ChatRoom.find({ t: 'l', open: true }, { sort: { ts: -1 } });
+		return ChatRoom.find({t: 'l', open: true}, {sort: {ts: -1}});
 	},
-	startedAt() {
-		return moment(this.ts).format('L LT');
-	},
-	lastMessage() {
-		return moment(this.lm).format('L LT');
-	},
-	medium() {
-		return this.rbInfo? this.rbInfo.source : '';
-	},
-	agents() {
-		return this.servedBy? this.servedBy.username : '';
+	tableSettings: () => {
+		return {
+			fields: [
+				{
+					key: 'label',
+					label: 'Name'
+				},
+				// TODO add crm data (vor-/nachname)
+				{
+					key: 'ts',
+					label: 'Started_At',
+					fn: (value, object) => {
+						if (!value && object && object.ts) {
+							value = object.ts;
+						}
+						return moment(value).format('L LT');
+					}
+				},
+				{
+					key: 'lm',
+					label: 'Last_Message_At',
+					fn: (value, object) => {
+						if (!value && object && object.lm) {
+							value = object.lm;
+						}
+						return moment(value).format('L LT');
+					},
+					sortOrder: 0,
+					sortDirection: 'desc'
+				},
+				{
+					key: 'rbInfo.source',
+					label: 'Medium'
+				},
+				{
+					key: 'topic',
+					label: 'Topic'
+				},
+				{
+					key: 'agents',
+					label: 'Agents',
+					fn :(value, object) => {
+						let roomid = object._id;
+						console.log(roomid);
+
+						// TODO fix
+						let uniqueUsers = _.uniq(
+							ChatMessage.find({rid: roomid})
+								.fetch()
+								.map((entry) => entry.u.username)
+							, true);
+
+						return '';
+					}
+				}
+			]
+		}
 	}
 });
 
 Template.livechatCurrentChats.events({
-	'click .row-link': function() {
-		FlowRouter.go('live', { code: this.code });
+	'click .reactive-table tbody tr': function () {
+		FlowRouter.go('live', {code: this.code});
 	}
 });
 
-Template.livechatCurrentChats.onCreated(function() {
+Template.livechatCurrentChats.onCreated(function () {
 	this.subscribe('livechat:rooms');
+	this.subscribe('rocketchat_message');
 });
