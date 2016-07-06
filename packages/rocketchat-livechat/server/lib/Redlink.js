@@ -50,8 +50,6 @@ class RedlinkAdapter {
 	}
 
 	onResultModified(modifiedRedlinkResult) {
-		const knowledgeProviderResultCursor = this.getKnowledgeProviderCursor(modifiedRedlinkResult.rid);
-
 		try {
 			const responseRedlinkQuery = HTTP.post(this.properties.url + '/query', {
 				data: modifiedRedlinkResult.result,
@@ -119,15 +117,16 @@ class RedlinkAdapter {
 
 		const knowledgeProviderResultCursor = this.getKnowledgeProviderCursor(room._id);
 		let latestKnowledgeProviderResult = knowledgeProviderResultCursor.fetch()[0];
+		if (latestKnowledgeProviderResult) {
+			latestKnowledgeProviderResult.helpful = room.rbInfo.knowledgeProviderUsage;
 
-		latestKnowledgeProviderResult.helpful = room.rbInfo.knowledgeProviderUsage;
-
-		HTTP.post(this.properties.url + '/store', {
-			data: {
-				latestKnowledgeProviderResult
-			},
-			headers: this.headers
-		});
+			HTTP.post(this.properties.url + '/store', {
+				data: {
+					latestKnowledgeProviderResult
+				},
+				headers: this.headers
+			});
+		}
 	}
 }
 
