@@ -34,7 +34,7 @@ Package.onUse(function(api) {
 	api.use('rocketchat:sms');
 	api.use('less@2.5.1');
 	api.use(['reisebuddy:livechat', 'reisebuddy:vtiger']);
-	//api.use('aldeed:tabular', 'client');
+	api.use('aslagle:reactive-table');
 
 	api.addFiles('livechat.js', 'server');
 	api.addFiles('server/startup.js', 'server');
@@ -180,6 +180,8 @@ Package.onUse(function(api) {
 	api.addFiles('server/api.js', 'server');
 
 	// livechat app
+	api.addFiles('assets/jquery.datetimepicker.full.min.js', 'client');
+	api.addFiles('assets/jquery.datetimepicker.css', 'client');
 	api.addAssets('assets/demo.html', 'client');
 	api.addAssets('assets/rocket-livechat.js', 'client');
 	api.addAssets('public/livechat.css', 'client');

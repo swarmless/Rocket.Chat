@@ -1,57 +1,14 @@
 <template name="livechatCurrentChats">
-	<!--{{> tabular table=openChats class="table table-striped table-bordered table-condensed"}}-->
 
-    <div class="list">
-        <h2>{{_ "Open_Conversations"}}</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>{{_ "Name"}}</th>
-                <th>{{_ "Started_At"}}</th>
-                <th>{{_ "Last_Message_At"}}</th>
-                <th>{{_ "Medium"}}</th>
-                <th>{{_ "Topic"}}</th>
-                <th>{{_ "Agents"}}</th>
-            </tr>
-            </thead>
-            <tbody>
-			{{#each openLivechatRoom}}
-                <tr class="row-link">
-                    <td>{{label}}</td>
-                    <td>{{startedAt}}</td>
-                    <td>{{lastMessage}}</td>
-                    <td>{{medium}}</td>
-                    <td>{{topic}}</td>
-                    <td>{{agents}}</td>
-                </tr>
-			{{/each}}
-            </tbody>
-        </table>
+	{{#if Template.subscriptionsReady}}
+        <div class="list">
+            <h2>{{_ "Open_Conversations"}}</h2>
+			{{> reactiveTable collection=openLivechatRoom settings=tableSettings}}
 
-		<h2>{{_ "Closed_Conversations"}}</h2>
-		<table>
-            <thead>
-            <tr>
-                <th>{{_ "Name"}}</th>
-                <th>{{_ "Started_At"}}</th>
-                <th>{{_ "Last_Message_At"}}</th>
-                <th>{{_ "Medium"}}</th>
-                <th>{{_ "Topic"}}</th>
-                <th>{{_ "Agents"}}</th>
-            </tr>
-            </thead>
-            <tbody>
-			{{#each closedLivechatRoom}}
-                <tr class="row-link">
-                    <td>{{label}}</td>
-                    <td>{{startedAt}}</td>
-                    <td>{{lastMessage}}</td>
-                    <td>{{medium}}</td>
-                    <td>{{topic}}</td>
-                    <td>{{agents}}</td>
-                </tr>
-			{{/each}}
-            </tbody>
-        </table>
-    </div>
+            <h2>{{_ "Closed_Conversations"}}</h2>
+			{{> reactiveTable collection=closedLivechatRoom settings=tableSettings}}
+        </div>
+	{{else}}
+        Lädt...
+	{{/if}}
 </template>

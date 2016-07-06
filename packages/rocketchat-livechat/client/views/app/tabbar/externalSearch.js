@@ -1,3 +1,11 @@
+for (var tpl in Template) {
+	if (Template.hasOwnProperty(tpl) && tpl.startsWith('dynamic_redlink_')) {
+		Template[tpl].onRendered(function () {
+			this.$('.datetime-field').datetimepicker({format:'d.m.Y H:i'});
+		});
+	}
+}
+
 Template.externalSearch.helpers({
 	messages() {
 		return RocketChat.models.LivechatExternalMessage.findByRoomId(this.rid, {ts: 1});
@@ -46,8 +54,12 @@ Template.externalSearch.helpers({
 						if (filteredArray.length > 0) {
 							returnValue = _.extend(filteredArray[0], returnValue);
 							returnValue.item = filteredArray[0]['clientValue'];
-							if (filteredArray[0]['clientValue'] !== "" && filteredArray[0]['clientValue'] !== "?") {
-								returnValue.itemStyle = '';
+
+							if (returnValue.item !== "" && returnValue.item !== "?") {
+								returnValue.itemStyle = "";
+							}
+							if (returnValue.tokenType === "Date") {
+								returnValue.itemStyle = returnValue.itemStyle + " datetime-field";
 							}
 						}
 					}
