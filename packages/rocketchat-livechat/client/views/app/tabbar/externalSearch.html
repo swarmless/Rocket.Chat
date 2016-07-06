@@ -1,127 +1,130 @@
 <template name="externalSearch">
-	<div class="content">
-		<div class="title">
-			<h2>{{_ "Knowledge_Base"}}</h2>
-		</div>
-		<div class="external-messages">
-			{{#each messages}}
-				<div class="external-message">
-					{{#if result}}
-                        <div class="external-message">
-							{{#each filledQueryTemplate}}
-								{{#if dynamicTemplateExists}}
-									{{>UI.dynamic template=queryTemplate }}
-								{{else}}
-									{{>dynamic_redlink_default  }}
-								{{/if}}
-							{{/each}}
-
-							{{#if result}}
-								<div class="knowledge-title">Queries</div>
-								<div class="knowledge-queries-wrapper">
-									{{#each result.queries}}
-										<div class="knowledge-item">
-											<span class="icon-wrapper"><i class="icon-link-ext"></i></span>
-											<a class="knowledge-item-url" href="{{url}}" target="_blank">
-												<span class="query-servicename">{{serviceName}}</span>
-												<span class="confidence">{{confidence}}</span>
-											</a>
-										</div>
-									{{/each}}
-								</div>
+    <div class="content">
+        <div class="title">
+            <h2>{{_ "Knowledge_Base"}}</h2>
+        </div>
+		{{#each messages}}
+            <div class="external-message">
+				{{#if result}}
+                    <div class="external-message">
+						{{#each filledQueryTemplate}}
+							{{#if dynamicTemplateExists}}
+								{{>UI.dynamic template=queryTemplate }}
+							{{else}}
+								{{>dynamic_redlink_default  }}
 							{{/if}}
-                            <button class="update-result"><i class="icon-edit"></i>Update Query Dummy</button>
-                        </div>
+						{{/each}}
 
-					{{else}}
-                        <button class="pick-message"><i class="icon-edit"></i></button>
-						{{knowledgeProvider}} read failed
-					{{/if}}
-				</div>
-			{{/each}}
+						{{#if result}}
+                            <div class="knowledge-title">Queries</div>
+                            <div class="knowledge-queries-wrapper">
+								{{#each result.queries}}
+                                    <div class="knowledge-item">
+                                        <span class="icon-wrapper"><i class="icon-link-ext"></i></span>
+                                        <a class="knowledge-item-url" href="{{url}}" target="_blank">
+                                            <span class="query-servicename">{{displayName}}</span>
+                                            <span class="confidence">{{confidence}}</span>
+                                        </a>
+                                    </div>
+								{{/each}}
+                            </div>
+						{{/if}}
+                        <button class="update-result"><i class="icon-edit"></i>Update Query Dummy</button>
+                    </div>
 
-		</div>
-	</div>
+				{{else}}
+                    <button class="pick-message"><i class="icon-edit"></i></button>
+					{{knowledgeProvider}} read failed
+				{{/if}}
+            </div>
+		{{/each}}
+    </div>
 </template>
 
 <template name="dynamic_redlink_default">
     <div class="knowledge-informations-wrapper">
-		<div class="knowledge-title">{{filledQueryType}}</div>
-		<div class="knowledge-informations-wrapper">
+        <div class="knowledge-title">{{queryType}}</div>
+        <div class="knowledge-informations-wrapper">
 			{{#each filledQuerySlots }}
-				<div class="knowledge-base-label">{{role}}</div>
-				<div class="knowledge-base-value">{{clientValue}}</div>
+                <div class="knowledge-base-label">{{role}}</div>
+                <div class="knowledge-base-value">{{clientValue}}</div>
 			{{/each}}
-		</div>
-	</div>
+        </div>
+    </div>
 </template>
 
 <template name="dynamic_redlink_Produkt">
     <div class="knowledge-informations-wrapper">
-		<div class="knowledge-title">{{filledQueryType}}</div>
-		<div class="value-line-wrapper">
-			<div class="knowledge-base-label">{{_ "topic_product"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'product'}}" value="{{item 'product'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div>
-			<div class="knowledge-base-label">{{_ "topic_what"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'was'}}" value="{{item 'was'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div>
-		</div>
+        <div class="knowledge-title">{{queryType}}</div>
+        <div class="value-line-wrapper">
+			{{>dynamic_tpl_redlinkItem (forItem 'product') }}
+			{{>dynamic_tpl_redlinkItem (forItem 'what') }}
+        </div>
     </div>
 </template>
-
 
 <template name="dynamic_redlink_Reiseplanung">
     <div class="knowledge-informations-wrapper">
-		<div class="knowledge-title">{{filledQueryType}}</div>
-		<div class="value-line-wrapper">
-			<div class="field-with-label"><div class="knowledge-base-label">{{_ "topic_from"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'from'}}" value="{{item 'from'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div></div>
+        <div class="knowledge-title">{{queryType}}</div>
+        <div class="value-line-wrapper">
+			{{>dynamic_tpl_redlinkItem (forItem 'from') }}
             <span class="icon-wrapper"><i class="icon-exchange"></i></span>
-            <div class="field-with-label"><div class="knowledge-base-label">{{_ "topic_to"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'to'}}" value="{{item 'to'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div></div>
-		</div>
-		<div class="value-line-wrapper">
-            <div class="field-with-label"><div class="knowledge-base-label">{{_ "topic_depart"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'depart'}}" value="{{item 'depart'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div></div>
+			{{>dynamic_tpl_redlinkItem (forItem 'to') }}
+        </div>
+        <div class="value-line-wrapper">
+			{{>dynamic_tpl_redlinkItem (forItem 'depart') }}
             <span class="icon-wrapper"><i class="icon-exchange"></i></span>
-                <div class="field-with-label"><div class="knowledge-base-label">{{_ "topic_arrive"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'arrive'}}" value="{{item 'arrive'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div></div>
-		</div>
+			{{>dynamic_tpl_redlinkItem (forItem 'arrive') }}
+        </div>
     </div>
 </template>
-
 
 <template name="dynamic_redlink_Zuginformation">
     <div class="knowledge-informations-wrapper">
-		<div class="knowledge-title">{{filledQueryType}}</div>
-
-		<div class="value-line-wrapper">
-			<div class="knowledge-base-label">{{_ "topic_train"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'train'}}" value="{{item 'train'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div>
-		</div>
-		<div class="value-line-wrapper">
-			<div class="knowledge-base-label">{{_ "topic_when"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'date'}}" value="{{item 'date'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div>
-		</div>
-		<div class="value-line-wrapper">
-			<div class="knowledge-base-label">{{_ "topic_from"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'from'}}" value="{{item 'from'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div>
+        <div class="knowledge-title">{{queryType}}</div>
+        <div class="value-line-wrapper">
+			{{>dynamic_tpl_redlinkItem (forItem 'train') }}
+        </div>
+        <div class="value-line-wrapper">
+			{{>dynamic_tpl_redlinkItem (forItem 'when') }}
+        </div>
+        <div class="value-line-wrapper">
+			{{>dynamic_tpl_redlinkItem (forItem 'from') }}
             <span class="icon-wrapper"><i class="icon-exchange"></i></span>
-			<div class="knowledge-base-label">{{_ "topic_to"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'to'}}" value="{{item 'to'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div>
-		</div>
-		<div class="value-line-wrapper">
-			<div class="knowledge-base-label">{{_ "topic_what"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'was'}}" value="{{item 'was'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div>
-		</div>
+			{{>dynamic_tpl_redlinkItem (forItem 'to') }}
+        </div>
+        <div class="value-line-wrapper">
+			{{>dynamic_tpl_redlinkItem (forItem 'what') }}
+        </div>
     </div>
 </template>
-
 
 <template name="dynamic_redlink_Umkreissuche">
     <div class="knowledge-informations-wrapper">
-		<div class="knowledge-title">{{filledQueryType}}</div>
+        <div class="knowledge-title">{{queryType}}</div>
 
-		<div class="value-line-wrapper">
-			<div class="knowledge-base-label">{{_ "topic_location"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'location'}}" value="{{item 'location'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div>
-		</div>
-		<div class="value-line-wrapper">
-			<div class="knowledge-base-label">{{_ "topic_from"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'start'}}" value="{{item 'start'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div>
+        <div class="value-line-wrapper">
+			{{>dynamic_tpl_redlinkItem (forItem 'location') }}
+        </div>
+        <div class="value-line-wrapper">
+			{{>dynamic_tpl_redlinkItem (forItem 'from') }}
             <span class="icon-wrapper"><i class="icon-exchange"></i></span>
-			<div class="knowledge-base-label">{{_ "topic_end"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'end'}}" value="{{item 'end'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div>
-		</div>
-		<div class="value-line-wrapper">
-			<div class="knowledge-base-label">{{_ "topic_what"}}</div><div class="knowledge-input-wrapper"><input type="text" class="knowledge-base-value {{itemStyle 'was'}}" value="{{item 'was'}}"/><div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span></div></div>
-		</div>
+			{{>dynamic_tpl_redlinkItem (forItem 'end') }}
+        </div>
+        <div class="value-line-wrapper">
+			{{>dynamic_tpl_redlinkItem (forItem 'what') }}
+        </div>
     </div>
 </template>
 
-
+<template name="dynamic_tpl_redlinkItem">
+    <div class="field-with-label">
+        <label for="{{htmlId}}" class="knowledge-base-label">{{_ label}}</label>
+        <div class="knowledge-input-wrapper">
+            <input id="{{htmlId}}" type="text" class="knowledge-base-value {{itemStyle}}"
+                   data-parentTplIndex="{{parentTplIndex}}" data-tokenIndex="{{tokenIndex}}" value="{{item}}"/>
+            <div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span>
+            </div>
+        </div>
+    </div>
+</template>

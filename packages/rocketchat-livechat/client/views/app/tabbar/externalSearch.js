@@ -14,61 +14,59 @@ Template.externalSearch.helpers({
 		return RocketChat.models.LivechatExternalMessage.findByRoomId(this.rid, {ts: 1});
 	},
 	dynamicTemplateExists() {
-		return !!Template['dynamic_redlink_' + this.filledQueryType];
+		return !!Template['dynamic_redlink_' + this.queryType];
 	},
 	queryTemplate() {
-		return 'dynamic_redlink_' + this.filledQueryType;
+		return 'dynamic_redlink_' + this.queryType;
 	},
 	filledQueryTemplate() {
-		var knowledgebaseSuggestions = Template.instance().externalMessages.get(),
-			filledTemplate = [], tokens = [];
+		var knowledgebaseSuggestions = Template.instance().externalMessages.get(), filledTemplate = [];
 
 		if(knowledgebaseSuggestions.length > 0) {
-			tokens = knowledgebaseSuggestions[0].result.tokens;
-			$(knowledgebaseSuggestions[0].result.queryTemplates).each(function (indxTmpl, valTmpl) {
-				let slotItem = {}, filledQuerySlots = [], querySlots = valTmpl.querySlots, currentToken;
-				slotItem.resultingQueries = valTmpl.queries ? valTmpl.queries : knowledgebaseSuggestions[0].result.queries;	//todo: wieder entfernen, sobald die Queries Teil der Templates sind
+			const tokens = knowledgebaseSuggestions[0].result.tokens;
+			$(knowledgebaseSuggestions[0].result.queryTemplates).each(function (indexTpl, queryTpl) {
+				let extendedQueryTpl = queryTpl, filledQuerySlots = [];
+				extendedQueryTpl.resultingQueries = queryTpl.queries ? queryTpl.queries : knowledgebaseSuggestions[0].result.queries;	//todo: wieder entfernen, sobald die Queries Teil der Templates sind
 
 				/* tokens und queryTemplates mergen */
-				$(querySlots).each(function (indxSlot, valSlot) {
-					if (valSlot.tokenIndex != -1) {
-						currentToken = tokens[valSlot.tokenIndex];
+				$(queryTpl.querySlots).each(function (indxSlot, slot) {
+					if (slot.tokenIndex != -1) {
+						const currentToken = tokens[slot.tokenIndex];
 						if(currentToken.type === "Date" && typeof currentToken.value === "object") {
-							valSlot.clientValue = moment(currentToken.value.date).format("L LT");
+							slot.clientValue = moment(currentToken.value.date).format("L LT");
 						} else {
-							valSlot.clientValue = currentToken.value;
+							slot.clientValue = currentToken.value;
 						}
-						valSlot.tokenVal = currentToken;
+						slot.tokenVal = currentToken;
 					} else {
-						valSlot.clientValue = "?";
+						slot.clientValue = "?";
 					}
-					filledQuerySlots.push(valSlot);
+					filledQuerySlots.push(slot);
 				});
 
-				slotItem.filledQueryType = valTmpl.queryType;
-				slotItem.filledQuerySlots = filledQuerySlots;
-				slotItem.item = function (itm) {
-					let returnValue = "?", filteredArray = [];
-					if(typeof slotItem.filledQuerySlots === "object") {
-						filteredArray = slotItem.filledQuerySlots.filter((ele) => ele.role === itm);
-						if(filteredArray.length > 0) {
-							returnValue = filteredArray[0]['clientValue'];
-						}
-					}
-					return returnValue;
-				};
-				slotItem.itemStyle = function (itm) {
-					let returnValue = "empty-style", filteredArray = [];
-					if(typeof slotItem.filledQuerySlots === "object") {
-						filteredArray = slotItem.filledQuerySlots.filter((ele) => ele.role === itm);
-						if(filteredArray.length > 0 && filteredArray[0]['clientValue'] !== "" && filteredArray[0]['clientValue'] !== "?") {
-							returnValue = "";
-						}
-					}
-					return returnValue;
-				};
+				extendedQueryTpl.filledQuerySlots = filledQuerySlots;
+				extendedQueryTpl.forItem = function(itm) {
+					let returnValue = {
+						htmlId: Meteor.uuid(),
+						item: "?",
+						itemStyle: "empty-style",
+						label: 'topic_'+itm,
+						parentTplIndex: indexTpl
+					};
+					if (typeof extendedQueryTpl.filledQuerySlots === "object") {
+						const filteredArray = extendedQueryTpl.filledQuerySlots.filter((ele) => ele.role === itm);
+						if (filteredArray.length > 0) {
+							returnValue = _.extend(filteredArray[0], returnValue);
+							returnValue.item = filteredArray[0]['clientValue'];
 
-				filledTemplate.push(slotItem);
+							if (filteredArray[0]['clientValue']) {
+								returnValue.itemStyle = '';
+							}
+						}
+					}
+					return returnValue;
+				};
+				filledTemplate.push(extendedQueryTpl);
 			});
 		}
 		return filledTemplate;
@@ -76,10 +74,6 @@ Template.externalSearch.helpers({
 });
 
 Template.externalSearch.events({
-	'click button.pick-message': function (event, instance) {
-		event.preventDefault();
-		$('#chat-window-' + instance.roomId + ' .input-message').val(this.msg).focus();
-	},
 	'click button.update-result': function(event, instance) {
 		event.preventDefault();
 
@@ -111,8 +105,25 @@ Template.externalSearch.events({
 	},
 	'click .knowledge-base-tooltip .chat-item': function (event, inst) {
 		const rlData = RocketChat.models.LivechatExternalMessage.findOne({rid: inst.roomId},
-			{sort: {ts: -1}}).redlinkQuery;
-		$('#chat-window-' + inst.roomId + ' .input-message').val(this.msg).focus();
+			{sort: {ts: -1}}).result;
+		$('#chat-window-' + inst.roomId + ' .input-message').val("TODO").focus();
+	},
+	'click .external-message .icon-wrapper': function(event, instance) {
+		const changeBtn = $(event.target).parent().closest('.icon-wrapper');
+		const left = changeBtn.prevAll('.knowledge-base-value');
+		const right = changeBtn.nextAll('.knowledge-base-value');
+		const leftText = left.text();
+		left.text(right.text());
+		right.text(leftText);
+		let queryTemplate = instance.externalMessages.get();
+		queryTemplate.result.queryTemplates[changeBtn.closest('.knowledge-informations-wrapper').data('tplIndex')].querySlots.each((slot) => {
+
+		});
+
+        instance.externalMessages.set(queryTemplate);
+
+		//todo
+		//Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get()[0]);
 	}
 });
 
