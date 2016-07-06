@@ -4,39 +4,37 @@
             <h2>{{_ "Knowledge_Base"}}</h2>
         </div>
 		{{#each messages}}
-            <div class="external-message">
-				{{#if result}}
-                    <div class="external-message">
-						{{#each filledQueryTemplate}}
-							{{#if dynamicTemplateExists}}
-								{{>UI.dynamic template=queryTemplate }}
-							{{else}}
-								{{>dynamic_redlink_default  }}
-							{{/if}}
-						{{/each}}
-
-						{{#if result}}
+			{{#if result}}
+                <div class="external-message">
+					{{#each filledQueryTemplate}}
+						{{#if dynamicTemplateExists}}
+							{{>UI.dynamic template=queryTemplate}}
+						{{else}}
+							{{>dynamic_redlink_default}}
+						{{/if}}
+						{{#if queries}}
                             <div class="knowledge-title">Queries</div>
                             <div class="knowledge-queries-wrapper">
-								{{#each result.queries}}
+								{{#each queries}}
                                     <div class="knowledge-item">
                                         <span class="icon-wrapper"><i class="icon-link-ext"></i></span>
                                         <a class="knowledge-item-url" href="{{url}}" target="_blank">
-                                            <span class="query-servicename">{{displayName}}</span>
+                                            <span class="query-servicename">{{serviceName}}</span><!--todo will change to displayName-->
                                             <span class="confidence">{{confidence}}</span>
                                         </a>
                                     </div>
 								{{/each}}
                             </div>
 						{{/if}}
-                        <button class="update-result"><i class="icon-edit"></i>Update Query Dummy</button>
-                    </div>
+					{{/each}}
 
-				{{else}}
-                    <button class="pick-message"><i class="icon-edit"></i></button>
-					{{knowledgeProvider}} read failed
-				{{/if}}
-            </div>
+                    <button class="update-result"><i class="icon-edit"></i>Update Query Dummy</button>
+                </div>
+
+			{{else}}
+                <button class="pick-message"><i class="icon-edit"></i></button>
+				{{knowledgeProvider}} read failed
+			{{/if}}
 		{{/each}}
     </div>
 </template>

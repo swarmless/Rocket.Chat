@@ -26,7 +26,6 @@ Template.externalSearch.helpers({
 			const tokens = knowledgebaseSuggestions[0].result.tokens;
 			$(knowledgebaseSuggestions[0].result.queryTemplates).each(function (indexTpl, queryTpl) {
 				let extendedQueryTpl = queryTpl, filledQuerySlots = [];
-				extendedQueryTpl.resultingQueries = queryTpl.queries ? queryTpl.queries : knowledgebaseSuggestions[0].result.queries;	//todo: wieder entfernen, sobald die Queries Teil der Templates sind
 
 				/* tokens und queryTemplates mergen */
 				$(queryTpl.querySlots).each(function (indxSlot, slot) {
