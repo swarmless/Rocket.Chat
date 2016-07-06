@@ -7,6 +7,7 @@
 			{{#if result}}
                 <div class="external-message">
 					{{#each filledQueryTemplate}}
+                    	<div class="query-template-wrapper">
 						{{#if dynamicTemplateExists}}
 							{{>UI.dynamic template=queryTemplate}}
 						{{else}}
@@ -26,6 +27,7 @@
 								{{/each}}
                             </div>
 						{{/if}}
+						</div>
 					{{/each}}
 
                     <button class="update-result"><i class="icon-edit"></i>Update Query Dummy</button>
@@ -40,7 +42,7 @@
 </template>
 
 <template name="dynamic_redlink_default">
-    <div class="knowledge-informations-wrapper">
+    <div class="query-template">
         <div class="knowledge-title">{{queryType}}</div>
         <div class="knowledge-informations-wrapper">
 			{{#each filledQuerySlots }}
@@ -52,7 +54,7 @@
 </template>
 
 <template name="dynamic_redlink_Produkt">
-    <div class="knowledge-informations-wrapper">
+    <div class="query-template">
         <div class="knowledge-title">{{queryType}}</div>
         <div class="value-line-wrapper">
 			{{>dynamic_tpl_redlinkItem (forItem 'product') }}
@@ -62,7 +64,7 @@
 </template>
 
 <template name="dynamic_redlink_Reiseplanung">
-    <div class="knowledge-informations-wrapper">
+    <div class="query-template">
         <div class="knowledge-title">{{queryType}}</div>
         <div class="value-line-wrapper">
 			{{>dynamic_tpl_redlinkItem (forItem 'from') }}
@@ -78,7 +80,7 @@
 </template>
 
 <template name="dynamic_redlink_Zuginformation">
-    <div class="knowledge-informations-wrapper">
+    <div class="query-template">
         <div class="knowledge-title">{{queryType}}</div>
         <div class="value-line-wrapper">
 			{{>dynamic_tpl_redlinkItem (forItem 'train') }}
@@ -98,7 +100,7 @@
 </template>
 
 <template name="dynamic_redlink_Umkreissuche">
-    <div class="knowledge-informations-wrapper">
+    <div class="query-template">
         <div class="knowledge-title">{{queryType}}</div>
 
         <div class="value-line-wrapper">
