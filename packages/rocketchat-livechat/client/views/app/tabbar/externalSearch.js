@@ -1,14 +1,3 @@
-for (var tpl in Template) {
-	if (Template.hasOwnProperty(tpl) && tpl.startsWith('dynamic_redlink_')) {
-		Template[tpl].onRendered(function () {
-			this.$('.knowledge-input-wrapper').append('<div class="knowledge-base-tooltip">' +
-				'<div class="knowledge-context-menu-item edit-item"><span class="icon-pencil"></span> Editieren</div>' +
-				'<div class="knowledge-context-menu-item delete-item"><span class="icon-trash"></span> Löschen</div>' +
-				'<div class="knowledge-context-menu-item chat-item"><span class="icon-chat"></span> Nachfragen</div></div>');
-		});
-	}
-}
-
 Template.externalSearch.helpers({
 	messages() {
 		return RocketChat.models.LivechatExternalMessage.findByRoomId(this.rid, {ts: 1});
@@ -20,8 +9,8 @@ Template.externalSearch.helpers({
 		return 'dynamic_redlink_' + this.queryType;
 	},
 	filledQueryTemplate() {
-		var knowledgebaseSuggestions = Template.instance().externalMessages.get(), filledTemplate = [];
-
+		var knowledgebaseSuggestions = RocketChat.models.LivechatExternalMessage.findByRoomId(Template.currentData().rid,
+			{ts: -1}).fetch(), filledTemplate = [];
 		if(knowledgebaseSuggestions.length > 0) {
 			const tokens = knowledgebaseSuggestions[0].result.tokens;
 			$(knowledgebaseSuggestions[0].result.queryTemplates).each(function (indexTpl, queryTpl) {
@@ -57,8 +46,7 @@ Template.externalSearch.helpers({
 						if (filteredArray.length > 0) {
 							returnValue = _.extend(filteredArray[0], returnValue);
 							returnValue.item = filteredArray[0]['clientValue'];
-
-							if (filteredArray[0]['clientValue']) {
+							if (filteredArray[0]['clientValue'] !== "" && filteredArray[0]['clientValue'] !== "?") {
 								returnValue.itemStyle = '';
 							}
 						}
@@ -75,7 +63,7 @@ Template.externalSearch.helpers({
 Template.externalSearch.events({
 	'click button.update-result': function(event, instance) {
 		event.preventDefault();
-		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get()[0]);
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 	},
 	'contextmenu .field-with-label': function(event, instance) {
 		event.preventDefault();
@@ -119,20 +107,20 @@ Template.externalSearch.events({
 	},
 	'click .external-message .icon-wrapper': function(event, instance) {
 		const changeBtn = $(event.target).parent().closest('.icon-wrapper');
-		const left = changeBtn.prevAll('.knowledge-base-value');
-		const right = changeBtn.nextAll('.knowledge-base-value');
-		const leftText = left.text();
-		left.text(right.text());
-		right.text(leftText);
+		const left = changeBtn.prevAll('.field-with-label').find('.knowledge-base-value');
+		const right = changeBtn.nextAll('.field-with-label').find('.knowledge-base-value');
 		let queryTemplate = instance.externalMessages.get();
-		queryTemplate.result.queryTemplates[changeBtn.closest('.knowledge-informations-wrapper').data('tplIndex')].querySlots.each((slot) => {
-
-		});
-
+		queryTemplate.result.queryTemplates[left.data('parentTplIndex')].querySlots = _.map(queryTemplate.result.queryTemplates[left.data('parentTplIndex')].querySlots,
+			(query) => {
+				if(query.tokenIndex === left.data('tokenIndex')) {
+					query.tokenIndex = right.data('tokenIndex');
+				} else if(query.tokenIndex === right.data('tokenIndex')) {
+					query.tokenIndex = left.data('tokenIndex');
+				}
+				return query;
+			});
         instance.externalMessages.set(queryTemplate);
-
-		//todo
-		//Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get()[0]);
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 	}
 });
 
@@ -142,6 +130,10 @@ Template.externalSearch.onCreated(function() {
 	this.autorun(() => {
 		this.roomId = Template.currentData().rid;
 		this.subscribe('livechat:externalMessages', Template.currentData().rid);
-		this.externalMessages.set(RocketChat.models.LivechatExternalMessage.findByRoomId(Template.currentData().rid, { ts: -1 }).fetch());
+		const extMsg = RocketChat.models.LivechatExternalMessage.findByRoomId(Template.currentData().rid,
+			{ts: -1}).fetch();
+		if(extMsg.length > 0) {
+			this.externalMessages.set(extMsg[0]);
+		}
 	});
 });
