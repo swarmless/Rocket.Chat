@@ -120,7 +120,12 @@
         <label for="{{htmlId}}" class="knowledge-base-label">{{_ label}}</label>
         <div class="knowledge-input-wrapper">
             <input id="{{htmlId}}" type="text" class="knowledge-base-value {{itemStyle}}"
-                   data-parentTplIndex="{{parentTplIndex}}" data-tokenIndex="{{tokenIndex}}" value="{{item}}"/>
+                   data-parent-tpl-index="{{parentTplIndex}}" data-token-index="{{tokenIndex}}" value="{{item}}"/>
+            <div class="knowledge-base-tooltip">
+                <div class="knowledge-context-menu-item edit-item"><span class="icon-pencil"></span> Editieren</div>
+                <div class="knowledge-context-menu-item delete-item"><span class="icon-trash"></span> Löschen</div>
+                <div class="knowledge-context-menu-item chat-item"><span class="icon-chat"></span> Nachfragen</div>
+            </div>
             <div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span>
             </div>
         </div>
