@@ -180,6 +180,8 @@ Package.onUse(function(api) {
 	api.addFiles('server/api.js', 'server');
 
 	// livechat app
+	api.addFiles('assets/jquery.datetimepicker.full.min.js', 'client');
+	api.addFiles('assets/jquery.datetimepicker.css', 'client');
 	api.addAssets('assets/demo.html', 'client');
 	api.addAssets('assets/rocket-livechat.js', 'client');
 	api.addAssets('public/livechat.css', 'client');
