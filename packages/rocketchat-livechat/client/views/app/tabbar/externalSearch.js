@@ -88,28 +88,52 @@ Template.externalSearch.events({
 			}
 		});
 	},
-	'click .knowledge-base-tooltip .edit-item, click .knowledge-base-value, click .knowledge-base-label': function (event, inst) {
+	'click .knowledge-base-tooltip .edit-item, click .knowledge-base-value, click .knowledge-base-label': function (event, instance) {
 		event.preventDefault();
-		let inputWrapper = $(event.currentTarget).closest(".field-with-label"),
-			inputField = $(inputWrapper).find(".knowledge-base-value"),
-			originalValue = $(inputField).val(),
-			saveValue = "";
-		$(".field-with-label.editing").find(".icon-cancel").click();
-		$(".field-with-label.editing").removeClass("editing");
+		const inputWrapper = $(event.currentTarget).closest(".field-with-label"),
+			inputField = inputWrapper.find(".knowledge-base-value"),
+			originalValue = inputField.val();
 
-		inputWrapper.addClass("editing");
-		$(inputField).focus().select();
-		$(inputWrapper).find(".icon-cancel").off("click").on("click", (event, inst) => {
+		if (inputWrapper.hasClass('editing')) {
+			inputWrapper.removeClass("editing").find(".icon-cancel").click();
+		}
+		inputWrapper.addClass('editing');
+		inputField.focus().select();
+
+		inputWrapper.find('.icon-cancel').off("click").on("click", () => {
 			inputWrapper.removeClass("editing");
-			$(inputField).val(originalValue);
+			inputField.val(originalValue);
 		});
-		$(inputWrapper).find(".icon-floppy").off("click").on("click", (event, inst) => {
+		inputWrapper.find(".icon-floppy").off("click").on("click", () => {
 			inputWrapper.removeClass("editing");
-			saveValue = $(inputField).val();
-			console.log("saveValue = " + saveValue);
+			const saveValue = inputField.val();
+
+			let externalMsg = instance.externalMessages.get();
+			const sourceToken = externalMsg.result.tokens[inputField.data('tokenIndex')];
+			const newToken = {
+				messageIdx: -1,
+				type: sourceToken.type,
+				state: "Confirmed",
+				origin: "Agent",
+				value: inputField.hasClass('datetime-field') ?
+					   {
+						   grain: 'day',
+						   value: moment(saveValue, "D.M.Y hh:mm").format() //todo sync format
+					   } :
+					   saveValue
+			};
+
+			externalMsg.result.tokens.push(newToken);
+			externalMsg.result.queryTemplates[inputField.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[inputField.data('parentTplIndex')].querySlots,
+				(query) => {
+					if (query.tokenIndex === inputField.data('tokenIndex')) {
+						query.tokenIndex = externalMsg.result.tokens.length - 1;
+					}
+					return query;
+				});
+			instance.externalMessages.set(externalMsg);
+			Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 		});
-		/*console.log("1234569: " +
-					RocketChat.models.LivechatExternalMessage.findOne({rid: inst.roomId}, {sort: {ts: -1}}));*/
 	},
 	'click .knowledge-base-tooltip .chat-item': function (event, inst) {
 		event.preventDefault();
@@ -121,8 +145,8 @@ Template.externalSearch.events({
 		const changeBtn = $(event.target).parent().closest('.icon-wrapper');
 		const left = changeBtn.prevAll('.field-with-label').find('.knowledge-base-value');
 		const right = changeBtn.nextAll('.field-with-label').find('.knowledge-base-value');
-		let queryTemplate = instance.externalMessages.get();
-		queryTemplate.result.queryTemplates[left.data('parentTplIndex')].querySlots = _.map(queryTemplate.result.queryTemplates[left.data('parentTplIndex')].querySlots,
+		let externalMsg = instance.externalMessages.get();
+		externalMsg.result.queryTemplates[left.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[left.data('parentTplIndex')].querySlots,
 			(query) => {
 				if(query.tokenIndex === left.data('tokenIndex')) {
 					query.tokenIndex = right.data('tokenIndex');
@@ -131,7 +155,7 @@ Template.externalSearch.events({
 				}
 				return query;
 			});
-        instance.externalMessages.set(queryTemplate);
+        instance.externalMessages.set(externalMsg);
 		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 	}
 });
