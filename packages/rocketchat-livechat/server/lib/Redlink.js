@@ -116,10 +116,15 @@ class RedlinkAdapter {
 	}
 
 	onClose(room) { //async
+
+		const knowledgeProviderResultCursor = this.getKnowledgeProviderCursor(room._id);
+		let latestKnowledgeProviderResult = knowledgeProviderResultCursor.fetch()[0];
+
+		latestKnowledgeProviderResult.helpful = room.rbInfo.knowledgeProviderUsage;
+
 		HTTP.post(this.properties.url + '/store', {
 			data: {
-				messages: this.getConversation(room._id),
-				user: {id: room.v._id}
+				latestKnowledgeProviderResult
 			},
 			headers: this.headers
 		});

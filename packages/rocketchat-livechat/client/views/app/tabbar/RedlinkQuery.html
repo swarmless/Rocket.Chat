@@ -1,0 +1,16 @@
+<template name="redlinkQuery">
+    <div class="redlink-query">
+        <!--Represents a single proposed query which might include a preview-->
+        <div class="query-header">
+            <span class="icon-wrapper"><i class="{{providerIconClass}}"></i></span>
+            <span class="query-provider-name">{{creator}}</span>
+            <span class="query-display-name">{{displayName}}</span>
+        </div>
+        <div class="query-preview">
+			{{#if and inlineResultSupport maxConfidence=query.confidence}}
+                <!-- Another template has to use the query propagated to it in order to issue a separate request which provides the actual result -->
+				<!--{{> redlinkInlineResult query }}-->
+			{{/if}}
+        </div>
+    </div>
+</template>

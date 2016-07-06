@@ -139,6 +139,16 @@ class ClosingDialog {
 					value: self.room.tags ? self.room.tags.join(", ") : "",
 					type: 'input',
 					placeholder: t('Please_add_a_tag')
+				}, {
+					id: 'knowledgeProviderUsage',
+					type: 'select',
+					options:[
+						{value: 'Unknown', text: t("knowledge_provider_usage_unknown")},
+						{value: 'Perfect', text: t("knowledge_provider_usage_perfect")},
+						{value: 'Helpful', text: t("knowledge_provider_usage_helpful")},
+						{value: 'NotUsed', text: t("knowledge_provider_usage_not_used")},
+						{value: 'Useless', text: t("knowledge_provider_usage_useless")}
+					]
 				}],
 				showCancelButton: true,
 				closeOnConfirm: false

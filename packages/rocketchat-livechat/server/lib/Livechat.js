@@ -233,11 +233,15 @@ RocketChat.Livechat = {
 	closeRoom({user, room, closeProps}) {
 		RocketChat.models.Rooms.closeByRoomId(room._id);
 
+		let updatedRBInfo = room.rbInfo ? room.rbInfo : {};
+		updatedRBInfo.knowledgeProviderUsage = closeProps.knowledgeProviderUsage;
+
 		RocketChat.models.Rooms.update(room._id, {
 			$set: {
 				comment: closeProps.comment,
 				topic: closeProps.topic,
 				tags: closeProps.tags,
+				rbInfo: updatedRBInfo,
 				duration: this.calculateDuration(room._id)
 			}
 		});
