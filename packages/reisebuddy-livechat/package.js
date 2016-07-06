@@ -13,6 +13,7 @@ Package.onUse(function(api) {
 
 	api.addFiles('lib/core.js');
 	api.addFiles('lib/duration.js', 'client');
+	api.addFiles('client/lib/globalTemplateHelpers.js.js', 'client');
 	api.addFiles('server/config.js', 'server');
 
 	api.addFiles('server/lib/lotusMailCommunicationService.js', 'server');
