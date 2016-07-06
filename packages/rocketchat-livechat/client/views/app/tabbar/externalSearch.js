@@ -75,34 +75,44 @@ Template.externalSearch.helpers({
 Template.externalSearch.events({
 	'click button.update-result': function(event, instance) {
 		event.preventDefault();
-
 		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get()[0]);
-
 	},
-	'click .knowledge-base-tooltip .edit-item': function (event, inst) {
+	'contextmenu .field-with-label': function(event, instance) {
+		event.preventDefault();
+		let inputWrapper = $(event.currentTarget).find(".knowledge-input-wrapper");
+		$(".knowledge-input-wrapper.active").removeClass("active");
+		$(inputWrapper).addClass("active");
+		$(document).off("mousedown.contextmenu").on("mousedown.contextmenu", function (e) {
+			if (!$(e.target).parent(".knowledge-base-tooltip").length > 0) {
+				$(".knowledge-input-wrapper.active").removeClass("active");
+			}
+		});
+	},
+	'click .knowledge-base-tooltip .edit-item, click .knowledge-base-value, click .knowledge-base-label': function (event, inst) {
+		event.preventDefault();
 		let inputWrapper = $(event.currentTarget).closest(".field-with-label"),
-			originalValue = $(inputWrapper).find(".knowledge-base-value").val(),
+			inputField = $(inputWrapper).find(".knowledge-base-value"),
+			originalValue = $(inputField).val(),
 			saveValue = "";
 		$(".field-with-label.editing").find(".icon-cancel").click();
 		$(".field-with-label.editing").removeClass("editing");
 
 		inputWrapper.addClass("editing");
-		$(inputWrapper).find(".knowledge-base-value").focus().select();
+		$(inputField).focus().select();
 		$(inputWrapper).find(".icon-cancel").off("click").on("click", (event, inst) => {
 			inputWrapper.removeClass("editing");
-			$(inputWrapper).find(".knowledge-base-value").val(originalValue);
+			$(inputField).val(originalValue);
 		});
 		$(inputWrapper).find(".icon-floppy").off("click").on("click", (event, inst) => {
 			inputWrapper.removeClass("editing");
-			saveValue = $(inputWrapper).find(".knowledge-base-value").val();
-			console.log(event);
-			console.log(inst);
+			saveValue = $(inputField).val();
 			console.log("saveValue = " + saveValue);
 		});
 		/*console.log("1234569: " +
 					RocketChat.models.LivechatExternalMessage.findOne({rid: inst.roomId}, {sort: {ts: -1}}));*/
 	},
 	'click .knowledge-base-tooltip .chat-item': function (event, inst) {
+		event.preventDefault();
 		const rlData = RocketChat.models.LivechatExternalMessage.findOne({rid: inst.roomId},
 			{sort: {ts: -1}}).result;
 		$('#chat-window-' + inst.roomId + ' .input-message').val("TODO").focus();

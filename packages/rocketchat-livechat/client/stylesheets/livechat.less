@@ -726,7 +726,7 @@
 						cursor: pointer;
 						display: inline-block;
 					}
-					.knowledge-input-wrapper:hover .knowledge-base-tooltip, .knowledge-base-tooltip:hover {
+					.knowledge-input-wrapper.active .knowledge-base-tooltip {
 						display: none;
 					}
 				}
@@ -785,32 +785,33 @@
 					}
 				}
 			}
-		}
-		.knowledge-base-value {
-			font-weight: 400;
-			background-color: #097425;
-			color: #fff;
-			padding: 5px;
-			border-radius: 5px;
-			margin-bottom: 8px;
-			display: inline-block;
-			min-width: 100px;
-			width: auto;
-			cursor: pointer;
-			position: relative;
-			&.empty-style {
-				background-color: #efefef;
-				color: #666;
-				border: 1px dotted #444;
-				.delete-item {
-					display: none;
+			.knowledge-base-value {
+				font-weight: 400;
+				background-color: #097425;
+				color: #fff;
+				padding: 5px;
+				border-radius: 5px;
+				margin-bottom: 8px;
+				display: inline-block;
+				min-width: 100px;
+				width: auto;
+				cursor: pointer;
+				position: relative;
+				&.empty-style {
+					background-color: #efefef;
+					color: #666;
+					border: 1px dotted #444;
+					.delete-item {
+						display: none;
+					}
+				}
+			}
+			&.active {
+				.knowledge-base-tooltip {
+					display: block;
 				}
 			}
 		}
-
-        .knowledge-input-wrapper:hover .knowledge-base-tooltip, .knowledge-base-tooltip:hover {
-            display: block;
-        }
     }
 
 	.knowledge-queries-wrapper {
