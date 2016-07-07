@@ -10,9 +10,15 @@ Template.livechatCurrentChats.helpers({
 			fields: [
 				{
 					key: 'label',
-					label: 'Name'
+					label: 'Name',
+					fn: (value, object) => {
+						/*
+						 TODO fetch customer name from crm
+						 */
+
+						return value;
+					}
 				},
-				// TODO add crm data (vor-/nachname)
 				{
 					key: 'ts',
 					label: 'Started_At',
@@ -44,19 +50,17 @@ Template.livechatCurrentChats.helpers({
 					label: 'Topic'
 				},
 				{
-					key: 'agents',
+					key: 'servedBy.username',
 					label: 'Agents',
-					fn :(value, object) => {
-						let roomid = object._id;
-						console.log(roomid);
+					fn: (value, object) => {
+						/*
+							TODO get _all_ agents
+							let roomId = object._id;
+						 */
 
-						// TODO fix
-						let uniqueUsers = _.uniq(
-							ChatMessage.find({rid: roomid})
-								.fetch()
-								.map((entry) => entry.u.username)
-							, true);
-
+						if(object.servedBy && object.servedBy.username) {
+							return object.servedBy.username;
+						}
 						return '';
 					}
 				}
@@ -73,5 +77,4 @@ Template.livechatCurrentChats.events({
 
 Template.livechatCurrentChats.onCreated(function () {
 	this.subscribe('livechat:rooms');
-	this.subscribe('rocketchat_message');
 });
