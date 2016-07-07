@@ -20,9 +20,8 @@ Template.visitorInfo.helpers({
 
 	room() {
 		let room = ChatRoom.findOne({_id: this.rid});
-		if (room.duration){
-			let date = new Date(room.duration);
-			room.formattedDuration = new _dbs.Duration(room.duration).toHHMMSS( );
+		if (room.duration) {
+			room.formattedDuration = new _dbs.Duration(room.duration).toHHMMSS();
 		}
 		return room;
 	},
@@ -128,6 +127,7 @@ class ClosingDialog {
 					id: 'comment',
 					value: self.room.comment,
 					type: 'input',
+					label: t("comment"),
 					placeholder: t('Please_add_a_comment')
 				}, {
 					id: 'topic',
@@ -142,7 +142,7 @@ class ClosingDialog {
 				}, {
 					id: 'knowledgeProviderUsage',
 					type: 'select',
-					options:[
+					options: [
 						{value: 'Unknown', text: t("knowledge_provider_usage_unknown")},
 						{value: 'Perfect', text: t("knowledge_provider_usage_perfect")},
 						{value: 'Helpful', text: t("knowledge_provider_usage_helpful")},
@@ -169,15 +169,34 @@ class ClosingDialog {
 				}
 				resolve(form);
 			});
+
+			//dropdowns are not properly formatted in th library - let's fix this by applying style directly
+			//more beautiful would be to change the stylesheet, but as this is defined in the swa-forms-package,
+			//this would be far more effort
+			$('.swal-form select').css({
+				'display': 'block',
+				'margin': '0',
+				'width': '96%',
+				'font-family': 'sans-serif',
+				'font-size': '18px',
+				'box-shadow': 'none',
+				'padding': '10px',
+				'border': 'solid 1px #dcdcdc',
+				'transition': 'box-shadow 0.3s, border 0.3s',
+				'height': 'initial',
+				'color': '#bdbdbd'
+			});
 		}).then((r) => {
-				$('.sa-input-error').show();
-				return r;
-			}).catch((reason) => {throw reason});
+			$('.sa-input-error').show();
+			return r;
+		}).catch((reason) => {
+			throw reason
+		});
 	}
 }
 
 Template.visitorInfo.events({
-	'click .edit-livechat': function(event, instance) {
+	'click .edit-livechat': function (event, instance) {
 		event.preventDefault();
 
 		instance.editing.set(true);
@@ -186,7 +205,7 @@ Template.visitorInfo.events({
 		event.preventDefault();
 
 		var room = RocketChat.models.Rooms.findOne({_id: this.rid});
-		new ClosingDialog(room).display().then(function(form) {
+		new ClosingDialog(room).display().then(function (form) {
 			let closingProps = form;
 			closingProps.tags = form.tags.split(',');
 
@@ -202,9 +221,10 @@ Template.visitorInfo.events({
 					showConfirmButton: false
 				});
 			});
-		}).catch(() => {});
+		}).catch(() => {
+		});
 	},
-	'click .merge-livechat': function(event) {
+	'click .merge-livechat': function (event) {
 		event.preventDefault();
 		const self = this;
 		Meteor.call('livechat:getPreviousRoom', self.rid, (error, newRoom) => {
@@ -222,12 +242,13 @@ Template.visitorInfo.events({
 					text: t('title_and_tags_discarded_old_infos'),
 					closeOnConfirm: true
 				}).display().then(() => {
-						Meteor.call('livechat:mergeRooms', self.rid, newRoom._id, (error) => {
-							if (!error) {
-								FlowRouter.go('live', {code: newRoom.code});
-							}
-						});
-					}).catch(() => {});
+					Meteor.call('livechat:mergeRooms', self.rid, newRoom._id, (error) => {
+						if (!error) {
+							FlowRouter.go('live', {code: newRoom.code});
+						}
+					});
+				}).catch(() => {
+				});
 			}
 		});
 	}
