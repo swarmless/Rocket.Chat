@@ -192,6 +192,7 @@ Package.onUse(function(api) {
 	api.addAssets('assets/icons/google.png', 'client');
 	api.addAssets('assets/icons/quixxit.png', 'client');
 	api.addAssets('assets/icons/fallback_logo.png', 'client');
+	api.addAssets('assets/icons/buld-grey.png', 'client');
 
 	//i18n
 	var _ = Npm.require('underscore');

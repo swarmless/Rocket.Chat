@@ -9,9 +9,13 @@ topic_when: when
 topic_start: start
 topic_end: end
 topic_location: location
+topic_date: date
+queries_title: information systems
 bahnDe: Bahn.de
 expedia: Expedia
 google: Google
 quixxit: Quixxit
 yelp: Yelp
 googleMap: Google Maps
+bahnDeSearchbox: Bahn.de Search
+communityBahnDe: DB Community

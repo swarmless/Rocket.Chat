@@ -1,7 +1,7 @@
 <template name="externalSearch">
-    <div class="content">
+    <div class="content external-search-content">
         <div class="title">
-            <h2>{{_ "Knowledge_Base"}}</h2>
+            <h2><span class="title-icon"><img src="/packages/rocketchat_livechat/assets/icons/buld-grey.png"></span>{{_ "Knowledge_Base"}}</h2>
         </div>
 		{{#each messages}}
 			{{#if result}}
@@ -15,7 +15,7 @@
 								{{>dynamic_redlink_default}}
 							{{/if}}
 							{{#if queries}}
-                                <div class="knowledge-title">Queries</div>
+                                <div class="queries-title">{{_ "queries_title"}}</div>
                                 <div class="knowledge-queries-wrapper">
 									{{#each queries}}
                                         <div class="query-item clearfix">
@@ -83,9 +83,8 @@
         <div class="knowledge-title">{{queryType}}</div>
         <div class="value-line-wrapper">
 			{{>dynamic_tpl_redlinkItem (forItem 'train') }}
-        </div>
-        <div class="value-line-wrapper">
-			{{>dynamic_tpl_redlinkItem (forItem 'when') }}
+            <span class="value-seperator"></span>
+			{{>dynamic_tpl_redlinkItem (forItem 'date') }}
         </div>
         <div class="value-line-wrapper">
 			{{>dynamic_tpl_redlinkItem (forItem 'from') }}
