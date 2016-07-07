@@ -18,7 +18,7 @@
                             <div class="knowledge-queries-wrapper">
 								{{#each queries}}
                                     <div class="query-item clearfix">
-										<div class="query-item-logo">{{creator}}</div>
+										<a href="{{url}}" target="_blank" class="query-item-logo" title="{{serviceName}}"><img src="/packages/rocketchat_livechat/assets/icons/{{creator}}.png"> <span class="creator_label">{{_ creator}}</span></a>
                                         <a class="query-item-url" href="{{url}}" target="_blank">
                                             <span class="query-servicename">{{serviceName}}</span><!--todo will change to displayName-->
                                             <span class="icon-wrapper"><i class="icon-link-ext"></i></span>

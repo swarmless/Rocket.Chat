@@ -187,6 +187,10 @@ Package.onUse(function(api) {
 	api.addAssets('public/livechat.css', 'client');
 	api.addAssets('public/livechat.js', 'client');
 	api.addAssets('public/head.html', 'server');
+	api.addAssets('assets/icons/bahnDe.png', 'client');
+	api.addAssets('assets/icons/expedia.png', 'client');
+	api.addAssets('assets/icons/google.png', 'client');
+	api.addAssets('assets/icons/quixxit.png', 'client');
 
 	//i18n
 	var _ = Npm.require('underscore');
