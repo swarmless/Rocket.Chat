@@ -10,7 +10,7 @@ Template.livechatCurrentChats.helpers({
 			fields: [
 				{
 					key: 'label',
-					label: 'Name',
+					label: TAPi18n.__('Customer_Name'),
 					fn: (value, object) => {
 						/*
 						 TODO fetch customer name from crm
@@ -21,7 +21,7 @@ Template.livechatCurrentChats.helpers({
 				},
 				{
 					key: 'ts',
-					label: 'Started_At',
+					label: TAPi18n.__('Started_At'),
 					fn: (value, object) => {
 						if (!value && object && object.ts) {
 							value = object.ts;
@@ -31,7 +31,7 @@ Template.livechatCurrentChats.helpers({
 				},
 				{
 					key: 'lm',
-					label: 'Last_Message_At',
+					label: TAPi18n.__('Last_Message'),
 					fn: (value, object) => {
 						if (!value && object && object.lm) {
 							value = object.lm;
@@ -43,15 +43,15 @@ Template.livechatCurrentChats.helpers({
 				},
 				{
 					key: 'rbInfo.source',
-					label: 'Medium'
+					label: TAPi18n.__('Used_Medium')
 				},
 				{
 					key: 'topic',
-					label: 'Topic'
+					label: TAPi18n.__('Topic')
 				},
 				{
 					key: 'servedBy.username',
-					label: 'Agents',
+					label: TAPi18n.__('Agent_Names'),
 					fn: (value, object) => {
 						/*
 							TODO get _all_ agents
