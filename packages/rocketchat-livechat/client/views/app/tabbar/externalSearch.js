@@ -87,6 +87,7 @@ Template.externalSearch.events({
 				$(".knowledge-input-wrapper.active").removeClass("active");
 			}
 		});
+		$('.datetime-field').datetimepicker("hide");
 	},
 	'click .knowledge-base-tooltip .edit-item, click .knowledge-base-value, click .knowledge-base-label': function (event, instance) {
 		event.preventDefault();

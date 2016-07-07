@@ -18,9 +18,9 @@
                             <div class="knowledge-queries-wrapper">
 								{{#each queries}}
                                     <div class="query-item clearfix">
-										<div class="query-item-logo">{{creator}}</div>
+										<a href="{{url}}" target="_blank" class="query-item-logo" title="{{serviceName}}"><img src="/packages/rocketchat_livechat/assets/icons/{{creator}}.png" onerror="this.onerror=null; this.src='/packages/rocketchat_livechat/assets/icons/fallback_logo.png';"> <span class="creator_label">{{_ creator}}</span></a>
                                         <a class="query-item-url" href="{{url}}" target="_blank">
-                                            <span class="query-servicename">{{serviceName}}</span><!--todo will change to displayName-->
+                                            <span class="query-servicename">{{displayTitle}}</span><!--todo will change to displayName-->
                                             <span class="icon-wrapper"><i class="icon-link-ext"></i></span>
                                         </a>
                                     </div>
@@ -105,14 +105,13 @@
 
         <div class="value-line-wrapper">
 			{{>dynamic_tpl_redlinkItem (forItem 'location') }}
+            <span class="value-seperator"></span>
+			{{>dynamic_tpl_redlinkItem (forItem 'what') }}
         </div>
         <div class="value-line-wrapper">
 			{{>dynamic_tpl_redlinkItem (forItem 'from') }}
             <span class="icon-wrapper"><i class="icon-exchange"></i></span>
 			{{>dynamic_tpl_redlinkItem (forItem 'end') }}
-        </div>
-        <div class="value-line-wrapper">
-			{{>dynamic_tpl_redlinkItem (forItem 'what') }}
         </div>
     </div>
 </template>

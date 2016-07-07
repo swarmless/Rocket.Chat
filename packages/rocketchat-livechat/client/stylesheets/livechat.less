@@ -697,6 +697,7 @@
 			background-color: #fff;
 			border: 1px solid #ccc;
 			color: #666;
+			margin-bottom: 5px;
 
 			.value-line-wrapper {
 				padding: 0 10px 2px;
@@ -741,18 +742,23 @@
 			}
 
 			.icon-wrapper {
-				display: inline-block;
 				background-color: #efefef;
-				padding: 5px 6px;
 				border-radius: 5px;
-				margin: 0 3px;
 				cursor: pointer;
+			}
+
+			.value-seperator, .icon-wrapper {
+				min-width: 33px;
+				display: inline-block;
+				padding: 5px 6px;
+				margin: 0 3px;
 			}
 
 			.knowledge-base-label {
 				font-weight: bold;
 				margin-right: 5px;
 				display: inline-block;
+				min-width: 30px;
 			}
 			.knowledge-input-wrapper {
 				position: relative;
@@ -831,6 +837,9 @@
 			padding: 5px;
 			border: 1px solid #CCC;
 			position: relative;
+			.query-servicename {
+				font-size: 12px;
+			}
 			.icon-wrapper {
 				position: relative;
 				display: inline-block;
@@ -839,6 +848,19 @@
 			}
 			.query-item-logo {
 				float: left;
+				line-height: 20px;
+				margin-top: 2px;
+				img {
+					width: 20px;
+					margin: 0 4px;
+				}
+				.creator_label {
+					position: relative;
+					top: -4px;
+					color: #666;
+					font-weight: bold;
+					font-size: 15px;
+				}
 			}
 			.query-item-url {
 				display: inline-block;
@@ -846,9 +868,8 @@
 				color: #666;
 				float: right;
 				background-color: #e2e2e2;
-				border-radius: 6px;
 				&:hover {
-					color: #999;
+					color: #444;
 				}
 			}
 		}
