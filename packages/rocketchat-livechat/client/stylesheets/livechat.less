@@ -692,6 +692,26 @@
 	.query-template-wrapper {
 		position: relative;
 		margin: 0 15px 10px;
+		max-height: 2000px;
+		transition: max-height .25s ease-in-out;
+		&.collapsed {
+			max-height: 36px;
+			overflow: hidden;
+			.icon-up-open {
+				content: '\e855'
+			}
+		}
+
+		.query-template-tools-wrapper {
+			position: absolute;
+			right: 5px;
+			top: 10px;
+			z-index: 10;
+			.query-template-tools-icon {
+				padding: 10px 5px;
+				cursor: pointer;
+			}
+		}
 
 		.query-template {
 			background-color: #fff;
@@ -808,7 +828,6 @@
 					display: inline-block;
 					min-width: 100px;
 					width: auto;
-					transition: width .2s linear;
 					cursor: pointer;
 					position: relative;
 					&.empty-style {

@@ -92,6 +92,13 @@ Template.externalSearch.helpers({
 });
 
 Template.externalSearch.events({
+	'mouseup .field-with-label': function(event, instance) {
+		if(event.button === 2) {
+			setTimeout(() => {
+				$('.datetime-field').datetimepicker("hide");
+			}, 100);
+		}
+	},
 	'contextmenu .field-with-label': function(event, instance) {
 		event.preventDefault();
 		instance.$(".knowledge-input-wrapper.active").removeClass("active");
@@ -101,7 +108,16 @@ Template.externalSearch.events({
 				$(".knowledge-input-wrapper.active").removeClass("active");
 			}
 		});
-		$('.datetime-field').datetimepicker("hide");
+	},
+	'click .query-template-tools-wrapper .icon-up-open': function (event, instance) {
+		const queryTemplate = $(event.currentTarget).closest(".query-template-wrapper");
+		queryTemplate.toggleClass("collapsed");
+	},
+	'click .query-template-tools-wrapper .icon-ok': function (event, instance) {
+		console.log("icon confirm clicked");
+	},
+	'click .query-template-tools-wrapper .icon-cancel': function (event, instance) {
+		console.log("icon cancel clicked");
 	},
 	'click .knowledge-base-tooltip .edit-item, click .knowledge-base-value, click .knowledge-base-label': function (event, instance) {
 		event.preventDefault();

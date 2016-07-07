@@ -8,6 +8,7 @@
                 <div class="external-message">
 					{{#each filledQueryTemplate}}
                         <div class="query-template-wrapper">
+                            <span class="query-template-tools-wrapper"><span class="query-template-tools-icon icon-up-open"></span><span class="query-template-tools-icon icon-ok"></span><span class="query-template-tools-icon icon-cancel"></span></span>
 							{{#if dynamicTemplateExists}}
 								{{>UI.dynamic template=queryTemplate}}
 							{{else}}
@@ -107,7 +108,7 @@
 			{{>dynamic_tpl_redlinkItem (forItem 'what') }}
         </div>
         <div class="value-line-wrapper">
-			{{>dynamic_tpl_redlinkItem (forItem 'from') }}
+			{{>dynamic_tpl_redlinkItem (forItem 'start') }}
             <span class="icon-wrapper"><i class="icon-exchange"></i></span>
 			{{>dynamic_tpl_redlinkItem (forItem 'end') }}
         </div>
