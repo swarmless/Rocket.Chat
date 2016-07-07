@@ -1,8 +1,2 @@
-/*
-Template.registerHelper('and',function(a,b){
-	return a && b;
-});
-Template.registerHelper('or',function(a,b){
-	return a || b;
-});
-*/
+Template.registerHelper('and', (a, b)=> a && b);
+Template.registerHelper('or', (a, b)=> a || b);

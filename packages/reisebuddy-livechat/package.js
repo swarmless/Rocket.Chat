@@ -10,6 +10,7 @@ Package.describe({
 Package.onUse(function(api) {
 	api.use(['ecmascript', 'underscore']);
 	api.use(['nimble:restivus', 'rocketchat:lib', 'rocketchat:authorization'], 'server');
+	api.use('templating', 'client'); //needed in order to be able to register global helpers on the Template-object
 
 	api.addFiles('lib/core.js');
 	api.addFiles('lib/duration.js', 'client');
