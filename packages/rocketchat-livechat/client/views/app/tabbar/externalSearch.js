@@ -46,15 +46,18 @@ Template.externalSearch.helpers({
 						htmlId: Meteor.uuid(),
 						item: "?",
 						itemStyle: "empty-style",
+						inquiryStyle: "disabled",
 						label: 'topic_'+itm,
 						parentTplIndex: indexTpl
 					};
 					if (typeof extendedQueryTpl.filledQuerySlots === "object") {
-						const filteredArray = extendedQueryTpl.filledQuerySlots.filter((ele) => ele.role === itm);
-						if (filteredArray.length > 0) {
-							returnValue = _.extend(filteredArray[0], returnValue);
-							returnValue.item = filteredArray[0]['clientValue'];
-
+						const slot = extendedQueryTpl.filledQuerySlots.find((ele) => ele.role === itm);
+						if (slot) {
+							returnValue = _.extend(slot, returnValue);
+							returnValue.item = slot.clientValue;
+							if(!_.isEmpty(slot.inquiryMessage)) {
+								returnValue.inquiryStyle = '';
+							}
 							if (returnValue.item !== "" && returnValue.item !== "?") {
 								returnValue.itemStyle = "";
 							}
@@ -73,15 +76,10 @@ Template.externalSearch.helpers({
 });
 
 Template.externalSearch.events({
-	'click button.update-result': function(event, instance) {
-		event.preventDefault();
-		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
-	},
 	'contextmenu .field-with-label': function(event, instance) {
 		event.preventDefault();
-		let inputWrapper = $(event.currentTarget).find(".knowledge-input-wrapper");
-		$(".knowledge-input-wrapper.active").removeClass("active");
-		$(inputWrapper).addClass("active");
+		instance.$(".knowledge-input-wrapper.active").removeClass("active");
+		instance.$(event.currentTarget).find(".knowledge-input-wrapper").addClass("active");
 		$(document).off("mousedown.contextmenu").on("mousedown.contextmenu", function (e) {
 			if (!$(e.target).parent(".knowledge-base-tooltip").length > 0) {
 				$(".knowledge-input-wrapper.active").removeClass("active");
@@ -110,16 +108,17 @@ Template.externalSearch.events({
 			const saveValue = inputField.val();
 
 			let externalMsg = instance.externalMessages.get();
-			const sourceToken = externalMsg.result.tokens[inputField.data('tokenIndex')];
 			const newToken = {
 				messageIdx: -1,
-				type: sourceToken.type,
+				type: _.isEmpty(inputField.data('tokenType')) ?  null : inputField.data('tokenType'),
 				state: "Confirmed",
 				origin: "Agent",
+				confidence: 0.95,
 				value: inputField.hasClass('datetime-field') ?
 					   {
-						   grain: 'day',
-						   value: moment(saveValue, "D.M.Y hh:mm").format() //todo sync format
+						   grain: 'minute',
+						   value: moment(saveValue, "D.M.Y hh:mm").format("YYYY-MM-DDTHH:mmZ") //todo find the correct date format
+						   //todo sync format
 					   } :
 					   saveValue
 			};
@@ -136,11 +135,18 @@ Template.externalSearch.events({
 			Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 		});
 	},
-	'click .knowledge-base-tooltip .chat-item': function (event, inst) {
+	'click .knowledge-base-tooltip .chat-item:not(.disabled)': function (event, inst) {
 		event.preventDefault();
-		const rlData = RocketChat.models.LivechatExternalMessage.findOne({rid: inst.roomId},
-			{sort: {ts: -1}}).result;
-		$('#chat-window-' + inst.roomId + ' .input-message').val("TODO").focus();
+		const rlData = _.first(RocketChat.models.LivechatExternalMessage.findByRoomId(inst.roomId, {ts: -1}).fetch());
+		if (rlData && rlData.result) {
+			const input = inst.$(event.target).closest('.knowledge-input-wrapper').find('.knowledge-base-value');
+			const qSlot = _.find(rlData.result.queryTemplates[input.data('parentTplIndex')].querySlots, (slot) => {
+				return slot.tokenIndex === input.data('tokenIndex');
+			});
+			if (qSlot && qSlot.inquiryMessage) {
+				$('#chat-window-' + inst.roomId + ' .input-message').val(qSlot.inquiryMessage).focus();
+			}
+		}
 	},
 	'click .external-message .icon-wrapper': function(event, instance) {
 		const changeBtn = $(event.target).parent().closest('.icon-wrapper');
