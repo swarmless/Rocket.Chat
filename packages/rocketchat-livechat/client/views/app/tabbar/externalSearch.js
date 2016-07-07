@@ -1,7 +1,23 @@
 for (var tpl in Template) {
 	if (Template.hasOwnProperty(tpl) && tpl.startsWith('dynamic_redlink_')) {
 		Template[tpl].onRendered(function () {
-			this.$('.datetime-field').datetimepicker({format:'d.m.Y H:i'});
+			$.datetimepicker.setDateFormatter({
+				parseDate: function (date, format) {
+					var d = moment(date, format);
+					return d.isValid() ? d.toDate() : false;
+				},
+
+				formatDate: function (date, format) {
+					return moment(date).format(format);
+				}
+			});
+			$.datetimepicker.setLocale(moment.locale());
+			this.$('.datetime-field').datetimepicker({
+				dayOfWeekStart: 1,
+				format: 'L LT',
+				formatTime:'LT',
+				formatDate:'L'
+			});
 		});
 	}
 }
@@ -117,8 +133,7 @@ Template.externalSearch.events({
 				value: inputField.hasClass('datetime-field') ?
 					   {
 						   grain: 'minute',
-						   value: moment(saveValue, "D.M.Y hh:mm").format("YYYY-MM-DDTHH:mmZ") //todo find the correct date format
-						   //todo sync format
+						   value: moment(saveValue, "L LT").toISOString()
 					   } :
 					   saveValue
 			};

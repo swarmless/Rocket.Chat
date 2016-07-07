@@ -51,6 +51,7 @@ class RedlinkAdapter {
 
 	onResultModified(modifiedRedlinkResult) {
 		try {
+			SystemLogger.debug("sending update to redlinkk with: "+ JSON.stringify(modifiedRedlinkResult));
 			const responseRedlinkQuery = HTTP.post(this.properties.url + '/query', {
 				data: modifiedRedlinkResult.result,
 				headers: this.headers
