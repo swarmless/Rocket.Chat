@@ -1,6 +1,12 @@
 Template.redlinkQueries.helpers({
-	maxConfidence(){
-		return Max.max(Template.currentData().map((query) => query.confidence));
+	queryContext(query){
+		const instance = Template.instance();
+		return {
+			query: query,
+			maxConfidence: Math.max(...instance.data.queries.map((query) => query.confidence)),
+			roomId: instance.data.roomId,
+			templateIndex: instance.data.templateIndex
+		}
 	}
 });
 

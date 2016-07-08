@@ -4,6 +4,11 @@ Template.redlinkQuery.helpers({
 	}
 });
 
-Template.redlinkQuery.events({
+Template.redlinkQuery.events({});
 
+Template.redlinkQuery.onCreated(function () {
+	this.state = new ReactiveDict();
+	this.state.setDefault({
+		expanded: false
+	});
 });

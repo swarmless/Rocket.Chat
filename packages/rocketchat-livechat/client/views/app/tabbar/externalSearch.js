@@ -15,8 +15,8 @@ for (var tpl in Template) {
 			this.$('.datetime-field').datetimepicker({
 				dayOfWeekStart: 1,
 				format: 'L LT',
-				formatTime:'LT',
-				formatDate:'L'
+				formatTime: 'LT',
+				formatDate: 'L'
 			});
 		});
 	}
@@ -35,7 +35,7 @@ Template.externalSearch.helpers({
 	filledQueryTemplate() {
 		var knowledgebaseSuggestions = RocketChat.models.LivechatExternalMessage.findByRoomId(Template.currentData().rid,
 			{ts: -1}).fetch(), filledTemplate = [];
-		if(knowledgebaseSuggestions.length > 0) {
+		if (knowledgebaseSuggestions.length > 0) {
 			const tokens = knowledgebaseSuggestions[0].result.tokens;
 			$(knowledgebaseSuggestions[0].result.queryTemplates).each(function (indexTpl, queryTpl) {
 				let extendedQueryTpl = queryTpl, filledQuerySlots = [];
@@ -44,7 +44,7 @@ Template.externalSearch.helpers({
 				$(queryTpl.querySlots).each(function (indxSlot, slot) {
 					if (slot.tokenIndex != -1) {
 						const currentToken = tokens[slot.tokenIndex];
-						if(currentToken.type === "Date" && typeof currentToken.value === "object") {
+						if (currentToken.type === "Date" && typeof currentToken.value === "object") {
 							slot.clientValue = moment(currentToken.value.date).format("L LT");
 						} else {
 							slot.clientValue = currentToken.value;
@@ -57,13 +57,13 @@ Template.externalSearch.helpers({
 				});
 
 				extendedQueryTpl.filledQuerySlots = filledQuerySlots;
-				extendedQueryTpl.forItem = function(itm) {
+				extendedQueryTpl.forItem = function (itm) {
 					let returnValue = {
 						htmlId: Meteor.uuid(),
 						item: "?",
 						itemStyle: "empty-style",
 						inquiryStyle: "disabled",
-						label: 'topic_'+itm,
+						label: 'topic_' + itm,
 						parentTplIndex: indexTpl
 					};
 					if (typeof extendedQueryTpl.filledQuerySlots === "object") {
@@ -71,7 +71,7 @@ Template.externalSearch.helpers({
 						if (slot) {
 							returnValue = _.extend(slot, returnValue);
 							returnValue.item = slot.clientValue;
-							if(!_.isEmpty(slot.inquiryMessage)) {
+							if (!_.isEmpty(slot.inquiryMessage)) {
 								returnValue.inquiryStyle = '';
 							}
 							if (returnValue.item !== "" && returnValue.item !== "?") {
@@ -84,22 +84,31 @@ Template.externalSearch.helpers({
 					}
 					return returnValue;
 				};
+				extendedQueryTpl.templateIndex = indexTpl;
 				filledTemplate.push(extendedQueryTpl);
 			});
 		}
 		return filledTemplate;
+	},
+	queriesContext(queries, templateIndex){
+		const instance = Template.instance();
+		return {
+			queries: queries,
+			roomId: instance.data.rid,
+			templateIndex: templateIndex
+		}
 	}
 });
 
 Template.externalSearch.events({
-	'mouseup .field-with-label': function(event, instance) {
-		if(event.button === 2) {
+	'mouseup .field-with-label': function (event, instance) {
+		if (event.button === 2) {
 			setTimeout(() => {
 				$('.datetime-field').datetimepicker("hide");
 			}, 100);
 		}
 	},
-	'contextmenu .field-with-label': function(event, instance) {
+	'contextmenu .field-with-label': function (event, instance) {
 		event.preventDefault();
 		instance.$(".knowledge-input-wrapper.active").removeClass("active");
 		instance.$(event.currentTarget).find(".knowledge-input-wrapper").addClass("active");
@@ -142,16 +151,16 @@ Template.externalSearch.events({
 			let externalMsg = instance.externalMessages.get();
 			const newToken = {
 				messageIdx: -1,
-				type: _.isEmpty(inputField.data('tokenType')) ?  null : inputField.data('tokenType'),
+				type: _.isEmpty(inputField.data('tokenType')) ? null : inputField.data('tokenType'),
 				state: "Confirmed",
 				origin: "Agent",
 				confidence: 0.95,
 				value: inputField.hasClass('datetime-field') ?
-					   {
-						   grain: 'minute',
-						   value: moment(saveValue, "L LT").toISOString()
-					   } :
-					   saveValue
+				{
+					grain: 'minute',
+					value: moment(saveValue, "L LT").toISOString()
+				} :
+					saveValue
 			};
 
 			externalMsg.result.tokens.push(newToken);
@@ -179,26 +188,26 @@ Template.externalSearch.events({
 			}
 		}
 	},
-	'click .external-message .icon-wrapper': function(event, instance) {
+	'click .external-message .icon-wrapper': function (event, instance) {
 		const changeBtn = $(event.target).parent().closest('.icon-wrapper');
 		const left = changeBtn.prevAll('.field-with-label').find('.knowledge-base-value');
 		const right = changeBtn.nextAll('.field-with-label').find('.knowledge-base-value');
 		let externalMsg = instance.externalMessages.get();
 		externalMsg.result.queryTemplates[left.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[left.data('parentTplIndex')].querySlots,
 			(query) => {
-				if(query.tokenIndex === left.data('tokenIndex')) {
+				if (query.tokenIndex === left.data('tokenIndex')) {
 					query.tokenIndex = right.data('tokenIndex');
-				} else if(query.tokenIndex === right.data('tokenIndex')) {
+				} else if (query.tokenIndex === right.data('tokenIndex')) {
 					query.tokenIndex = left.data('tokenIndex');
 				}
 				return query;
 			});
-        instance.externalMessages.set(externalMsg);
+		instance.externalMessages.set(externalMsg);
 		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 	}
 });
 
-Template.externalSearch.onCreated(function() {
+Template.externalSearch.onCreated(function () {
 	this.externalMessages = new ReactiveVar([]);
 	this.roomId = null;
 	this.autorun(() => {
@@ -206,7 +215,7 @@ Template.externalSearch.onCreated(function() {
 		this.subscribe('livechat:externalMessages', Template.currentData().rid);
 		const extMsg = RocketChat.models.LivechatExternalMessage.findByRoomId(Template.currentData().rid,
 			{ts: -1}).fetch();
-		if(extMsg.length > 0) {
+		if (extMsg.length > 0) {
 			this.externalMessages.set(extMsg[0]);
 		}
 	});
