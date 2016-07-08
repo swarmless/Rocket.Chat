@@ -102,6 +102,9 @@ Template.externalSearch.events({
 		instance.externalMessages.set(externalMsg);
 		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 	},
+	/**
+	 * Hide datetimepicker when right mouse clicked
+	 */
 	'mouseup .field-with-label': function(event, instance) {
 		if(event.button === 2) {
 			setTimeout(() => {
@@ -136,6 +139,8 @@ Template.externalSearch.events({
 
 		if (inputWrapper.hasClass('editing')) {
 			inputWrapper.removeClass("editing").find(".icon-cancel").click();
+		} else {
+			$(".field-with-label.editing").removeClass("editing");
 		}
 		inputWrapper.addClass('editing');
 		inputField.focus().select();
