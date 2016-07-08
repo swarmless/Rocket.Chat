@@ -101,8 +101,6 @@ Template.externalSearch.helpers({
 });
 
 Template.externalSearch.events({
-	'mouseup .field-with-label': function (event, instance) {
-		if (event.button === 2) {
 	/**
 	 * Notifies that a query was confirmed by an agent (aka. clicked)
 	 */
@@ -207,7 +205,6 @@ Template.externalSearch.events({
 			}
 		}
 	},
-	'click .external-message .icon-wrapper': function (event, instance) {
 	/**
 	 * Switches the tokens between two slots within a query template.
 	 */
