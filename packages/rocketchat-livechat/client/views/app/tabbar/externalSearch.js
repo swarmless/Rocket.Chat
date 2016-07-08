@@ -103,6 +103,21 @@ Template.externalSearch.helpers({
 Template.externalSearch.events({
 	'mouseup .field-with-label': function (event, instance) {
 		if (event.button === 2) {
+	/**
+	 * Notifies that a query was confirmed by an agent (aka. clicked)
+	 */
+	'click .knowledge-queries-wrapper .query-item a ': function (event, instance) {
+		const query = $(event.target).closest('.query-item');
+		let externalMsg = instance.externalMessages.get();
+		externalMsg.result.queryTemplates[query.data('templateIndex')].queries[query.data('queryIndex')].state = 'Confirmed';
+		instance.externalMessages.set(externalMsg);
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
+	},
+	/**
+	 * Hide datetimepicker when right mouse clicked
+	 */
+	'mouseup .field-with-label': function(event, instance) {
+		if(event.button === 2) {
 			setTimeout(() => {
 				$('.datetime-field').datetimepicker("hide");
 			}, 100);
@@ -118,15 +133,14 @@ Template.externalSearch.events({
 			}
 		});
 	},
-	'click .query-template-tools-wrapper .icon-up-open': function (event, instance) {
-		const queryTemplate = $(event.currentTarget).closest(".query-template-wrapper");
-		queryTemplate.toggleClass("collapsed");
+	'click .query-template-tools-wrapper .icon-up-open': function (event) {
+		$(event.currentTarget).closest(".query-template-wrapper").toggleClass("collapsed");
 	},
 	'click .query-template-tools-wrapper .icon-ok': function (event, instance) {
-		console.log("icon confirm clicked");
+		console.log("icon confirm clicked");  //TODO
 	},
 	'click .query-template-tools-wrapper .icon-cancel': function (event, instance) {
-		console.log("icon cancel clicked");
+		console.log("icon cancel clicked"); //TODO
 	},
 	'click .knowledge-base-tooltip .edit-item, click .knowledge-base-value, click .knowledge-base-label': function (event, instance) {
 		event.preventDefault();
@@ -136,6 +150,8 @@ Template.externalSearch.events({
 
 		if (inputWrapper.hasClass('editing')) {
 			inputWrapper.removeClass("editing").find(".icon-cancel").click();
+		} else {
+			$(".field-with-label.editing").removeClass("editing");
 		}
 		inputWrapper.addClass('editing');
 		inputField.focus().select();
@@ -175,6 +191,9 @@ Template.externalSearch.events({
 			Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 		});
 	},
+	/**
+	 * Writes the inqury of an queryTemplateSlot to the chatWindowInputField.
+	 */
 	'click .knowledge-base-tooltip .chat-item:not(.disabled)': function (event, inst) {
 		event.preventDefault();
 		const rlData = _.first(RocketChat.models.LivechatExternalMessage.findByRoomId(inst.roomId, {ts: -1}).fetch());
@@ -189,6 +208,10 @@ Template.externalSearch.events({
 		}
 	},
 	'click .external-message .icon-wrapper': function (event, instance) {
+	/**
+	 * Switches the tokens between two slots within a query template.
+	 */
+	'click .external-message .icon-wrapper': function(event, instance) {
 		const changeBtn = $(event.target).parent().closest('.icon-wrapper');
 		const left = changeBtn.prevAll('.field-with-label').find('.knowledge-base-value');
 		const right = changeBtn.nextAll('.field-with-label').find('.knowledge-base-value');
