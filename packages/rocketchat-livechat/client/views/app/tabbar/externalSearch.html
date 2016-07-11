@@ -7,7 +7,7 @@
 			{{#if result}}
                 <div class="external-message">
 					{{#each filledQueryTemplate}}
-                        <div class="query-template-wrapper" data-template-index="{{@index}}">
+                        <div class="query-template-wrapper {{state}}" data-template-index="{{@index}}">
                             <span class="query-template-tools-wrapper"><span class="query-template-tools-icon icon-up-open"></span><span class="query-template-tools-icon icon-ok"></span><span class="query-template-tools-icon icon-cancel"></span></span>
 							{{#if dynamicTemplateExists}}
 								{{>UI.dynamic template=queryTemplate}}
@@ -15,7 +15,7 @@
 								{{>dynamic_redlink_default}}
 							{{/if}}
 							{{#if queries}}
-								{{> redlinkQueries (queriesContext queries templateIndex)}}
+								{{> redlinkQueries (queriesContext queries @index)}}
 							{{/if}}
                         </div>
 					{{/each}}

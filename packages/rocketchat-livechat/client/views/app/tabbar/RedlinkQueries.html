@@ -3,7 +3,7 @@
     <div class="queries-title">{{_ "queries_title"}}</div>
     <div class="knowledge-queries-wrapper">
 		{{#each query in queries}}
-			{{> redlinkQuery (queryContext query)}}
+			{{> redlinkQuery (queryContext query @index)}}
 		{{/each}}
     </div>
 </template>
