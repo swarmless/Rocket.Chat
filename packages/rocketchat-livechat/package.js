@@ -115,7 +115,7 @@ Package.onUse(function(api) {
 
 	//redlink-knowledge-base-integration
 	api.addFiles('client/views/app/tabbar/redlinkQueries.html', 'client');
-	api.addFiles('client/views/app/tabbar/redlinkQueries.js', 'client');
+	api.addFiles('client/views/app/tabbar/RedlinkQueries.js', 'client');
 	api.addFiles('client/views/app/tabbar/redlinkQuery.html', 'client');
 	api.addFiles('client/views/app/tabbar/redlinkQuery.js', 'client');
 	api.addFiles('client/views/app/tabbar/redlinkInlineResult.html', 'client');
