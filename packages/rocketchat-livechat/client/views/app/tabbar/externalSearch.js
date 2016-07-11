@@ -56,6 +56,7 @@ Template.externalSearch.helpers({
 					filledQuerySlots.push(slot);
 				});
 
+				extendedQueryTpl.collapsed = queryTpl.state !== 'Confirmed' ? '' : 'collapsed';
 				extendedQueryTpl.filledQuerySlots = filledQuerySlots;
 				extendedQueryTpl.forItem = function (itm) {
 					let returnValue = {
@@ -64,7 +65,7 @@ Template.externalSearch.helpers({
 						itemStyle: "empty-style",
 						inquiryStyle: "disabled",
 						label: 'topic_' + itm,
-						parentTplIndex: indexTpl
+						parentTplIndex: indexTpl //todo replace with looping index in html
 					};
 					if (typeof extendedQueryTpl.filledQuerySlots === "object") {
 						const slot = extendedQueryTpl.filledQuerySlots.find((ele) => ele.role === itm);
@@ -84,7 +85,6 @@ Template.externalSearch.helpers({
 					}
 					return returnValue;
 				};
-				extendedQueryTpl.templateIndex = indexTpl;
 				filledTemplate.push(extendedQueryTpl);
 			});
 		}
@@ -143,6 +143,7 @@ Template.externalSearch.events({
 		externalMsg.result.queryTemplates[query.data('templateIndex')].state = 'Confirmed';
 		instance.externalMessages.set(externalMsg);
 		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
+		query.closest(".query-template-wrapper").toggleClass("collapsed");
 	},
 	/**
 	 * Mark a template as rejected.

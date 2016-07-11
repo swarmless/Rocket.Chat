@@ -687,6 +687,19 @@
 					content: '\e855'
 				}
 			}
+            &.Rejected {
+                display: none;
+            }
+            &.Confirmed {
+                .query-template-tools-icon {
+                    &.icon-ok {
+                        color: #097425;
+                    }
+                    &.icon-cancel {
+                        display: none;
+                    }
+                }
+            }
 
 			.query-template-tools-wrapper {
 				position: absolute;
