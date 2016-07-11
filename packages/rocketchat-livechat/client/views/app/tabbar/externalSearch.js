@@ -134,11 +134,25 @@ Template.externalSearch.events({
 	'click .query-template-tools-wrapper .icon-up-open': function (event) {
 		$(event.currentTarget).closest(".query-template-wrapper").toggleClass("collapsed");
 	},
+	/**
+	 * Mark a template as confirmed
+	 */
 	'click .query-template-tools-wrapper .icon-ok': function (event, instance) {
-		console.log("icon confirm clicked");  //TODO
+		const query = $(event.target).closest('.query-template-wrapper');
+		let externalMsg = instance.externalMessages.get();
+		externalMsg.result.queryTemplates[query.data('templateIndex')].state = 'Confirmed';
+		instance.externalMessages.set(externalMsg);
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 	},
+	/**
+	 * Mark a template as rejected.
+	 */
 	'click .query-template-tools-wrapper .icon-cancel': function (event, instance) {
-		console.log("icon cancel clicked"); //TODO
+		const query = $(event.target).closest('.query-template-wrapper');
+		let externalMsg = instance.externalMessages.get();
+		externalMsg.result.queryTemplates[query.data('templateIndex')].state = 'Rejected';
+		instance.externalMessages.set(externalMsg);
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 	},
 	'click .knowledge-base-tooltip .edit-item, click .knowledge-base-value, click .knowledge-base-label': function (event, instance) {
 		event.preventDefault();
@@ -165,7 +179,7 @@ Template.externalSearch.events({
 			let externalMsg = instance.externalMessages.get();
 			const newToken = {
 				messageIdx: -1,
-				type: _.isEmpty(inputField.data('tokenType')) ? null : inputField.data('tokenType'),
+				type: _.isEmpty(inputWrapper.data('tokenType')) ?  null : inputWrapper.data('tokenType'),
 				state: "Confirmed",
 				origin: "Agent",
 				confidence: 0.95,
@@ -178,9 +192,9 @@ Template.externalSearch.events({
 			};
 
 			externalMsg.result.tokens.push(newToken);
-			externalMsg.result.queryTemplates[inputField.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[inputField.data('parentTplIndex')].querySlots,
+			externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots,
 				(query) => {
-					if (query.tokenIndex === inputField.data('tokenIndex')) {
+					if (query.tokenIndex === inputWrapper.data('tokenIndex')) {
 						query.tokenIndex = externalMsg.result.tokens.length - 1;
 					}
 					return query;
@@ -196,7 +210,7 @@ Template.externalSearch.events({
 		event.preventDefault();
 		const rlData = _.first(RocketChat.models.LivechatExternalMessage.findByRoomId(inst.roomId, {ts: -1}).fetch());
 		if (rlData && rlData.result) {
-			const input = inst.$(event.target).closest('.knowledge-input-wrapper').find('.knowledge-base-value');
+			const input = inst.$(event.target).closest('.knowledge-input-wrapper');
 			const qSlot = _.find(rlData.result.queryTemplates[input.data('parentTplIndex')].querySlots, (slot) => {
 				return slot.tokenIndex === input.data('tokenIndex');
 			});
@@ -210,8 +224,8 @@ Template.externalSearch.events({
 	 */
 	'click .external-message .icon-wrapper': function(event, instance) {
 		const changeBtn = $(event.target).parent().closest('.icon-wrapper');
-		const left = changeBtn.prevAll('.field-with-label').find('.knowledge-base-value');
-		const right = changeBtn.nextAll('.field-with-label').find('.knowledge-base-value');
+		const left = changeBtn.prevAll('.field-with-label');
+		const right = changeBtn.nextAll('.field-with-label');
 		let externalMsg = instance.externalMessages.get();
 		externalMsg.result.queryTemplates[left.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[left.data('parentTplIndex')].querySlots,
 			(query) => {

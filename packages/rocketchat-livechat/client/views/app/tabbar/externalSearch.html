@@ -7,7 +7,7 @@
 			{{#if result}}
                 <div class="external-message">
 					{{#each filledQueryTemplate}}
-                        <div class="query-template-wrapper">
+                        <div class="query-template-wrapper" data-template-index="{{@index}}">
                             <span class="query-template-tools-wrapper"><span class="query-template-tools-icon icon-up-open"></span><span class="query-template-tools-icon icon-ok"></span><span class="query-template-tools-icon icon-cancel"></span></span>
 							{{#if dynamicTemplateExists}}
 								{{>UI.dynamic template=queryTemplate}}
@@ -104,12 +104,11 @@
 </template>
 
 <template name="dynamic_tpl_redlinkItem">
-    <div class="field-with-label">
+    <div class="field-with-label" data-token-type="{{tokenType}}" data-parent-tpl-index="{{parentTplIndex}}"
+         data-token-index="{{tokenIndex}}">
         <label for="{{htmlId}}" class="knowledge-base-label">{{_ label}}</label>
-        <div class="knowledge-input-wrapper"><!--todo put the data attrs to this div to minimize DOM-access-->
-            <input id="{{htmlId}}" type="text" class="knowledge-base-value {{itemStyle}}"
-                   data-token-type="{{tokenType}}" data-parent-tpl-index="{{parentTplIndex}}"
-                   data-token-index="{{tokenIndex}}" value="{{item}}"/>
+        <div class="knowledge-input-wrapper">
+            <input id="{{htmlId}}" type="text" class="knowledge-base-value {{itemStyle}}" value="{{item}}"/>
             <div class="knowledge-base-tooltip">
                 <div class="knowledge-context-menu-item edit-item"><span class="icon-pencil"></span> Editieren</div>
                 <div class="knowledge-context-menu-item delete-item"><span class="icon-trash"></span> Löschen</div>
