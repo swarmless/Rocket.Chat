@@ -33,7 +33,7 @@ Package.onUse(function(api) {
 	api.use('ddp-rate-limiter');
 	api.use('rocketchat:sms');
 	api.use('less@2.5.1');
-	api.use(['reisebuddy:livechat', 'reisebuddy:vtiger']);
+	api.use(['reisebuddy:livechat', 'reisebuddy:vtiger', 'reisebuddy:redlink']);
 	api.use('aslagle:reactive-table');
 
 	api.addFiles('livechat.js', 'server');
@@ -118,6 +118,8 @@ Package.onUse(function(api) {
 	api.addFiles('client/views/app/tabbar/redlinkQueries.js', 'client');
 	api.addFiles('client/views/app/tabbar/redlinkQuery.html', 'client');
 	api.addFiles('client/views/app/tabbar/redlinkQuery.js', 'client');
+	api.addFiles('client/views/app/tabbar/redlinkInlineResult.html', 'client');
+	api.addFiles('client/views/app/tabbar/redlinkInlineResult.js', 'client');
 
 
 	// methods
@@ -161,7 +163,6 @@ Package.onUse(function(api) {
 	api.addFiles('server/models/indexes.js', 'server');
 
 	// server lib
-	api.addFiles('server/lib/Redlink.js', 'server');
 	api.addFiles('server/lib/Livechat.js', 'server');
 	api.addFiles('server/sendMessageBySMS.js', 'server');
 	api.addFiles('server/externalMessageHook.js', 'server');

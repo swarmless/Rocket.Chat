@@ -13,6 +13,7 @@ Package.onUse(function(api) {
 	api.use('templating', 'client'); //needed in order to be able to register global helpers on the Template-object
 
 	api.addFiles('lib/core.js');
+	api.addFiles('lib/testing.js');
 	api.addFiles('lib/duration.js', 'client');
 	api.addFiles('client/lib/globalTemplateHelpers.js', 'client');
 	api.addFiles('server/config.js', 'server');

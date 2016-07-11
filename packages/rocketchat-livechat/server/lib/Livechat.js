@@ -329,21 +329,8 @@ RocketChat.Livechat = {
 				return this.apiaiAdapter;
 				break;
 			case KNOWLEDGE_SRC_REDLINK:
-				if (this.redlinkAdapter) return this.redlinkAdapter;
-				else {
-					RocketChat.settings.get('Livechat_Knowledge_Redlink_URL', function (key, value) {
-						adapterProps.url = value;
-					});
-					RocketChat.settings.get('Livechat_Knowledge_Redlink_Auth_Token', function (key, value) {
-						adapterProps.token = value;
-					});
-					if (process.env.NODE_ENV === 'testing') { //use mock
-						this.redlinkAdapter = new RedlinkMock(adapterProps);
-					} else {
-						this.redlinkAdapter = new RedlinkAdapter(adapterProps);
-					}
-					return this.redlinkAdapter;
-				}
+				return _dbs.RedlinkAdapterFactory.getInstance(); // buffering done inside the factory method
+				break;
 		}
 	},
 	saveRoomInfo(roomData, guestData) {
@@ -395,12 +382,11 @@ RocketChat.Livechat = {
 };
 
 /**
- * Refreshes the adapter instances on change of the configuration
+ * Refreshes the adapter instances on change of the configuration - the redlink-adapter factory does that on its own
  */
 Meteor.autorun(()=> {
 	RocketChat.settings.get('Livechat_Knowledge_Source', function (key, value) {
 		RocketChat.Livechat.apiaiAdapter = undefined;
-		RocketChat.Livechat.redlinkAdapter = undefined;
 	});
 
 	RocketChat.settings.get('Livechat_Knowledge_Apiai_Key', function (key, value) {
@@ -409,11 +395,5 @@ Meteor.autorun(()=> {
 
 	RocketChat.settings.get('Livechat_Knowledge_Apiai_Language', function (key, value) {
 		RocketChat.Livechat.apiaiAdapter = undefined;
-	});
-	RocketChat.settings.get('Livechat_Knowledge_Redlink_URL', function (key, value) {
-		RocketChat.Livechat.redlinkAdapter = undefined;
-	});
-	RocketChat.settings.get('Livechat_Knowledge_Redlink_Auth_Token', function (key, value) {
-		RocketChat.Livechat.redlinkAdapter = undefined;
 	});
 });

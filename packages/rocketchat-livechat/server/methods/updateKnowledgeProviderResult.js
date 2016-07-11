@@ -6,7 +6,7 @@ Meteor.methods({
 
 		const knowledgeAdapter = RocketChat.Livechat.getKnowledgeAdapter();
 
-		if (knowledgeAdapter instanceof RedlinkAdapter &&
+		if (knowledgeAdapter instanceof _dbs.RedlinkAdapterFactory.getInstance().constructor &&
 			modifiedKnowledgeProviderResult.knowledgeProvider === 'redlink') {
 			return knowledgeAdapter.onResultModified(modifiedKnowledgeProviderResult);
 		}

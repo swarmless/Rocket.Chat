@@ -51,7 +51,7 @@ class RedlinkAdapter {
 
 	onResultModified(modifiedRedlinkResult) {
 		try {
-			SystemLogger.debug("sending update to redlinkk with: "+ JSON.stringify(modifiedRedlinkResult));
+			SystemLogger.debug("sending update to redlinkk with: " + JSON.stringify(modifiedRedlinkResult));
 			const responseRedlinkQuery = HTTP.post(this.properties.url + '/query', {
 				data: modifiedRedlinkResult.result,
 				headers: this.headers
@@ -61,10 +61,11 @@ class RedlinkAdapter {
 				{
 					_id: modifiedRedlinkResult._id
 				},
-				{ $set: {
-					result: responseRedlinkQuery.data
-				}
-			});
+				{
+					$set: {
+						result: responseRedlinkQuery.data
+					}
+				});
 
 		} catch (err) {
 			console.error('Updating redlink results (via QUERY) did not succeed -> ', err);
@@ -98,8 +99,31 @@ class RedlinkAdapter {
 				});
 			}
 		} catch (e) {
-			//todo Redlink-API und Implementierung sind noch nicht wirklich stabil =>
 			console.error('Redlink-Prepare/Query with results from prepare did not succeed -> ', e);
+		}
+	}
+
+	getQueryResults(roomId, templateIndex, creator) {
+		const latestKnowledgeProviderResult = this.getKnowledgeProviderCursor(roomId).fetch()[0];
+
+		try {
+			const request = {
+				data: {
+					messages: latestKnowledgeProviderResult.result.messages,
+					tokens: latestKnowledgeProviderResult.result.tokens,
+					queryTemplates: latestKnowledgeProviderResult.result.queryTemplates
+				},
+				headers: this.headers
+			};
+
+			const responseRedlinkResult = HTTP.post(this.properties.url + '/result/' + creator + '/?templateIdx=' + templateIndex, request);
+			if (responseRedlinkResult.data && responseRedlinkResult.statusCode === 200) {
+				return responseRedlinkResult.data;
+			} else {
+				console.error("Couldn't  read result from Redlink");
+			}
+		} catch (err) {
+			console.error('Retrieving Query-resuls from Redlink did not succeed -> ', err);
 		}
 	}
 
@@ -140,5 +164,50 @@ class RedlinkMock extends RedlinkAdapter {
 	}
 }
 
-this.RedlinkAdapter = RedlinkAdapter;
-this.RedlinkMock = RedlinkMock;
+class RedlinkAdapterFactory {
+	constructor() {
+		this.singleton = undefined;
+
+		/**
+		 * Refreshes the adapter instances on change of the configuration
+		 */
+		Meteor.autorun(()=> {
+			RocketChat.settings.get('Livechat_Knowledge_Source', function (key, value) {
+				this.singleton = undefined;
+			});
+
+			RocketChat.settings.get('Livechat_Knowledge_Redlink_URL', function (key, value) {
+				this.singleton = undefined;
+			});
+
+			RocketChat.settings.get('Livechat_Knowledge_Redlink_Auth_Token', function (key, value) {
+				this.singleton = undefined;
+			});
+		});
+	};
+
+	static getInstance() {
+		if (this.singleton) {
+			return this.singleton
+		} else {
+			var adapterProps = {
+				url: '',
+				token: '',
+				language: ''
+			};
+
+			adapterProps.url = RocketChat.settings.get('Livechat_Knowledge_Redlink_URL');
+
+			adapterProps.token = RocketChat.settings.get('Livechat_Knowledge_Redlink_Auth_Token');
+
+			if (_dbs.mockInterfaces()) { //use mock
+				this.singleton = new RedlinkMock(adapterProps);
+			} else {
+				this.singleton = new RedlinkAdapter(adapterProps);
+			}
+			return this.singleton;
+		}
+	}
+}
+
+_dbs.RedlinkAdapterFactory = RedlinkAdapterFactory;
