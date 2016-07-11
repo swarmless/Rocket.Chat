@@ -143,7 +143,7 @@ Template.externalSearch.events({
 		externalMsg.result.queryTemplates[query.data('templateIndex')].state = 'Confirmed';
 		instance.externalMessages.set(externalMsg);
 		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
-		query.closest(".query-template-wrapper").toggleClass("collapsed");
+		query.closest(".query-template-wrapper").addClass("collapsed");
 	},
 	/**
 	 * Mark a template as rejected.
