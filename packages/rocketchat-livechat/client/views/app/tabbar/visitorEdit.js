@@ -58,13 +58,16 @@ Template.visitorEdit.onCreated(function () {
 Template.visitorEdit.events({
 	'submit form'(event, instance) {
 		console.log('this ->', this);
+
 		event.preventDefault();
 		let userData = {_id: instance.visitor.get()._id};
 		let roomData = {_id: instance.room.get()._id};
 
-		userData.name = event.currentTarget.elements['name'].value;
-		userData.email = event.currentTarget.elements['email'].value;
-		userData.phone = event.currentTarget.elements['phone'].value;
+		if (! Template.instance().crmIntegrationActive.get()) {
+			userData.name = event.currentTarget.elements['name'].value;
+			userData.email = event.currentTarget.elements['email'].value;
+			userData.phone = event.currentTarget.elements['phone'].value;
+		}
 
 		roomData.topic = event.currentTarget.elements['topic'].value;
 		roomData.tags = event.currentTarget.elements['tags'].value;
@@ -78,11 +81,15 @@ Template.visitorEdit.events({
 		});
 	},
 
-	'click .save'() {
+	'click .save'()
+	{
 		this.save();
-	},
+	}
+	,
 
-	'click .cancel'() {
+	'click .cancel'()
+	{
 		this.cancel();
 	}
-});
+})
+;
