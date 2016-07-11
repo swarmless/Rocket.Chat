@@ -114,10 +114,10 @@ Package.onUse(function(api) {
 	api.addFiles('client/views/app/triggers/livechatTriggerCondition.js', 'client');
 
 	//redlink-knowledge-base-integration
-	api.addFiles('client/views/app/tabbar/redlinkQueries.html', 'client');
-	api.addFiles('client/views/app/tabbar/redlinkQueries.js', 'client');
-	api.addFiles('client/views/app/tabbar/redlinkQuery.html', 'client');
-	api.addFiles('client/views/app/tabbar/redlinkQuery.js', 'client');
+	api.addFiles('client/views/app/tabbar/RedlinkQueries.html', 'client');
+	api.addFiles('client/views/app/tabbar/RedlinkQueries.js', 'client');
+	api.addFiles('client/views/app/tabbar/RedlinkQuery.html', 'client');
+	api.addFiles('client/views/app/tabbar/RedlinkQuery.js', 'client');
 
 
 	// methods
