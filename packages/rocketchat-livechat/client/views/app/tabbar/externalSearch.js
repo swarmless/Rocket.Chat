@@ -60,7 +60,6 @@ Template.externalSearch.helpers({
 					filledQuerySlots.push(slot);
 				});
 
-				extendedQueryTpl.collapsed = queryTpl.state !== 'Confirmed' ? '' : 'collapsed';
 				extendedQueryTpl.filledQuerySlots = filledQuerySlots;
 				extendedQueryTpl.forItem = function (itm) {
 					let returnValue = {

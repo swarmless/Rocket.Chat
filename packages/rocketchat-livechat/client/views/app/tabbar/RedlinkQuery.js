@@ -16,6 +16,7 @@ Template.redlinkQuery.helpers({
 	},
 
 	visibleResultNumer(){
+		const instance = Template.instance();
 		const visibleResultIndex = instance.state.get('visibleResultIndex');
 		return visibleResultIndex + 1;
 	},
