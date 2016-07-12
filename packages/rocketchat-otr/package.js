@@ -30,7 +30,6 @@ Package.onUse(function(api) {
 
 	api.addFiles([
 		'server/settings.js',
-		'server/models/Messages.js',
 		'server/methods/deleteOldOTRMessages.js',
 		'server/methods/updateOTRAck.js'
 	], 'server');

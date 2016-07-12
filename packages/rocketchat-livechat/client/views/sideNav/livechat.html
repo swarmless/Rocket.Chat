@@ -9,7 +9,7 @@
 			{{/with}}
 		</h3>
 		<h4>{{_ "Unanswered"}}</h4>
-		<ul>
+		<ul class="room-unanswered">
 			{{#each roomsUnanswered}}
 				{{> livechatRoomItem }}
 			{{else}}
@@ -17,7 +17,7 @@
 			{{/each}}
 		</ul>
 		<h4>{{_ "Answered"}}</h4>
-		<ul>
+		<ul class="room-answered">
 			{{#each roomsAnswered}}
 				{{> livechatRoomItem }}
 			{{else}}

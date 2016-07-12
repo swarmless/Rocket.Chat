@@ -1,22 +1,22 @@
 for (var tpl in Template) {
 	if (Template.hasOwnProperty(tpl) && tpl.startsWith('dynamic_redlink_')) {
 		Template[tpl].onRendered(function () {
-			$.datetimepicker.setDateFormatter({
-				parseDate: function (date, format) {
-					var d = moment(date, format);
-					return d.isValid() ? d.toDate() : false;
-				},
-
-				formatDate: function (date, format) {
-					return moment(date).format(format);
-				}
-			});
-			$.datetimepicker.setLocale(moment.locale());
-			this.$('.datetime-field').datetimepicker({
-				dayOfWeekStart: 1,
-				format: 'L LT',
-				formatTime: 'LT',
-				formatDate: 'L'
+			this.$('.datetime-field').each(function(indx, inputFieldItem) {
+				$.datetimepicker.setDateFormatter({
+					parseDate: function (date, format) {
+						var d = moment(date, format);
+						return d.isValid() ? d.toDate() : false;
+					},
+					formatDate: function (date, format) {
+						return moment(date).format(format);
+					}
+				});
+				$(inputFieldItem).datetimepicker({
+					dayOfWeekStart: 1,
+					format: 'L LT',
+					formatTime: 'LT',
+					formatDate: 'L'
+				});
 			});
 		});
 	}
@@ -155,19 +155,44 @@ Template.externalSearch.events({
 		instance.externalMessages.set(externalMsg);
 		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 	},
+	/*
+	'keydup .knowledge-base-value, keydown .knowledge-base-value': function (event, inst) {
+		const inputWrapper = $(event.currentTarget).closest(".field-with-label"),
+			inputField = inputWrapper.find(".knowledge-base-value"),
+			originalValue = inputField.val(),
+			ENTER_KEY = 13,
+			ESC_KEY = 27,
+			TAB_KEY = 9,
+			keycode = event.keyCode;
+		if (inputWrapper.hasClass("editing")) {
+			switch (keycode) {
+				case ENTER_KEY:
+					inputWrapper.find(".icon-floppy").click();
+					break;
+				case ESC_KEY:
+				case TAB_KEY:
+					console.log("TAB_KEY = " + keycode);
+					console.log("originalValue = " + originalValue);
+					inputField.val(originalValue);
+					inputWrapper.find(".icon-cancel").click();
+					break;
+			}
+		} else if(keycode != TAB_KEY) {
+			$(".field-with-label.editing").removeClass("editing");
+			inputWrapper.addClass('editing');
+		}
+	}, */
 	'click .knowledge-base-tooltip .edit-item, click .knowledge-base-value, click .knowledge-base-label': function (event, instance) {
 		event.preventDefault();
 		const inputWrapper = $(event.currentTarget).closest(".field-with-label"),
 			inputField = inputWrapper.find(".knowledge-base-value"),
 			originalValue = inputField.val();
 
-		if (inputWrapper.hasClass('editing')) {
-			inputWrapper.removeClass("editing").find(".icon-cancel").click();
-		} else {
+		if (!inputWrapper.hasClass('editing')) {
 			$(".field-with-label.editing").removeClass("editing");
+			inputField.focus().select();
+			inputWrapper.addClass('editing');
 		}
-		inputWrapper.addClass('editing');
-		inputField.focus().select();
 
 		inputWrapper.find('.icon-cancel').off("click").on("click", () => {
 			inputWrapper.removeClass("editing");
@@ -187,7 +212,7 @@ Template.externalSearch.events({
 				value: inputField.hasClass('datetime-field') ?
 				{
 					grain: 'minute',
-					value: moment(saveValue, "L LT").toISOString()
+					value: saveValue
 				} :
 					saveValue
 			};

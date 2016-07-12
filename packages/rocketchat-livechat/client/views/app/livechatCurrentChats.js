@@ -1,23 +1,16 @@
 Template.livechatCurrentChats.helpers({
 	closedLivechatRoom() {
-		return ChatRoom.find({t: 'l', open: {$ne: true}}, {sort: {ts: -1}});
+		return LivechatRoomsStats.find({t: 'l', open: {$ne: true}}, {sort: {ts: -1}});
 	},
 	openLivechatRoom() {
-		return ChatRoom.find({t: 'l', open: true}, {sort: {ts: -1}});
+		return LivechatRoomsStats.find({t: 'l', open: true}, {sort: {ts: -1}});
 	},
 	tableSettings: () => {
 		return {
 			fields: [
 				{
 					key: 'label',
-					label: TAPi18n.__('Customer_Name'),
-					fn: (value, object) => {
-						/*
-						 TODO fetch customer name from crm
-						 */
-
-						return value;
-					}
+					label: TAPi18n.__('Customer_Name')
 				},
 				{
 					key: 'ts',
@@ -50,19 +43,8 @@ Template.livechatCurrentChats.helpers({
 					label: TAPi18n.__('Topic')
 				},
 				{
-					key: 'servedBy.username',
-					label: TAPi18n.__('Agent_Names'),
-					fn: (value, object) => {
-						/*
-							TODO get _all_ agents
-							let roomId = object._id;
-						 */
-
-						if(object.servedBy && object.servedBy.username) {
-							return object.servedBy.username;
-						}
-						return '';
-					}
+					key: 'involvedAgents',
+					label: TAPi18n.__('Agent_Names')
 				}
 			]
 		}
@@ -76,5 +58,5 @@ Template.livechatCurrentChats.events({
 });
 
 Template.livechatCurrentChats.onCreated(function () {
-	this.subscribe('livechat:rooms');
+	this.subscribe('livechat:room_statistics');
 });
