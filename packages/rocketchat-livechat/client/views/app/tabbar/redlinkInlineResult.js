@@ -4,3 +4,11 @@ Template.redlinkInlineResult.helpers({
 		return JSON.stringify(instance.data.result, " ", 2);
 	}
 });
+
+Template.redlinkInlineResult.events({
+	'click .js-copy-reply-suggestion': function(event, instance){
+		if(instance.data.result.replySuggestion) {
+			$('#chat-window-' + instance.data.roomId + ' .input-message').value = instance.result.replySuggestion
+		}
+	}
+});
