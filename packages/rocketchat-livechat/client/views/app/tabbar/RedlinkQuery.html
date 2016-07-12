@@ -9,13 +9,20 @@
             <span class="query-servicename">{{query.displayTitle}}</span>
             <span class="icon-wrapper"><i class="icon-link-ext"></i></span>
         </a>
-    </div>
-    <div class="query-preview">
-		{{#if and query.inlineResultSupport maxConfidence=query.confidence}}
-            <!-- Another template has to use the query propagated to it in order to issue a separate request which provides the actual result -->
-			{{#each result in results }}
-				{{> redlinkInlineResult result=result}}
-			{{/each}}
+		{{#if and query.inlineResultSupport visibleResult}}
+            <div class="query-results-navigation">
+                <span class="js-toggle-results-expanded icon-up-open"></span>
+                <span class="js-previous-result">&lt;</span>
+                <span class="js-next-result">&gt;</span>
+                <span>{{visibleResultNumer}}/{{resultsCount}}</span>
+            </div>
+            <div class="query-preview {{classExpanded}}">
+				{{#if and query.inlineResultSupport maxConfidence=query.confidence}}
+                    <!-- Another template has to use the query propagated to it in order to issue a separate request which provides the actual result -->
+                    <h4>Ergebnisse</h4>
+					{{> redlinkInlineResult result=visibleResult}}
+				{{/if}}
+            </div>
 		{{/if}}
     </div>
 </template>
