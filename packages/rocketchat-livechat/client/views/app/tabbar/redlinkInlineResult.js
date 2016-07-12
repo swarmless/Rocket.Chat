@@ -8,7 +8,7 @@ Template.redlinkInlineResult.helpers({
 Template.redlinkInlineResult.events({
 	'click .js-copy-reply-suggestion': function(event, instance){
 		if(instance.data.result.replySuggestion) {
-			$('#chat-window-' + instance.data.roomId + ' .input-message').value = instance.result.replySuggestion
+			$('#chat-window-' + instance.data.roomId + ' .input-message').val(instance.data.result.replySuggestion);
 		}
 	}
 });
