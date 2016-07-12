@@ -1,6 +1,10 @@
 for (var tpl in Template) {
 	if (Template.hasOwnProperty(tpl) && tpl.startsWith('dynamic_redlink_')) {
 		Template[tpl].onRendered(function () {
+			this.$('.field-with-label').each(function(indx, wrapperItem) {
+				const inputField = $(wrapperItem).find(".knowledge-base-value");
+				$(wrapperItem).find(".icon-cancel").data("initValue", inputField.val());
+			});
 			this.$('.datetime-field').each(function(indx, inputFieldItem) {
 				$.datetimepicker.setDateFormatter({
 					parseDate: function (date, format) {
@@ -100,6 +104,7 @@ Template.externalSearch.helpers({
 	}
 });
 
+
 Template.externalSearch.events({
 	/**
 	 * Notifies that a query was confirmed by an agent (aka. clicked)
@@ -114,13 +119,18 @@ Template.externalSearch.events({
 	/**
 	 * Hide datetimepicker when right mouse clicked
 	 */
-	'mouseup .field-with-label': function(event, instance) {
+	'mousedown .field-with-label': function(event, instance) {
 		if(event.button === 2) {
+			$("body").addClass("suppressDatetimepicker");
 			setTimeout(() => {
 				$('.datetime-field').datetimepicker("hide");
-			}, 100);
+				$("body").removeClass("suppressDatetimepicker");
+			}, 500);
 		}
 	},
+	/*
+	* open contextmenu with "-edit, -delete and -nachfragen"
+	* */
 	'contextmenu .field-with-label': function (event, instance) {
 		event.preventDefault();
 		instance.$(".knowledge-input-wrapper.active").removeClass("active");
@@ -143,7 +153,6 @@ Template.externalSearch.events({
 		externalMsg.result.queryTemplates[query.data('templateIndex')].state = 'Confirmed';
 		instance.externalMessages.set(externalMsg);
 		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
-		query.closest(".query-template-wrapper").addClass("collapsed");
 	},
 	/**
 	 * Mark a template as rejected.
@@ -155,11 +164,10 @@ Template.externalSearch.events({
 		instance.externalMessages.set(externalMsg);
 		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
 	},
-	/*
+
 	'keydup .knowledge-base-value, keydown .knowledge-base-value': function (event, inst) {
 		const inputWrapper = $(event.currentTarget).closest(".field-with-label"),
 			inputField = inputWrapper.find(".knowledge-base-value"),
-			originalValue = inputField.val(),
 			ENTER_KEY = 13,
 			ESC_KEY = 27,
 			TAB_KEY = 9,
@@ -171,9 +179,6 @@ Template.externalSearch.events({
 					break;
 				case ESC_KEY:
 				case TAB_KEY:
-					console.log("TAB_KEY = " + keycode);
-					console.log("originalValue = " + originalValue);
-					inputField.val(originalValue);
 					inputWrapper.find(".icon-cancel").click();
 					break;
 			}
@@ -181,7 +186,47 @@ Template.externalSearch.events({
 			$(".field-with-label.editing").removeClass("editing");
 			inputWrapper.addClass('editing');
 		}
-	}, */
+	},
+	'click .knowledge-input-wrapper .icon-cancel': function (event, instance) {
+		const inputWrapper = $(event.currentTarget).closest(".field-with-label"),
+			inputField = inputWrapper.find(".knowledge-base-value");
+		inputWrapper.removeClass("editing");
+		inputField.val($(event.currentTarget).data("initValue"));
+	},
+	'click .knowledge-input-wrapper .icon-floppy': function (event, instance) {
+		event.preventDefault();
+		const inputWrapper = $(event.currentTarget).closest(".field-with-label"),
+			inputField = inputWrapper.find(".knowledge-base-value");
+		inputWrapper.removeClass("editing");
+
+		const saveValue = inputField.val();
+
+		let externalMsg = instance.externalMessages.get();
+		const newToken = {
+			messageIdx: -1,
+			type: _.isEmpty(inputWrapper.data('tokenType')) ?  null : inputWrapper.data('tokenType'),
+			state: "Confirmed",
+			origin: "Agent",
+			confidence: 0.95,
+			value: inputField.hasClass('datetime-field') ?
+			{
+				grain: 'minute',
+				value: saveValue
+			} :
+				saveValue
+		};
+
+		externalMsg.result.tokens.push(newToken);
+		externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots,
+			(query) => {
+				if (query.tokenIndex === inputWrapper.data('tokenIndex')) {
+					query.tokenIndex = externalMsg.result.tokens.length - 1;
+				}
+				return query;
+			});
+		instance.externalMessages.set(externalMsg);
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
+	},
 	'click .knowledge-base-tooltip .edit-item, click .knowledge-base-value, click .knowledge-base-label': function (event, instance) {
 		event.preventDefault();
 		const inputWrapper = $(event.currentTarget).closest(".field-with-label"),
@@ -193,41 +238,6 @@ Template.externalSearch.events({
 			inputField.focus().select();
 			inputWrapper.addClass('editing');
 		}
-
-		inputWrapper.find('.icon-cancel').off("click").on("click", () => {
-			inputWrapper.removeClass("editing");
-			inputField.val(originalValue);
-		});
-		inputWrapper.find(".icon-floppy").off("click").on("click", () => {
-			inputWrapper.removeClass("editing");
-			const saveValue = inputField.val();
-
-			let externalMsg = instance.externalMessages.get();
-			const newToken = {
-				messageIdx: -1,
-				type: _.isEmpty(inputWrapper.data('tokenType')) ?  null : inputWrapper.data('tokenType'),
-				state: "Confirmed",
-				origin: "Agent",
-				confidence: 0.95,
-				value: inputField.hasClass('datetime-field') ?
-				{
-					grain: 'minute',
-					value: saveValue
-				} :
-					saveValue
-			};
-
-			externalMsg.result.tokens.push(newToken);
-			externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots,
-				(query) => {
-					if (query.tokenIndex === inputWrapper.data('tokenIndex')) {
-						query.tokenIndex = externalMsg.result.tokens.length - 1;
-					}
-					return query;
-				});
-			instance.externalMessages.set(externalMsg);
-			Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
-		});
 	},
 	/**
 	 * Writes the inqury of an queryTemplateSlot to the chatWindowInputField.
