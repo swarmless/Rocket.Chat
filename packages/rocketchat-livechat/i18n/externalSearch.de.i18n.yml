@@ -12,11 +12,13 @@ topic_location: Ort
 topic_date: Datum
 queries_title: Informationssysteme
 bahnDe: Bahn.de
+community_bahn_de: Service-Community
 expedia: Expedia
 google: Google
 quixxit: Quixxit
 yelp: Yelp
+VKL: VKL
 googleMap: Google Maps
 bahnDeSearchbox: Bahn.de Suche
-communityBahnDe: DB Community
-
+communityBahnDe: Service-Community
+topAnsweredQuestions: Top beantwortete Fragen

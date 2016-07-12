@@ -95,6 +95,13 @@ Template.externalSearch.helpers({
 	},
 	queriesContext(queries, templateIndex){
 		const instance = Template.instance();
+		$(queries).each(function (indx, queryItem) {
+			if(queries[indx].creator && typeof queries[indx].creator == "string") {
+				queries[indx].replacedCreator = queries[indx].creator.replace(/\./g, "_");
+			} else {
+				queries[indx].replacedCreator = "";
+			}
+		});
 		return {
 			queries: queries,
 			roomId: instance.data.rid,

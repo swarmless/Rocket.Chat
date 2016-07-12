@@ -23,7 +23,7 @@ Template.redlinkQuery.helpers({
 
 	classExpanded(){
 		const instance = Template.instance();
-		return instance.state.get('resultsExpanded') ? 'expanded' : 'collapsed';
+		return instance.state.get('resultsExpanded') ? 'collapsed' : 'expanded';
 	}
 });
 

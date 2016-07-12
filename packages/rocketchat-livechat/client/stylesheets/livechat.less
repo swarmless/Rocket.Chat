@@ -871,44 +871,100 @@
 				display: inline-block;
 				margin-left: 5px;
 			}
-			.query-item {
-				margin: 0 0 10px;
-				padding: 5px;
-				border: 1px solid #CCC;
-				position: relative;
-				.query-servicename {
-					font-size: 12px;
-				}
-				.icon-wrapper {
-					position: relative;
-					display: inline-block;
-					top: 1px;
-					font-size: 15px;
-				}
-				.query-item-logo {
-					float: left;
-					line-height: 20px;
-					margin-top: 2px;
-					img {
-						width: 20px;
-						margin: 0 4px;
+			.query-item-wrapper {
+				&.collapsed {
+					max-height: 48px;
+					overflow: hidden;
+					.icon-up-open::before {
+						content: '\e855'
 					}
-					.creator_label {
+					.arrow-navigation-wrapper {
+						visibility: hidden;
+					}
+				}
+				.query-item {
+					margin: 0 0 10px;
+					padding: 5px;
+					border: 1px solid #CCC;
+					position: relative;
+					.query-servicename {
+						font-size: 12px;
+					}
+					.icon-wrapper {
 						position: relative;
-						top: -4px;
-						color: #666;
-						font-weight: bold;
+						display: inline-block;
+						top: 1px;
 						font-size: 15px;
 					}
+					.query-item-logo {
+						float: left;
+						line-height: 20px;
+						margin-top: 2px;
+						img {
+							width: 20px;
+							margin: 0 4px;
+						}
+						.creator_label {
+							position: relative;
+							top: -4px;
+							color: #666;
+							font-weight: bold;
+							font-size: 15px;
+						}
+					}
+					.query-item-url, .query-results-toggle {
+						display: inline-block;
+						padding: 4px;
+						color: #666;
+						float: right;
+					}
+					.query-item-url {
+						background-color: #e2e2e2;
+						&:hover {
+							color: #444;
+						}
+					}
+					.query-results-toggle {
+						.js-toggle-results-expanded {
+							cursor: pointer;
+							padding: 3px;
+						}
+					}
 				}
-				.query-item-url {
-					display: inline-block;
-					padding: 4px;
-					color: #666;
-					float: right;
-					background-color: #e2e2e2;
-					&:hover {
-						color: #444;
+				.query-preview {
+					margin-bottom: 20px;
+					border: 1px solid #ccc;
+					background-color: #fff;
+
+					.query-preview-navigation {
+						text-align: center;
+						padding: 10px 0 0;
+						.js-previous-result, .js-next-result  {
+							cursor: pointer;
+							padding: 3px;
+						}
+					}
+
+					.query-preview-headline {
+						border-bottom: 1px solid #ccc;
+						padding: 10px 15px;
+					}
+					.query-preview-content {
+						padding: 10px 15px;
+						.query-preview-result-title {
+							font-style: italic;
+							.result-title-wrapper {
+								float: left;
+								width: 85%;
+							}
+							.icon-wrapper {
+								float: right;
+								width: 10%;
+							}
+						}
+						.query-preview-result-body {
+							padding: 5px 0;
+						}
 					}
 				}
 			}

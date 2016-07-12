@@ -1,10 +1,15 @@
 <template name="redlinkInlineResult">
-	<div>
-		<pre>
-			{{rawResult}}
-		</pre>
+	<div class="query-preview-content">
+		<div class="query-preview-result-title clearfix">
+			<span class="result-title-wrapper">{{resultTitle}}</span>
+			<span class="icon-wrapper"><a href="{{resultLink}}" target="_blank"><i class="icon-link-ext"></i></a></span>
+		</div>
+        <div class="query-preview-result-body">{{resultBody}}</div>
+
+		<!--
 		<div class = 'js-copy-reply-suggestion'>
 			Übernehmen
 		</div>
+		-->
 	</div>
 </template>
