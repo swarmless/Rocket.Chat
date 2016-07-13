@@ -14,7 +14,7 @@
 </template>
 
 <template name="redlinkInlineResult_generic">
-    <div style="display: none;">
+    <div style="display: none">
 		{{#each keyValuePair in relevantKeyValues}}
             <div class="key-value-pair">
                 <span class="key" style="font-weight: bold">{{keyValuePair.key}}: </span><span
@@ -30,4 +30,39 @@
         <span class="icon-wrapper"><a href="{{link}}" target="_blank"><i class="icon-link-ext"></i></a></span>
     </div>
     <div class="query-preview-result-body">{{{body}}}</div>
+</template>
+
+<template name="redlinkInlineResult_bahn.de">
+    <div class="travel-bahn">
+        <div class="from-to-wrapper clearfix">
+        <span class="from-wrapper">
+			<div class="location">Freising</div>
+			<div class="time">19:10</div>
+		</span>
+        <span class="to-wrapper">
+			<div class="location">Berlin Hbf (tief)</div>
+			<div class="arrival time">06:30</div>
+			<div class="day-offset">+ 1 Tag</div>
+		</span>
+        </div>
+        <div class="details-wrapper">
+            <div class="details">Dauer: 11:20</div>
+            <div class="details">Umstiege: 3</div>
+            <div class="details">Produkte: RE, ICE</div>
+        </div>
+        <div class="price-wrapper clearfix">
+            <div class="price-save">
+                <div class="price-label">Sparpreis</div>
+                <div class="price">139.00 €</div>
+            </div>
+            <div class="price-flex">
+                <div class="price-label">Flexpreis</div>
+                <div class="price">142.00 €</div>
+            </div>
+        </div>
+        <div class="action-wrapper clearfix">
+            <button class="link-external">Details</button>
+            <button class="link-message">Senden</button>
+        </div>
+    </div>
 </template>

@@ -4,6 +4,9 @@ Template.redlinkInlineResult.helpers({
 
 		let templateSuffix = "generic";
 		switch (instance.data.result.creator) {
+			case 'bahn.de':
+				templateSuffix = "bahn.de";
+				break;
 			case 'community.bahn.de':
 				templateSuffix = "VKL_community";
 				break;
@@ -37,13 +40,7 @@ Template.redlinkInlineResult_generic.helpers({
 
 		let keyValuePairs = [];
 		for (key in instance.data) {
-			if (key !== "score" &&
-				key !== "creator" &&
-				key !== "topic" &&
-				key !== "categories"
-			) {
-				keyValuePairs.push({key: key, value: instance.data.result[key]});
-			}
+			keyValuePairs.push({key: key, value: instance.data.result[key]});
 		}
 
 		return keyValuePairs;
