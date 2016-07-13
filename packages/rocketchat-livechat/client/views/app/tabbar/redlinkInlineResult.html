@@ -2,7 +2,7 @@
 	{{#if result}}
         <div class="query-preview-content">
             <div>
-				{{> Template.dynamic template=templateName data=result }}
+				{{> Template.dynamic template=templateName data=templateData }}
 				{{#if replySuggestion }}
                     <div class='js-copy-reply-suggestion'>
                         Übernehmen
@@ -26,29 +26,29 @@
 
 <template name="redlinkInlineResult_VKL_community">
     <div class="query-preview-result-title clearfix">
-        <span class="result-title-wrapper">{{{title}}}</span>
-        <span class="icon-wrapper"><a href="{{link}}" target="_blank"><i class="icon-link-ext"></i></a></span>
+        <span class="result-title-wrapper">{{{result.title}}}</span>
+        <span class="icon-wrapper"><a href="{{result.link}}" target="_blank"><i class="icon-link-ext"></i></a></span>
     </div>
-    <div class="query-preview-result-body">{{{body}}}</div>
+    <div class="query-preview-result-body">{{{result.body}}}</div>
 </template>
 
-<template name="redlinkInlineResult_bahn.de">
+<template name="redlinkInlineResult_bahn_de">
     <div class="travel-bahn">
         <div class="from-to-wrapper clearfix">
         <span class="from-wrapper">
-			<div class="location">Freising</div>
-			<div class="time">19:10</div>
+			<div class="location">{{result.departure.location}}</div>
+			<div class="time">{{result.departure.time}}</div>
 		</span>
         <span class="to-wrapper">
-			<div class="location">Berlin Hbf (tief)</div>
-			<div class="arrival time">06:30</div>
-			<div class="day-offset">+ 1 Tag</div>
+			<div class="location">{{result.arrival.location}}</div>
+			<div class="arrival time">{{result.arrival.time}}</div>
+			<div class="day-offset">{{result.dateChange}}</div>
 		</span>
         </div>
         <div class="details-wrapper">
-            <div class="details">Dauer: 11:20</div>
-            <div class="details">Umstiege: 3</div>
-            <div class="details">Produkte: RE, ICE</div>
+            <div class="details">Dauer: {{result.travelDuration}}</div>
+            <div class="details">Umstiege: {{result.travelChanges}}</div>
+            <div class="details">Produkte: {{result.travelProducts}}</div>
         </div>
         <div class="price-wrapper clearfix">
             <div class="price-save">
@@ -61,8 +61,8 @@
             </div>
         </div>
         <div class="action-wrapper clearfix">
-            <button class="link-external">Details</button>
-            <button class="link-message">Senden</button>
+            <a href="#"><button class="link-external">Details</button></a>
+            <button class="js-copy-reply-suggestion link-message">Senden</button>
         </div>
     </div>
 </template>
