@@ -1,26 +1,51 @@
 Template.redlinkInlineResult.helpers({
-	rawResult(){
+	templateName(){
 		const instance = Template.instance();
-		return JSON.stringify(instance.data.result, " ", 2);
-	},
-	resultTitle(){
-		const instance = Template.instance();
-		return $('<span />').html(instance.data.result.title).text();
-	},
-	resultLink(){
-		const instance = Template.instance();
-		return instance.data.result.link;
-	},
-	resultBody(){
-		const instance = Template.instance();
-		return $('<span />').html(instance.data.result.body).text();
+
+		let templateSuffix = "generic";
+		switch (instance.data.result.creator) {
+			case 'redlinkInlineResult_community.bahn.de':
+				templateSuffix = "VKL_community";
+				break;
+			case 'VKL':
+				templateSuffix = "VKL_community";
+				break;
+			default:
+				templateSuffix = "generic";
+				break;
+		}
+		return 'redlinkInlineResult_' + templateSuffix;
 	}
 });
 
 Template.redlinkInlineResult.events({
-	'click .js-copy-reply-suggestion': function(event, instance){
-		if(instance.data.result.replySuggestion) {
+	'click .js-copy-reply-suggestion': function (event, instance) {
+		if (instance.data.result.replySuggestion) {
 			$('#chat-window-' + instance.data.roomId + ' .input-message').val(instance.data.result.replySuggestion);
 		}
+	}
+});
+
+Template.redlinkInlineResult_generic.helpers({
+	rawResult(){
+		const instance = Template.instance();
+		return JSON.stringify(instance.data.result, ' ', 2);
+	},
+
+	relevantKeyValues(){
+		const instance = Template.instance();
+
+		let keyValuePairs = [];
+		for (key in instance.data.result) {
+			if (key !== "score" &&
+				key !== "creator" &&
+				key !== "topic" &&
+				key !== "categories"
+			) {
+				keyValuePairs.push({key: key, value: instance.data.result[key]});
+			}
+		}
+
+		return keyValuePairs;
 	}
 });
