@@ -253,7 +253,7 @@ Template.externalSearch.events({
 		event.preventDefault();
 		const rlData = _.first(RocketChat.models.LivechatExternalMessage.findByRoomId(inst.roomId, {ts: -1}).fetch());
 		if (rlData && rlData.result) {
-			const input = inst.$(event.target).closest('.knowledge-input-wrapper');
+			const input = inst.$(event.target).closest('.field-with-label');
 			const qSlot = _.find(rlData.result.queryTemplates[input.data('parentTplIndex')].querySlots, (slot) => {
 				return slot.tokenIndex === input.data('tokenIndex');
 			});
