@@ -206,6 +206,7 @@ Template.externalSearch.events({
 		inputWrapper.removeClass("editing");
 
 		const saveValue = inputField.val();
+		inputWrapper.find(".icon-cancel").data("initValue", saveValue);
 
 		let externalMsg = instance.externalMessages.get();
 		const newToken = {
