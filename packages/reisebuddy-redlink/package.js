@@ -25,9 +25,7 @@ Package.onUse(function (api) {
 
 	addDirectory(api, 'server/methods', 'server');
 	addDirectory(api, 'server/lib', 'server');
-
-	api.export('RedlinkAdapterFactory');
-
+	// addDirectory(api, 'client/views', 'client');
 });
 
 Package.onTest(function (api) {
