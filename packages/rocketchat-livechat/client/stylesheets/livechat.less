@@ -931,10 +931,110 @@
 						}
 					}
 				}
+
+
+
+
 				.query-preview {
 					margin-bottom: 20px;
 					border: 1px solid #ccc;
 					background-color: #fff;
+					em {
+						font-weight: bold;
+					}
+					.travel-bahn-wrapper {
+						.travel-bahn {
+							border: 1px solid #ccc;
+							margin: 0 8px 0;
+							min-width: 260px;
+							float: left;
+
+							.from-to-wrapper {
+								background-color: #ccc;
+								padding: 10px 15px;
+								.from-wrapper {
+									float: left;
+								}
+								.to-wrapper {
+									float: right;
+									text-align: right;
+								}
+								.location {
+									font-size: 12px;
+									font-weight: bold;
+									margin-bottom: 10px;
+								}
+								.time {
+									font-size: 25px;
+									font-weight: bold;
+									margin-bottom: 10px;
+								}
+								.day-offset {
+									font-size: 12px;
+									font-weight: normal;
+								}
+							}
+							.details-wrapper {
+								background-color: #fff;
+								padding: 10px 15px;
+								min-height: 100px;
+								.details {
+									font-size: 12px;
+									font-weight: bold;
+									margin-bottom: 5px;
+								}
+							}
+							.price-wrapper {
+								min-height: 60px;
+								padding: 10px 15px;
+								.price-save {
+									float: left;
+								}
+								.price-flex {
+									float: right;
+									text-align: right;
+								}
+								.price-label {
+									font-size: 12px;
+									font-weight: bold;
+									font-style: italic;
+									margin-bottom: 5px;
+								}
+								.price {
+									font-size: 18px;
+									font-weight: bold;
+								}
+							}
+							.action-wrapper {
+								min-height: 40px;
+								padding: 10px 15px;
+								color: #fff;
+								a {
+									color: #fff;
+								}
+								.action-icon {
+									display: inline-block;
+									margin: 0 10px 0 0;
+									font-size: 15px;
+									float: right;
+								}
+								.link-external, .link-message {
+									padding: 10px;
+									cursor: pointer;
+									width: 110px;
+								}
+								.link-external {
+									float: left;
+									background-color: #ff0000;
+								}
+								.link-message {
+									float: right;
+									text-align: right;
+									background-color: #097E28;
+								}
+							}
+						}
+					}
 
 					.query-preview-navigation {
 						text-align: center;
@@ -950,8 +1050,8 @@
 						padding: 10px 15px;
 					}
 					.query-preview-content {
-						padding: 10px 15px;
 						.query-preview-result-title {
+							padding: 10px 15px;
 							font-style: italic;
 							.result-title-wrapper {
 								float: left;
@@ -967,7 +1067,7 @@
 							}
 						}
 						.query-preview-result-body {
-							padding: 5px 0;
+							padding: 10px 15px;
 						}
 					}
 				}
