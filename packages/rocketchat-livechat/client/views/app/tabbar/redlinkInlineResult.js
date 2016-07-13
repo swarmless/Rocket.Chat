@@ -4,7 +4,7 @@ Template.redlinkInlineResult.helpers({
 
 		let templateSuffix = "generic";
 		switch (instance.data.result.creator) {
-			case 'redlinkInlineResult_community.bahn.de':
+			case 'community.bahn.de':
 				templateSuffix = "VKL_community";
 				break;
 			case 'VKL':
@@ -29,14 +29,14 @@ Template.redlinkInlineResult.events({
 Template.redlinkInlineResult_generic.helpers({
 	rawResult(){
 		const instance = Template.instance();
-		return JSON.stringify(instance.data.result, ' ', 2);
+		return JSON.stringify(instance.data, ' ', 2);
 	},
 
 	relevantKeyValues(){
 		const instance = Template.instance();
 
 		let keyValuePairs = [];
-		for (key in instance.data.result) {
+		for (key in instance.data) {
 			if (key !== "score" &&
 				key !== "creator" &&
 				key !== "topic" &&

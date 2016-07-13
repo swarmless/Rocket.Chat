@@ -1,18 +1,20 @@
 <template name="redlinkInlineResult">
-    <div class="query-preview-content">
-        <div>
-			{{> Template.dynamic template=templateName result=result }}
-			{{#if result.replySuggestion }}
-                <div class='js-copy-reply-suggestion'>
-                    Übernehmen
-                </div>
-			{{/if}}
+	{{#if result}}
+        <div class="query-preview-content">
+            <div>
+				{{> Template.dynamic template=templateName data=result }}
+				{{#if replySuggestion }}
+                    <div class='js-copy-reply-suggestion'>
+                        Übernehmen
+                    </div>
+				{{/if}}
+            </div>
         </div>
-    </div>
+	{{/if}}
 </template>
 
 <template name="redlinkInlineResult_generic">
-    <div>
+    <div style="display: none;">
 		{{#each keyValuePair in relevantKeyValues}}
             <div class="key-value-pair">
                 <span class="key" style="font-weight: bold">{{keyValuePair.key}}: </span><span
@@ -24,8 +26,8 @@
 
 <template name="redlinkInlineResult_VKL_community">
     <div class="query-preview-result-title clearfix">
-        <span class="result-title-wrapper">{{{result.title}}}</span>
-        <span class="icon-wrapper"><a href="{{result.link}}" target="_blank"><i class="icon-link-ext"></i></a></span>
+        <span class="result-title-wrapper">{{{title}}}</span>
+        <span class="icon-wrapper"><a href="{{link}}" target="_blank"><i class="icon-link-ext"></i></a></span>
     </div>
-    <div class="query-preview-result-body">{{{result.body}}}</div>
+    <div class="query-preview-result-body">{{{body}}}</div>
 </template>
