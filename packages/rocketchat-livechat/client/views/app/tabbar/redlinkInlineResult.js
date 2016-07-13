@@ -49,6 +49,3 @@ Template.redlinkInlineResult_generic.helpers({
 		return keyValuePairs;
 	}
 });
-
-Template.redlinkInlineResult_VKL.helpers({
-});
