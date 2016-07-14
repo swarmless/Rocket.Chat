@@ -56,7 +56,7 @@ class RedlinkAdapter {
 				data: modifiedRedlinkResult.result,
 				headers: this.headers
 			});
-
+			SystemLogger.debug("recieved update to redlinkk with: " + JSON.stringify(responseRedlinkQuery));
 			RocketChat.models.LivechatExternalMessage.update(
 				{
 					_id: modifiedRedlinkResult._id

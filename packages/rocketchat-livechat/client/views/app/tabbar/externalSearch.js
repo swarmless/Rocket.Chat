@@ -210,15 +210,18 @@ Template.externalSearch.events({
 
 		let externalMsg = instance.externalMessages.get();
 		const newToken = {
-			messageIdx: -1,
-			type: _.isEmpty(inputWrapper.data('tokenType')) ?  null : inputWrapper.data('tokenType'),
-			state: "Confirmed",
-			origin: "Agent",
 			confidence: 0.95,
+			messageIdx: -1,
+			start: -1,
+			end: -1,
+			state: "Confirmed",
+			hints: [],
+			type: _.isEmpty(inputWrapper.data('tokenType')) ?  null : inputWrapper.data('tokenType'),
+			origin: "Agent",
 			value: inputField.hasClass('datetime-field') ?
 			{
 				grain: 'minute',
-				value: saveValue
+				date: moment(saveValue, "L LT").toISOString()
 			} :
 				saveValue
 		};
