@@ -41,6 +41,8 @@ Template.redlinkInlineResult.events({
 	}
 });
 
+//----------------------------------- Generic helper as fallback ------------------------------
+
 Template.redlinkInlineResult_generic.helpers({
 	relevantKeyValues(){
 		const instance = Template.instance();
@@ -54,8 +56,36 @@ Template.redlinkInlineResult_generic.helpers({
 	}
 });
 
+//------------------------------------- Bahn.de -----------------------------------------------
+
 Template.redlinkInlineResult_bahn_de.events({
 	'click .js-copy-reply-suggestion': function(event, instance){
 		return Template.redlinkInlineResult._copyReplySuggestion(event, instance)
 	}
 });
+
+//----------------------------------- VKL and community ---------------------------------------
+Template.redlinkInlineResult_VKL_community.helpers({
+	classExpanded(){
+		const instance = Template.instance();
+		return instance.state.get('expanded') ? 'expanded' : 'collapsed';
+	}
+});
+
+Template.redlinkInlineResult_VKL_community.events({
+	'click .result-item-wrapper .js-toggle-results-expanded': function (event, instance) {
+		const current = instance.state.get('expanded');
+		instance.state.set('expanded', !current);
+	},
+});
+
+Template.redlinkInlineResult_VKL_community.onCreated(function () {
+	const instance = this;
+
+	this.state = new ReactiveDict();
+	this.state.setDefault({
+		expanded: false
+	});
+});
+
+
