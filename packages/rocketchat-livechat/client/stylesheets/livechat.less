@@ -777,9 +777,28 @@
 				}
 
 				.icon-wrapper {
+					position: relative;
 					background-color: #efefef;
 					border-radius: 5px;
 					cursor: pointer;
+					.icon-spinner {
+						position: absolute;
+						left:6px;
+						background-color: #efefef;
+						display: none;
+					}
+					.icon-spinner:before {
+						-webkit-animation: spin 2s 3 linear;
+						-o-animation: spin 2s 3 linear;
+						animation: spin 2s 3 linear;
+
+					}
+					&.spinner {
+						cursor: default;
+						.icon-spinner {
+							display: inline-block!important;
+						}
+					}
 				}
 
 				.value-seperator, .icon-wrapper {
