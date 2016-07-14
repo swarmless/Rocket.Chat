@@ -229,7 +229,8 @@ Template.externalSearch.events({
 		externalMsg.result.tokens.push(newToken);
 		externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots,
 			(query) => {
-				if (query.tokenIndex === inputWrapper.data('tokenIndex')) {
+				//data('tokenIndex') will be cached and second edit will be ignored. use attr('data-token-index'), compare with (int == string)
+				if (query.tokenIndex == inputWrapper.attr('data-token-index')) {
 					query.tokenIndex = externalMsg.result.tokens.length - 1;
 				}
 				return query;
