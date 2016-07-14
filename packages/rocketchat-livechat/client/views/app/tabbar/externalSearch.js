@@ -229,7 +229,7 @@ Template.externalSearch.events({
 		externalMsg.result.tokens.push(newToken);
 		externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots,
 			(query) => {
-				//data('tokenIndex') will be cached and second edit will be ignored. use attr('data-token-index'), compare with (int == string)
+				//data('tokenIndex') will be cached and second edit will be ignored. used attr('data-token-index'), compare with (int == string)
 				if (query.tokenIndex == inputWrapper.attr('data-token-index')) {
 					query.tokenIndex = externalMsg.result.tokens.length - 1;
 				}
@@ -259,7 +259,8 @@ Template.externalSearch.events({
 		if (rlData && rlData.result) {
 			const input = inst.$(event.target).closest('.field-with-label');
 			const qSlot = _.find(rlData.result.queryTemplates[input.data('parentTplIndex')].querySlots, (slot) => {
-				return slot.tokenIndex === input.data('tokenIndex');
+				//data('tokenIndex') will be cached and second edit will be ignored. used attr('data-token-index'), compare with (int == string)
+				return slot.tokenIndex == input.attr('data-token-index');
 			});
 			if (qSlot && qSlot.inquiryMessage) {
 				$('#chat-window-' + inst.roomId + ' .input-message').val(qSlot.inquiryMessage).focus();
@@ -270,21 +271,35 @@ Template.externalSearch.events({
 	 * Switches the tokens between two slots within a query template.
 	 */
 	'click .external-message .icon-wrapper .icon-exchange': function(event, instance) {
-		const changeBtn = $(event.target).parent().closest('.icon-wrapper');
-		const left = changeBtn.prevAll('.field-with-label');
-		const right = changeBtn.nextAll('.field-with-label');
+		const changeBtn = $(event.target).parent().closest('.icon-wrapper'),
+			left = changeBtn.prevAll('.field-with-label'),
+			right = changeBtn.nextAll('.field-with-label'),
+			leftTokenIndex = parseInt(left.attr('data-token-index')),
+			rightTokenIndex = parseInt(right.attr('data-token-index'));
+		if(changeBtn.hasClass("spinner")) {
+			return;
+		};
+		changeBtn.addClass("spinner");
 		let externalMsg = instance.externalMessages.get();
 		externalMsg.result.queryTemplates[left.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[left.data('parentTplIndex')].querySlots,
 			(query) => {
-				if (query.tokenIndex === left.data('tokenIndex')) {
-					query.tokenIndex = right.data('tokenIndex');
-				} else if (query.tokenIndex === right.data('tokenIndex')) {
-					query.tokenIndex = left.data('tokenIndex');
+				if (query.tokenIndex === leftTokenIndex) {
+					query.tokenIndex = rightTokenIndex;
+				} else if (query.tokenIndex === rightTokenIndex) {
+					query.tokenIndex = leftTokenIndex;
 				}
 				return query;
 			});
 		instance.externalMessages.set(externalMsg);
-		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get(),(err, res) => {
+			changeBtn.removeClass("spinner");
+			if (err) {
+				//TODO logging error
+				//console.log(err);
+			} else {
+				// success!
+			}
+		});
 	}
 });
 
