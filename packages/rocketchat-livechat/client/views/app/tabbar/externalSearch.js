@@ -265,7 +265,7 @@ Template.externalSearch.events({
 	/**
 	 * Switches the tokens between two slots within a query template.
 	 */
-	'click .external-message .icon-wrapper': function(event, instance) {
+	'click .external-message .icon-wrapper .icon-exchange': function(event, instance) {
 		const changeBtn = $(event.target).parent().closest('.icon-wrapper');
 		const left = changeBtn.prevAll('.field-with-label');
 		const right = changeBtn.nextAll('.field-with-label');

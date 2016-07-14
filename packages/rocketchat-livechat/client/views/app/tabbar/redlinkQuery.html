@@ -21,7 +21,8 @@
             <div class="query-preview">
 				{{#if and query.inlineResultSupport maxConfidence=query.confidence}}
                     <!-- Another template has to use the query propagated to it in order to issue a separate request which provides the actual result -->
-                    <h4 class="query-preview-headline">{{queryPreviewHeadline}}</h4>
+                    <div class="query-preview-headline-wrapper clearfix">
+						<h4 class="query-preview-headline">{{queryPreviewHeadline}}</h4>
 
 					{{#let navigationMode=navigationMode}}
                         <div class="query-preview-navigation">
@@ -32,7 +33,7 @@
 							</span>
                         </div>
 					{{/let}}
-
+                    </div>
 					{{> redlinkInlineResult result=visibleResult roomId=roomId}}
 				{{/if}}
             </div>
