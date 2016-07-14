@@ -3,11 +3,6 @@
         <div class="query-preview-content">
             <div>
 				{{> Template.dynamic template=templateName data=templateData }}
-				{{#if replySuggestion }}
-                    <div class='js-copy-reply-suggestion'>
-                        Übernehmen
-                    </div>
-				{{/if}}
             </div>
         </div>
 	{{/if}}
@@ -33,9 +28,9 @@
 </template>
 
 <template name="redlinkInlineResult_bahn_de">
-	<div class="travel-bahn-wrapper clearfix">
-		<div class="travel-bahn">
-			<div class="from-to-wrapper clearfix">
+    <div class="travel-bahn-wrapper clearfix">
+        <div class="travel-bahn">
+            <div class="from-to-wrapper clearfix">
 			<span class="from-wrapper">
 				<div class="location">{{result.departure.location}}</div>
 				<div class="time">{{result.departure.time}}</div>
@@ -45,26 +40,34 @@
 				<div class="arrival time">{{result.arrival.time}}</div>
 				<div class="day-offset">{{result.dateChange}}</div>
 			</span>
-			</div>
-			<div class="details-wrapper">
-				<div class="details">Dauer: {{result.travelDuration}}</div>
-				<div class="details">Umstiege: {{result.travelChanges}}</div>
-				<div class="details">Produkte: {{result.travelProducts}}</div>
-			</div>
-			<div class="price-wrapper clearfix">
-				<div class="price-save">
-					<div class="price-label">Sparpreis</div>
-					<div class="price">139.00 €</div>
-				</div>
-				<div class="price-flex">
-					<div class="price-label">Flexpreis</div>
-					<div class="price">142.00 €</div>
-				</div>
-			</div>
-			<div class="action-wrapper clearfix">
-				<a href="#"><button class="link-external">Details<i class="action-icon icon-link-ext"></i></button></a>
-				<button class="js-copy-reply-suggestion link-message">Senden<i class="action-icon icon-chat"></i></button>
-			</div>
-		</div>
+            </div>
+            <div class="details-wrapper">
+                <div class="details">{{text 'duration'}}: {{result.travelDuration}}</div>
+                <div class="details">{{text 'track_changes'}}: {{result.travelChanges}}</div>
+                <div class="details">{{text 'products'}}: {{result.travelProducts}}</div>
+            </div>
+			{{#if result.stdPrice}}
+                <div class="price-wrapper clearfix">
+                    <div class="price-low">
+                        <div class="price-label">{{text result.price_low}}</div>
+                        <div class="price">{{result.lowPrice}} €</div>
+                    </div>
+                    <div class="price-standard">
+                        <div class="price-label">{{text 'price_standard'}}</div>
+                        <div class="price">{{result.stdPrice}} €</div>
+                    </div>
+                </div>
+                <div class="action-wrapper clearfix">
+                    <a href={{result.bookingLink}}>
+                        <button class="link-external">{{text 'connection_details'}}<i
+                                class="action-icon icon-link-ext"></i></button>
+                    </a>
+                    <button class="js-copy-reply-suggestion link-message">{{text 'copy_to_message'}}<i
+                            class="action-icon icon-chat"></i></button>
+                </div>
+			{{else}}
+                <div class="not-available">{{text 'connection_not_available'}}</div>
+			{{/if}}
+        </div>
     </div>
 </template>

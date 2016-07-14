@@ -6,13 +6,13 @@ Template.redlinkQuery.helpers({
 	visibleResult(){
 		const instance = Template.instance();
 		const results = instance.state.get('results');
-		if(results) return results[instance.state.get('visibleResultIndex')];
+		if (results) return results[instance.state.get('visibleResultIndex')];
 	},
 
 	resultsCount(){
 		const instance = Template.instance();
 		const results = instance.state.get('results');
-		if(results) return results.length;
+		if (results) return results.length;
 	},
 
 	visibleResultNumer(){
@@ -24,29 +24,65 @@ Template.redlinkQuery.helpers({
 	classExpanded(){
 		const instance = Template.instance();
 		return instance.state.get('resultsExpanded') ? 'collapsed' : 'expanded';
+	},
+
+	queryPreviewHeadline(){
+		const instance = Template.instance();
+		const results = instance.state.get('results');
+		if (results) {
+			const creator = results[0].creator; //all results have got the same creator
+			switch (creator) {
+				case 'community.bahn.de':
+					return t('results_community_bahn_de');
+				case 'bahn.de':
+					return t('results_bahn_de');
+				default:
+					return t('results');
+			}
+		}
+	},
+
+	navigationMode(){
+		const instance = Template.instance();
+		const results = instance.state.get('results');
+		if (results) {
+			const creator = results[0].creator; //all results have got the same creator
+			switch (creator) {
+				case 'bahn.de':
+					return {
+						mode: 'slider',
+						visibleResults: 2
+					};
+				default:
+					return {
+						mode: 'slider',
+						visibleResults: 1
+					};
+			}
+		}
 	}
 });
 
 Template.redlinkQuery.events({
-	'click .js-toggle-results-expanded': function(event, instance){
+	'click .js-toggle-results-expanded': function (event, instance) {
 		const current = instance.state.get('resultsExpanded');
 		instance.state.set('resultsExpanded', !current);
 	},
 
-	'click .js-next-result': function(event, instance){
+	'click .js-next-result': function (event, instance) {
 		const visibleResultIndex = instance.state.get('visibleResultIndex');
 		const results = instance.state.get('results');
-		if(visibleResultIndex < results.length - 1){
+		if (visibleResultIndex < results.length - 1) {
 			instance.state.set('visibleResultIndex', visibleResultIndex + 1);
 		} else {
 			instance.state.set('visibleResultIndex', 0);
 		}
 	},
 
-	'click .js-previous-result': function(event, instance){
+	'click .js-previous-result': function (event, instance) {
 		const visibleResultIndex = instance.state.get('visibleResultIndex');
 		const results = instance.state.get('results');
-		if(visibleResultIndex > 0 ){
+		if (visibleResultIndex > 0) {
 			instance.state.set('visibleResultIndex', visibleResultIndex - 1);
 		} else {
 			instance.state.set('visibleResultIndex', results.length - 1);
@@ -66,11 +102,11 @@ Template.redlinkQuery.onCreated(function () {
 	});
 
 	// Asynchronously load the results.
-	Meteor.defer(()=>{
+	Meteor.defer(()=> {
 		if (instance.data && instance.data.query && instance.data.roomId) {
 			//issue a request to the redlink results-service and buffer the potential results in a reactive variable
 			//which then can be forwarded to the results-template
-			if(instance.data.query.inlineResultSupport) {
+			if (instance.data.query.inlineResultSupport) {
 				Meteor.call('redlink:retrieveResults', instance.data.roomId, instance.data.templateIndex, instance.data.query.creator, (err, results)=> {
 					instance.state.set('results', results);
 					instance.state.set('resultsFetched', true); //consider the task done

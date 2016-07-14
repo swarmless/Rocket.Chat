@@ -3,7 +3,7 @@ Template.redlinkInlineResult._copyReplySuggestion = function(event, instance)
 	if (instance.data.result.replySuggestion) {
 		$('#chat-window-' + instance.data.roomId + ' .input-message').val(instance.data.result.replySuggestion);
 	}
-}
+};
 
 Template.redlinkInlineResult.helpers({
 	templateName(){
