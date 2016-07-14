@@ -21,7 +21,7 @@ RocketChat.callbacks.add('afterSaveMessage', function (message, pRoom) {
 		return message;
 	}
 	service.send({
-		to: room.rbInfo.visitorSendInfo,
+		phoneNumber: room.rbInfo.visitorSendInfo,
 		message: message.msg
 	});
 	return message;

@@ -87,6 +87,7 @@ Meteor.methods({
 				serviceName: communicationService.getServiceName()
 			};
 		}
+		
 		// Make sure we have a room
 		RocketChat.models.Rooms.upsert({
 			_id: rid
