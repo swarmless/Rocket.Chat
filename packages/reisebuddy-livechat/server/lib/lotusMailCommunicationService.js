@@ -6,11 +6,15 @@
 class LotusMailCommunicationService {
 
 	constructor() {
-		this.defaultSender = RocketChat.settings.get('Mail_Reisebuddy_defaultSender');
-		this.defaultSubject = RocketChat.settings.get('Mail_Reisebuddy_defaultSubject');
+		this.defaultSubject = RocketChat.settings.get('SMS_Out_Reisebuddy_defaultSubject');
 
-		this.basicHeader = 'Basic ' + new Buffer(RocketChat.settings.get('Mail_Reisebuddy_username') + ':' +
-												 RocketChat.settings.get('Mail_Reisebuddy_authToken')).toString('base64');
+		this.lotusEndpoint 	= RocketChat.settings.get('SMS_Out_Reisebuddy_lotusEndpoint');
+		this.outgoingAuthHeader = 'Basic ' + new Buffer(RocketChat.settings.get('SMS_Out_Reisebuddy_username') + ':' +
+				RocketChat.settings.get('SMS_Out_Reisebuddy_password')).toString('base64');
+		this.baseAddress 	= RocketChat.settings.get('SMS_Out_Reisebuddy_baseAddress');
+
+		this.basicHeader = 'Basic ' + new Buffer(RocketChat.settings.get('Mail_In_Reisebuddy_username') + ':' +
+												 RocketChat.settings.get('Mail_In_Reisebuddy_password')).toString('base64');
 	}
 
 	static SERVICE_NAME() {
@@ -67,32 +71,45 @@ class LotusMailCommunicationService {
 	/**
 	 * Sends a mail to the given parameters asynchronously. Log on error.
 	 * @param sender optional - default: Mail_Reisebuddy_defaultSSender
-	 * @param to
+	 * @param phoneNumber
 	 * @param message
 	 * @param subject optional - default: Mail_Reisebuddy_defaultSubject
 	 * @throws Match.Error if params are invalid
 	 */
-	send({sender, to, message, subject} = {}) {
+	send({phoneNumber, message, subject} = {}) {
 		check(arguments[0], {
-			to: String,
-			sender: Match.Optional(String),
+			phoneNumber: String,
 			message: String,
 			subject: Match.Optional(String)
 		});
 		const self = this;
-		SystemLogger.debug("send mail to " + to);
-		try {
-			Email.send({
-				from:    sender || self.defaultSender,
-				to: to,
-				subject: subject || self.defaultSubject,
-				text:    message || ''
-			});
-			SystemLogger.debug("mail successfully send " + to);
-		} catch (e) {
-			SystemLogger.error("unable to send mail to " + to + " -- " + e);
-			throw e;
-		}
+
+		phoneNumber = phoneNumber.replace('@sms.db.de', ''); // TODO increase security here
+		SystemLogger.debug("send sms to " + phoneNumber);
+
+		let requestBody =
+		{
+			to: phoneNumber + self.baseAddress,
+			subject: subject || self.defaultSubject,
+			body: message || ''
+		};
+
+		let options = {
+			"headers": {
+				"Authorization": self.outgoingAuthHeader,
+				"Content-Type": "application/json"
+			},
+			"data": requestBody
+		};
+
+		HTTP.post(self.lotusEndpoint, options,
+			(error, result) => {
+				if(error) {
+					SystemLogger.error("unable to send mail to " + phoneNumber + " -- " + error);
+				} else if (result) {
+					SystemLogger.debug("mail successfully send to " + phoneNumber, " with result: \n" + result);
+				}
+		});
 	}
 }
 

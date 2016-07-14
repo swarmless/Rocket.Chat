@@ -1,26 +1,44 @@
 Meteor.startup(function() {
-	RocketChat.settings.add('Mail_Reisebuddy_defaultSender', 'buddy@reisebuddy.com', {
+	RocketChat.settings.add('SMS_Out_Reisebuddy_lotusEndpoint', 'http://grendo001/Develop/Mail/Forward/JSON/groupJsonForward.nsf/sendMail.xsp', {
 		type: 'string',
 		group: 'Livechat',
 		section: 'Reisebuddy_MailConf',
-		i18nLabel: 'Mail_Reisebuddy_defaultSender'
+		i18nLabel: 'SmsOut_Reisebuddy_lotusEndpoint'
 	});
-	RocketChat.settings.add('Mail_Reisebuddy_defaultSubject', 'Reisebuddy', {
+	RocketChat.settings.add('SMS_Out_Reisebuddy_baseAddress', '@iat-vfsms@DEUTSCHE BAHN AG@DBKOM', {
 		type: 'string',
 		group: 'Livechat',
 		section: 'Reisebuddy_MailConf',
-		i18nLabel: 'Mail_Reisebuddy_defaultSubject'
+		i18nLabel: 'SmsOut_Reisebuddy_baseAddress'
 	});
-	RocketChat.settings.add('Mail_Reisebuddy_username', '', {
+	RocketChat.settings.add('SMS_Out_Reisebuddy_defaultSubject', 'Reisebuddy', {
 		type: 'string',
 		group: 'Livechat',
 		section: 'Reisebuddy_MailConf',
-		i18nLabel: 'Mail_Reisebuddy_username'
+		i18nLabel: 'SmsOut_Reisebuddy_defaultSubject'
 	});
-	RocketChat.settings.add('Mail_Reisebuddy_authToken', '', {
+	RocketChat.settings.add('SMS_Out_Reisebuddy_username', '', {
 		type: 'string',
 		group: 'Livechat',
 		section: 'Reisebuddy_MailConf',
-		i18nLabel: 'Mail_Reisebuddy_authToken'
+		i18nLabel: 'SmsOut_Reisebuddy_username'
+	});
+	RocketChat.settings.add('SMS_Out_Reisebuddy_password', '', {
+		type: 'string',
+		group: 'Livechat',
+		section: 'Reisebuddy_MailConf',
+		i18nLabel: 'SmsOut_Reisebuddy_password'
+	});
+	RocketChat.settings.add('Mail_In_Reisebuddy_username', '', {
+		type: 'string',
+		group: 'Livechat',
+		section: 'Reisebuddy_MailConf',
+		i18nLabel: 'MailIn_Reisebuddy_username'
+	});
+	RocketChat.settings.add('Mail_In_Reisebuddy_password', '', {
+		type: 'string',
+		group: 'Livechat',
+		section: 'Reisebuddy_MailConf',
+		i18nLabel: 'MailIn_Reisebuddy_password'
 	});
 });
