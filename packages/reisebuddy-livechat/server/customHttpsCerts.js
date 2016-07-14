@@ -8,7 +8,7 @@
 	var caMap = (function () {
 		var fs = Npm.require('fs');
 		var result = {};
-		if(fs.stat(certDir).isDirectory()) {
+		if(fs.statSync(certDir).isDirectory()) {
 			var certList = fs.readdirSync(certDir);
 			for (var i = 0; i < certList.length; i++) {
 				result[certList[i]] = fs.readFileSync(certDir + certList[i]);
