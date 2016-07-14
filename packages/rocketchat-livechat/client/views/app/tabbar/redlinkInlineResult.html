@@ -20,11 +20,16 @@
 </template>
 
 <template name="redlinkInlineResult_VKL_community">
-    <div class="query-preview-result-title clearfix">
-        <span class="result-title-wrapper">{{{result.title}}}</span>
-        <span class="icon-wrapper"><a href="{{result.link}}" target="_blank"><i class="icon-link-ext"></i></a></span>
+	<div class="result-item-wrapper {{classExpanded}}">
+		<div class="query-preview-result-title clearfix">
+			<span class="result-title-wrapper">{{{result.title}}}</span>
+			<span class="icon-wrapper">
+				<a href="{{result.link}}" target="_blank"><i class="icon-link-ext"></i></a>
+				<span class="js-toggle-results-expanded icon-up-open"></span>
+			</span>
+		</div>
+		<div class="query-preview-result-body">{{{result.body}}}</div>
     </div>
-    <div class="query-preview-result-body">{{{result.body}}}</div>
 </template>
 
 <template name="redlinkInlineResult_bahn_de">
@@ -66,7 +71,10 @@
                             class="action-icon icon-chat"></i></button>
                 </div>
 			{{else}}
-                <div class="not-available">{{text 'connection_not_available'}}</div>
+                <div class="not-available">
+                    <button class="js-not-available">{{text 'connection_not_available'}}<i
+                            class="action-icon icon-block"></i></button>
+                </div>
 			{{/if}}
         </div>
     </div>

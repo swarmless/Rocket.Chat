@@ -23,7 +23,7 @@ Template.redlinkQuery.helpers({
 
 	classExpanded(){
 		const instance = Template.instance();
-		return instance.state.get('resultsExpanded') ? 'collapsed' : 'expanded';
+		return instance.state.get('resultsExpanded') ? 'expanded' : 'collapsed';
 	},
 
 	queryPreviewHeadline(){
@@ -64,7 +64,7 @@ Template.redlinkQuery.helpers({
 });
 
 Template.redlinkQuery.events({
-	'click .js-toggle-results-expanded': function (event, instance) {
+	'click .query-results-toggle .js-toggle-results-expanded': function (event, instance) {
 		const current = instance.state.get('resultsExpanded');
 		instance.state.set('resultsExpanded', !current);
 	},
@@ -95,7 +95,7 @@ Template.redlinkQuery.onCreated(function () {
 
 	this.state = new ReactiveDict();
 	this.state.setDefault({
-		expanded: instance.data.query.inlineResultSupport && ( instance.data.maxConfidence === instance.data.query.confidence ),
+		resultsExpanded: instance.data.query.inlineResultSupport && ( instance.data.maxConfidence === instance.data.query.confidence ),
 		results: [],
 		resultsFetched: false, // in order to be able to determine an empty result list from not having tried to fetch results
 		visibleResultIndex: 0
