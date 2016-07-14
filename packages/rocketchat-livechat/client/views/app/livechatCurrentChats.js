@@ -14,23 +14,11 @@ Template.livechatCurrentChats.helpers({
 				},
 				{
 					key: 'ts',
-					label: TAPi18n.__('Started_At')/*,
-					fn: (value, object) => {
-						if (!value && object && object.ts) {
-							value = object.ts;
-						}
-						return moment(value).format('L LT');
-					}*/
+					label: TAPi18n.__('Started_At')
 				},
 				{
 					key: 'lm',
-					label: TAPi18n.__('Last_Message')/*,
-					fn: (value, object) => {
-						if (!value && object && object.lm) {
-							value = object.lm;
-						}
-						return moment(value).format('L LT');
-					}*/,
+					label: TAPi18n.__('Last_Message'),
 					sortOrder: 0,
 					sortDirection: 'desc'
 				},
