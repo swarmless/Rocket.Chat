@@ -6,13 +6,17 @@
 	var certDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/.nodeCaCerts/';
 
 	var caMap = (function () {
-		var fs = Npm.require('fs');
-		var result = {};
-		if(fs.statSync(certDir).isDirectory()) {
-			var certList = fs.readdirSync(certDir);
-			for (var i = 0; i < certList.length; i++) {
-				result[certList[i]] = fs.readFileSync(certDir + certList[i]);
+		try {
+			var fs = Npm.require('fs');
+			var result = {};
+			if (fs.statSync(certDir).isDirectory()) {
+				var certList = fs.readdirSync(certDir);
+				for (var i = 0; i < certList.length; i++) {
+					result[certList[i]] = fs.readFileSync(certDir + certList[i]);
+				}
 			}
+		} catch (e) {
+			console.warn("unable to load private root certs from path: " + certDir);
 		}
 		return result;
 	})();
