@@ -71,7 +71,7 @@ class RedlinkAdapter {
 				});
 
 		} catch (err) {
-			console.error('Updating redlink results (via QUERY) did not succeed -> ', err);
+			console.error('Updating redlink results (via QUERY) did not succeed -> ', JSON.stringify(err));
 		}
 	}
 

@@ -120,7 +120,10 @@ Template.externalSearch.events({
 		let externalMsg = instance.externalMessages.get();
 		externalMsg.result.queryTemplates[query.data('templateIndex')].queries[query.data('queryIndex')].state = 'Confirmed';
 		instance.externalMessages.set(externalMsg);
-		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get(),(err) => {
+			if (err) {//TODO logging error
+			}
+		});
 	},
 	/**
 	 * Hide datetimepicker when right mouse clicked
@@ -158,7 +161,10 @@ Template.externalSearch.events({
 		let externalMsg = instance.externalMessages.get();
 		externalMsg.result.queryTemplates[query.data('templateIndex')].state = 'Confirmed';
 		instance.externalMessages.set(externalMsg);
-		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get(), (err) => {
+			if (err) {//TODO logging error
+			}
+		});
 	},
 	/**
 	 * Mark a template as rejected.
@@ -168,12 +174,14 @@ Template.externalSearch.events({
 		let externalMsg = instance.externalMessages.get();
 		externalMsg.result.queryTemplates[query.data('templateIndex')].state = 'Rejected';
 		instance.externalMessages.set(externalMsg);
-		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get(), (err) => {
+			if (err) {//TODO logging error
+			}
+		});
 	},
 
 	'keydup .knowledge-base-value, keydown .knowledge-base-value': function (event, inst) {
 		const inputWrapper = $(event.currentTarget).closest(".field-with-label"),
-			inputField = inputWrapper.find(".knowledge-base-value"),
 			ENTER_KEY = 13,
 			ESC_KEY = 27,
 			TAB_KEY = 9,
@@ -216,7 +224,7 @@ Template.externalSearch.events({
 			end: -1,
 			state: "Confirmed",
 			hints: [],
-			type: _.isEmpty(inputWrapper.data('tokenType')) ?  null : inputWrapper.data('tokenType'),
+			type: _.isEmpty(inputWrapper.data('tokenType')) ?  'Unknown' : inputWrapper.data('tokenType'),
 			origin: "Agent",
 			value: inputField.hasClass('datetime-field') ?
 			{
@@ -229,20 +237,22 @@ Template.externalSearch.events({
 		externalMsg.result.tokens.push(newToken);
 		externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[inputWrapper.data('parentTplIndex')].querySlots,
 			(query) => {
-				//data('tokenIndex') will be cached and second edit will be ignored. used attr('data-token-index'), compare with (int == string)
-				if (query.tokenIndex == inputWrapper.attr('data-token-index')) {
+				if (query.role === inputWrapper.data('slotRole')) {
 					query.tokenIndex = externalMsg.result.tokens.length - 1;
 				}
 				return query;
 			});
 		instance.externalMessages.set(externalMsg);
-		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get(), (err) => {
+			instance.$(".knowledge-input-wrapper.active").removeClass("active");
+			if (err) {//TODO logging error
+			}
+		});
 	},
 	'click .knowledge-base-tooltip .edit-item, click .knowledge-base-value, click .knowledge-base-label': function (event, instance) {
 		event.preventDefault();
 		const inputWrapper = $(event.currentTarget).closest(".field-with-label"),
-			inputField = inputWrapper.find(".knowledge-base-value"),
-			originalValue = inputField.val();
+			inputField = inputWrapper.find(".knowledge-base-value");
 
 		if (!inputWrapper.hasClass('editing')) {
 			$(".field-with-label.editing").removeClass("editing");
@@ -251,19 +261,45 @@ Template.externalSearch.events({
 		}
 	},
 	/**
+	 * Deletes a token from a queryTemplate and mark it as rejected.
+	 */
+	'click .knowledge-base-tooltip .delete-item': function (event, instance) {
+		event.preventDefault();
+		const field = $(event.target).closest('.field-with-label'),
+			templateIndex = field.attr('data-parent-tpl-index'),
+			slotRole = field.attr('data-slot-role');
+		let externalMsg = instance.externalMessages.get();
+		externalMsg.result.queryTemplates[templateIndex].querySlots = _.map(externalMsg.result.queryTemplates[templateIndex].querySlots,
+			(query) => {
+				if (query.role === slotRole) {
+					query.tokenIndex = -1;
+				}
+				return query;
+			});
+		externalMsg.result.tokens[field.attr('data-token-index')].state = "Rejected";
+		instance.externalMessages.set(externalMsg);
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get(), (err) => {
+			instance.$(".knowledge-input-wrapper.active").removeClass("active");
+			if (err) {//TODO logging error
+			}
+		});
+
+	},
+	/**
 	 * Writes the inqury of an queryTemplateSlot to the chatWindowInputField.
 	 */
 	'click .knowledge-base-tooltip .chat-item:not(.disabled)': function (event, inst) {
 		event.preventDefault();
 		const rlData = _.first(RocketChat.models.LivechatExternalMessage.findByRoomId(inst.roomId, {ts: -1}).fetch());
 		if (rlData && rlData.result) {
-			const input = inst.$(event.target).closest('.field-with-label');
-			const qSlot = _.find(rlData.result.queryTemplates[input.data('parentTplIndex')].querySlots, (slot) => {
-				//data('tokenIndex') will be cached and second edit will be ignored. used attr('data-token-index'), compare with (int == string)
-				return slot.tokenIndex == input.attr('data-token-index');
+			const input = inst.$(event.target).closest('.field-with-label'),
+				slotRole = input.attr('data-slot-role');
+			const qSlot = _.find(rlData.result.queryTemplates[input.attr('data-parent-tpl-index')].querySlots, (slot) => {
+				return slot.role == slotRole;
 			});
 			if (qSlot && qSlot.inquiryMessage) {
 				$('#chat-window-' + inst.roomId + ' .input-message').val(qSlot.inquiryMessage).focus();
+				inst.$(".knowledge-input-wrapper.active").removeClass("active");
 			}
 		}
 	},
@@ -278,7 +314,7 @@ Template.externalSearch.events({
 			rightTokenIndex = parseInt(right.attr('data-token-index'));
 		if(changeBtn.hasClass("spinner")) {
 			return;
-		};
+		}
 		changeBtn.addClass("spinner");
 		let externalMsg = instance.externalMessages.get();
 		externalMsg.result.queryTemplates[left.data('parentTplIndex')].querySlots = _.map(externalMsg.result.queryTemplates[left.data('parentTplIndex')].querySlots,
@@ -291,13 +327,9 @@ Template.externalSearch.events({
 				return query;
 			});
 		instance.externalMessages.set(externalMsg);
-		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get(),(err, res) => {
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get(),(err) => {
 			changeBtn.removeClass("spinner");
-			if (err) {
-				//TODO logging error
-				//console.log(err);
-			} else {
-				// success!
+			if (err) {//TODO logging error
 			}
 		});
 	}

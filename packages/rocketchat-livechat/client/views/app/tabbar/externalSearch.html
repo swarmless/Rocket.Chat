@@ -104,14 +104,14 @@
 </template>
 
 <template name="dynamic_tpl_redlinkItem">
-    <div class="field-with-label" data-token-type="{{tokenType}}" data-parent-tpl-index="{{parentTplIndex}}"
+    <div class="field-with-label" data-token-type="{{tokenType}}" data-slot-role="{{role}}" data-parent-tpl-index="{{parentTplIndex}}"
          data-token-index="{{tokenIndex}}">
         <label for="{{htmlId}}" class="knowledge-base-label">{{_ label}}</label>
         <div class="knowledge-input-wrapper">
             <input id="{{htmlId}}" type="text" class="knowledge-base-value {{itemStyle}}" value="{{item}}"/>
             <div class="knowledge-base-tooltip">
                 <div class="knowledge-context-menu-item edit-item"><span class="icon-pencil"></span> Editieren</div>
-                <!-- TODO: div class="knowledge-context-menu-item delete-item"><span class="icon-trash"></span> Löschen</div-->
+                <div class="knowledge-context-menu-item delete-item"><span class="icon-trash"></span> Löschen</div>
                 <div class="knowledge-context-menu-item chat-item {{inquiryStyle}}">
                     <span class="icon-chat"></span> Nachfragen
                 </div>
