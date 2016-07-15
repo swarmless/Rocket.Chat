@@ -210,9 +210,10 @@ Template.externalSearch.events({
 	'click .knowledge-input-wrapper .icon-floppy': function (event, instance) {
 		event.preventDefault();
 		const inputWrapper = $(event.currentTarget).closest(".field-with-label"),
+			templateWrapper = $(event.currentTarget).closest(".query-template-wrapper"),
 			inputField = inputWrapper.find(".knowledge-base-value");
 		inputWrapper.removeClass("editing");
-
+		templateWrapper.addClass("spinner");
 		const saveValue = inputField.val();
 		inputWrapper.find(".icon-cancel").data("initValue", saveValue);
 
