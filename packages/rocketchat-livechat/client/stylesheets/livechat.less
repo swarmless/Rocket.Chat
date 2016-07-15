@@ -953,6 +953,16 @@
 					}
 				}
 
+				.results-dirty {
+					min-height: 40px;
+					padding: 15px;
+					text-align: center;
+					background-color: #fff;
+					.icon-wrapper {
+						font-size: 40px;
+					}
+				}
+
 				.query-preview {
 					margin-bottom: 10px;
 					border: 1px solid #ccc;
@@ -1093,6 +1103,7 @@
 					.result-item-wrapper {
 						max-height: 2000px;
 						transition: max-height .25s ease-in-out;
+						border-bottom: 1px solid #ccc;
 						&.collapsed {
 							max-height: 48px;
 							overflow: hidden;
