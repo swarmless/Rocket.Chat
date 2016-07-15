@@ -245,6 +245,7 @@ Template.externalSearch.events({
 			});
 		instance.externalMessages.set(externalMsg);
 		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get(), (err) => {
+			templateWrapper.removeClass("spinner");
 			instance.$(".knowledge-input-wrapper.active").removeClass("active");
 			if (err) {//TODO logging error
 			}
