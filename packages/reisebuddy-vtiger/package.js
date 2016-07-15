@@ -8,7 +8,7 @@ Package.describe({
 });
 
 Npm.depends({
-	"vtiger-client": "https://github.com/mrsimpson/vtiger-client/archive/b76f31137c58f641ba0e863dafca2f83c170c487.tar.gz"
+	"vtiger-client": "https://github.com/mrsimpson/vtiger-client/archive/f625dd0ac6381a9085ec9eb754ff89c6f194194d.tar.gz"
 });
 
 Package.onUse(function (api) {
