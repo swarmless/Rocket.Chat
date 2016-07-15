@@ -112,8 +112,9 @@ class LotusMailCommunicationService {
 						SystemLogger.debug("mail successfully send to " + to, " with result: \n" + result);
 					}
 				});
+		} else {
+			SystemLogger.error("unable to send mail to " + to + " --  Couldn't extract phone number.");
 		}
-		SystemLogger.error("unable to send mail to " + to + " --  Couldn't extract phone number.");
 	}
 }
 
