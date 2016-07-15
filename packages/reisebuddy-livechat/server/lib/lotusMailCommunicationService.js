@@ -8,13 +8,13 @@ class LotusMailCommunicationService {
 	constructor() {
 		this.defaultSubject = RocketChat.settings.get('SMS_Out_Reisebuddy_defaultSubject');
 
-		this.lotusEndpoint 	= RocketChat.settings.get('SMS_Out_Reisebuddy_lotusEndpoint');
+		this.lotusEndpoint = RocketChat.settings.get('SMS_Out_Reisebuddy_lotusEndpoint');
 		this.outgoingAuthHeader = 'Basic ' + new Buffer(RocketChat.settings.get('SMS_Out_Reisebuddy_username') + ':' +
 				RocketChat.settings.get('SMS_Out_Reisebuddy_password')).toString('base64');
-		this.baseAddress 	= RocketChat.settings.get('SMS_Out_Reisebuddy_baseAddress');
+		this.baseAddress = RocketChat.settings.get('SMS_Out_Reisebuddy_baseAddress');
 
 		this.basicHeader = 'Basic ' + new Buffer(RocketChat.settings.get('Mail_In_Reisebuddy_username') + ':' +
-												 RocketChat.settings.get('Mail_In_Reisebuddy_password')).toString('base64');
+				RocketChat.settings.get('Mail_In_Reisebuddy_password')).toString('base64');
 	}
 
 	static SERVICE_NAME() {
@@ -71,45 +71,49 @@ class LotusMailCommunicationService {
 	/**
 	 * Sends a mail to the given parameters asynchronously. Log on error.
 	 * @param sender optional - default: Mail_Reisebuddy_defaultSSender
-	 * @param phoneNumber
+	 * @param to
 	 * @param message
 	 * @param subject optional - default: Mail_Reisebuddy_defaultSubject
 	 * @throws Match.Error if params are invalid
 	 */
-	send({phoneNumber, message, subject} = {}) {
+	send({to, message, subject} = {}) {
 		check(arguments[0], {
-			phoneNumber: String,
+			to: String,
 			message: String,
 			subject: Match.Optional(String)
 		});
 		const self = this;
 
-		phoneNumber = phoneNumber.replace('@sms.db.de', ''); // TODO increase security here
-		SystemLogger.debug("send sms to " + phoneNumber);
+		var regEx = /^\+?\d+@sms.db.de$/;
+		if (regEx.test(to)) {
+			to = to.replace('@sms.db.de', '');
+			SystemLogger.debug("send sms to " + to);
 
-		let requestBody =
-		{
-			to: phoneNumber + self.baseAddress,
-			subject: subject || self.defaultSubject,
-			body: message || ''
-		};
+			let requestBody =
+			{
+				to: to + self.baseAddress,
+				subject: subject || self.defaultSubject,
+				body: message || ''
+			};
 
-		let options = {
-			"headers": {
-				"Authorization": self.outgoingAuthHeader,
-				"Content-Type": "application/json"
-			},
-			"data": requestBody
-		};
+			let options = {
+				"headers": {
+					"Authorization": self.outgoingAuthHeader,
+					"Content-Type": "application/json"
+				},
+				"data": requestBody
+			};
 
-		HTTP.post(self.lotusEndpoint, options,
-			(error, result) => {
-				if(error) {
-					SystemLogger.error("unable to send mail to " + phoneNumber + " -- " + error);
-				} else if (result) {
-					SystemLogger.debug("mail successfully send to " + phoneNumber, " with result: \n" + result);
-				}
-		});
+			HTTP.post(self.lotusEndpoint, options,
+				(error, result) => {
+					if (error) {
+						SystemLogger.error("unable to send mail to " + to + " -- " + error);
+					} else if (result) {
+						SystemLogger.debug("mail successfully send to " + to, " with result: \n" + result);
+					}
+				});
+		}
+		SystemLogger.error("unable to send mail to " + to + " --  Couldn't extract phone number.");
 	}
 }
 
@@ -120,8 +124,8 @@ class LotusMailCommunicationService {
  */
 _dbs.getCommunicationService = function (serviceName) {
 	switch (serviceName) {
-	case LotusMailCommunicationService.SERVICE_NAME():
-		return new LotusMailCommunicationService();
+		case LotusMailCommunicationService.SERVICE_NAME():
+			return new LotusMailCommunicationService();
 	}
 	return null;
 };
