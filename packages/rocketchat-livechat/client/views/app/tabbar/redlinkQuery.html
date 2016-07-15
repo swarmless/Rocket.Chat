@@ -6,7 +6,7 @@
                     src="/packages/rocketchat_livechat/assets/icons/{{query.replacedCreator}}.png"
                     onerror="this.onerror=null; this.src='/packages/rocketchat_livechat/assets/icons/fallback_logo.png';">
                 <span class="creator_label">{{_ query.replacedCreator}}</span></a>
-			{{#if and query.inlineResultSupport visibleResult}}
+			{{#if and query.inlineResultSupport hasResult}}
                 <div class="query-results-toggle">
                     <span class="js-toggle-results-expanded icon-up-open"></span>
                 </div>
@@ -17,25 +17,14 @@
             </a>
         </div>
 
-		{{#if and query.inlineResultSupport visibleResult}}
+		{{#if and query.inlineResultSupport hasResult}}
             <div class="query-preview">
-				{{#if and query.inlineResultSupport maxConfidence=query.confidence}}
-                    <!-- Another template has to use the query propagated to it in order to issue a separate request which provides the actual result -->
-                    <div class="query-preview-headline-wrapper clearfix">
-						<h4 class="query-preview-headline">{{queryPreviewHeadline}}</h4>
-
-					{{#let navigationMode=navigationMode}}
-                        <div class="query-preview-navigation">
-							<span class="arrow-navigation-wrapper">
-								<span class="js-previous-result"><i class="icon-left-big"></i></span>
-                                <!--<span>{{visibleResultNumer}}/{{resultsCount}}</span>-->
-								<span class="js-next-result"><i class="icon-right-big"></i></span>
-							</span>
-                        </div>
+                <div class="query-preview-headline-wrapper clearfix">
+                    <h4 class="query-preview-headline">{{queryPreviewHeadline}}</h4>
+					{{#let navigationOptions=navigationOptions}}
+						{{> Template.dynamic template=navigationOptions.template data=navigationOptions }}
 					{{/let}}
-                    </div>
-					{{> redlinkInlineResult result=visibleResult roomId=roomId}}
-				{{/if}}
+					</div>
             </div>
 		{{/if}}
     </div>

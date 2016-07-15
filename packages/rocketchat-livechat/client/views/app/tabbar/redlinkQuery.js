@@ -1,24 +1,7 @@
 Template.redlinkQuery.helpers({
-	providerIconClass(){
-		return "icon-link-ext";
-	},
+	hasResult(){
+		return Template.instance().state.get('results').length > 0;
 
-	visibleResult(){
-		const instance = Template.instance();
-		const results = instance.state.get('results');
-		if (results) return results[instance.state.get('visibleResultIndex')];
-	},
-
-	resultsCount(){
-		const instance = Template.instance();
-		const results = instance.state.get('results');
-		if (results) return results.length;
-	},
-
-	visibleResultNumer(){
-		const instance = Template.instance();
-		const visibleResultIndex = instance.state.get('visibleResultIndex');
-		return visibleResultIndex + 1;
 	},
 
 	classExpanded(){
@@ -42,23 +25,29 @@ Template.redlinkQuery.helpers({
 		}
 	},
 
-	navigationMode(){
+	navigationOptions(){
 		const instance = Template.instance();
 		const results = instance.state.get('results');
 		if (results) {
 			const creator = results[0].creator; //all results have got the same creator
+			let options = {
+				results: results,
+				roomId: instance.data.roomId };
+
 			switch (creator) {
 				case 'bahn.de':
-					return {
-						mode: 'slider',
-						visibleResults: 2
-					};
+					options.template = 'redlinkResultContainer_Slider';
+					options.stepping = 2;
+					break;
+				case 'VKL':
+					options.template = 'redlinkResultContainer_Slider';
+					options.stepping = 3;
+					break;
 				default:
-					return {
-						mode: 'slider',
-						visibleResults: 1
-					};
+					options.template = 'redlinkResultContainer_Slider';
+					options.stepping = 5;
 			}
+			return options;
 		}
 	}
 });
@@ -67,26 +56,6 @@ Template.redlinkQuery.events({
 	'click .query-results-toggle .js-toggle-results-expanded': function (event, instance) {
 		const current = instance.state.get('resultsExpanded');
 		instance.state.set('resultsExpanded', !current);
-	},
-
-	'click .js-next-result': function (event, instance) {
-		const visibleResultIndex = instance.state.get('visibleResultIndex');
-		const results = instance.state.get('results');
-		if (visibleResultIndex < results.length - 1) {
-			instance.state.set('visibleResultIndex', visibleResultIndex + 1);
-		} else {
-			instance.state.set('visibleResultIndex', 0);
-		}
-	},
-
-	'click .js-previous-result': function (event, instance) {
-		const visibleResultIndex = instance.state.get('visibleResultIndex');
-		const results = instance.state.get('results');
-		if (visibleResultIndex > 0) {
-			instance.state.set('visibleResultIndex', visibleResultIndex - 1);
-		} else {
-			instance.state.set('visibleResultIndex', results.length - 1);
-		}
 	}
 });
 
@@ -97,8 +66,7 @@ Template.redlinkQuery.onCreated(function () {
 	this.state.setDefault({
 		resultsExpanded: instance.data.query.inlineResultSupport && ( instance.data.maxConfidence === instance.data.query.confidence ),
 		results: [],
-		resultsFetched: false, // in order to be able to determine an empty result list from not having tried to fetch results
-		visibleResultIndex: 0
+		resultsFetched: false // in order to be able to determine an empty result list from not having tried to fetch results
 	});
 
 	// Asynchronously load the results.
