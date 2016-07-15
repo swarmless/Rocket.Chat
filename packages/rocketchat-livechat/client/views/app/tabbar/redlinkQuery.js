@@ -4,6 +4,10 @@ Template.redlinkQuery.helpers({
 
 	},
 
+	isDirty(){
+		return Template.instance().state.get('status') === 'dirty'
+	},
+
 	classExpanded(){
 		const instance = Template.instance();
 		return instance.state.get('resultsExpanded') ? 'expanded' : 'collapsed';
@@ -66,18 +70,23 @@ Template.redlinkQuery.onCreated(function () {
 	this.state.setDefault({
 		resultsExpanded: instance.data.query.inlineResultSupport && ( instance.data.maxConfidence === instance.data.query.confidence ),
 		results: [],
-		resultsFetched: false // in order to be able to determine an empty result list from not having tried to fetch results
+		status: 'initial'
 	});
 
 	// Asynchronously load the results.
-	Meteor.defer(()=> {
+	instance.autorun(()=> {
 		if (instance.data && instance.data.query && instance.data.roomId) {
+			//subscribe to the external messages for the room in order to re-fetch the results once the result
+			// of the knowledge provider changes
+			this.subscribe('livechat:externalMessages', Template.currentData().roomId);
+
 			//issue a request to the redlink results-service and buffer the potential results in a reactive variable
 			//which then can be forwarded to the results-template
 			if (instance.data.query.inlineResultSupport) {
+				instance.state.set('status', 'dirty');
 				Meteor.call('redlink:retrieveResults', instance.data.roomId, instance.data.templateIndex, instance.data.query.creator, (err, results)=> {
 					instance.state.set('results', results);
-					instance.state.set('resultsFetched', true); //consider the task done
+					instance.state.set('status', 'fetched');
 				});
 			}
 		}

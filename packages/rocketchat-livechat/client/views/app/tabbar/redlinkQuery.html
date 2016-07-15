@@ -18,14 +18,18 @@
         </div>
 
 		{{#if and query.inlineResultSupport hasResult}}
-            <div class="query-preview">
-                <div class="query-preview-headline-wrapper clearfix">
-                    <h4 class="query-preview-headline">{{queryPreviewHeadline}}</h4>
-					{{#let navigationOptions=navigationOptions}}
-						{{> Template.dynamic template=navigationOptions.template data=navigationOptions }}
-					{{/let}}
-					</div>
-            </div>
+			{{#unless isDirty}}
+                <div class="query-preview">
+                    <div class="query-preview-headline-wrapper clearfix">
+                        <h4 class="query-preview-headline">{{queryPreviewHeadline}}</h4>
+						{{#let navigationOptions=navigationOptions}}
+							{{> Template.dynamic template=navigationOptions.template data=navigationOptions }}
+						{{/let}}
+                    </div>
+                </div>
+			{{else}}
+                <div class="results-dirty">results dirty</div>
+			{{/unless}}
 		{{/if}}
     </div>
 </template>
