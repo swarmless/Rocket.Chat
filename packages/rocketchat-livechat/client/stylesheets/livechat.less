@@ -749,6 +749,9 @@
 				color: #666;
 				margin-bottom: -1px;
 
+                .value-line-wrapper > div.field-with-label:last-child {
+                    float: right;
+                }
 				.value-line-wrapper {
 					padding: 0 10px 2px;
 					position: relative;
@@ -961,6 +964,7 @@
 						float: right;
 					}
 					.query-item-url {
+                        margin-right: 5px;
 						background-color: #e2e2e2;
 						&:hover {
 							color: #444;
@@ -974,7 +978,10 @@
 					}
 				}
 
-				.results-dirty {
+                .results-slider > div:last-child  {
+                    border-bottom: 0;
+                }
+                .results-dirty {
 					min-height: 40px;
 					padding: 40px 15px;
 					text-align: center;
@@ -985,7 +992,7 @@
 				}
 
 				.query-preview {
-					margin-bottom: 10px;
+					margin-bottom: 0px;
 					border: 1px solid #ccc;
 					border-top: none;
 					background-color: #fff;
@@ -995,7 +1002,7 @@
 					}
 					.travel-bahn {
 						border: 1px solid #ccc;
-						margin: 0 8px 10px 0;
+						margin: 0 8px -1px 0;
 						width: 274px;
 						border-left: none;
 						float: left;
@@ -1116,8 +1123,8 @@
 						text-align: center;
 						min-width: 50px;
 						position: absolute;
-						right: 17px;
-						top: 5px;
+						top: -28px;
+                        left: 70px;
 						.js-previous-result, .js-next-result  {
 							cursor: pointer;
 							padding: 3px;
@@ -1125,6 +1132,7 @@
 					}
 
 					.query-preview-headline-wrapper {
+                        display: none;
 						border-bottom: 1px solid #ccc;
 						.query-preview-headline {
 							float: left;
@@ -1136,7 +1144,7 @@
 						transition: max-height .25s ease-in-out;
 						border-bottom: 1px solid #ccc;
 						&.collapsed {
-							max-height: 48px;
+							max-height: 35px;
 							overflow: hidden;
 							.icon-up-open::before {
 								content: '\e855'
