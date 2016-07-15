@@ -209,6 +209,8 @@ Package.onUse(function(api) {
 	api.addAssets('assets/icons/bahnDeSearchbox.png', 'client');
 	api.addAssets('assets/icons/community_bahn_de.png', 'client');
 	api.addAssets('assets/icons/VKL.png', 'client');
+	api.addAssets('assets/icons/yelp.png', 'client');
+	api.addAssets('assets/icons/maps_google-FoodAndBeverages.png', 'client');
 
 	//i18n
 	var _ = Npm.require('underscore');
