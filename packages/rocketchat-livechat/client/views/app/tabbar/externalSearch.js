@@ -202,9 +202,10 @@ Template.externalSearch.events({
 	'click .knowledge-input-wrapper .icon-floppy': function (event, instance) {
 		event.preventDefault();
 		const inputWrapper = $(event.currentTarget).closest(".field-with-label"),
+			templateWrapper = $(event.currentTarget).closest(".query-template-wrapper"),
 			inputField = inputWrapper.find(".knowledge-base-value");
 		inputWrapper.removeClass("editing");
-
+		templateWrapper.addClass("spinner");
 		const saveValue = inputField.val();
 		inputWrapper.find(".icon-cancel").data("initValue", saveValue);
 
@@ -236,7 +237,15 @@ Template.externalSearch.events({
 				return query;
 			});
 		instance.externalMessages.set(externalMsg);
-		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get());
+		Meteor.call('updateKnowledgeProviderResult', instance.externalMessages.get(),(err, res) => {
+			templateWrapper.removeClass("spinner");
+			if (err) {
+				//TODO logging error
+				//console.log(err);
+			} else {
+				// success!
+			}
+		});
 	},
 	'click .knowledge-base-tooltip .edit-item, click .knowledge-base-value, click .knowledge-base-label': function (event, instance) {
 		event.preventDefault();

@@ -666,6 +666,14 @@
 			}
 		}
 	}
+
+	.icon-spinner:before {
+		-webkit-animation: spin 2s 20 linear;
+		-o-animation: spin 2s 20 linear;
+		animation: spin 2s 20 linear;
+
+	}
+
 	.external-message {
 		position: relative;
 		padding-bottom: 20px;
@@ -714,6 +722,15 @@
                     }
                 }
             }
+
+			&.spinner {
+				.knowledge-queries-wrapper {
+					opacity: 0.5;
+					.queries-spinner {
+						display: block;
+					}
+				}
+			}
 
 			.query-template-tools-wrapper {
 				position: absolute;
@@ -786,12 +803,6 @@
 						left:6px;
 						background-color: #efefef;
 						display: none;
-					}
-					.icon-spinner:before {
-						-webkit-animation: spin 2s 3 linear;
-						-o-animation: spin 2s 3 linear;
-						animation: spin 2s 3 linear;
-
 					}
 					&.spinner {
 						cursor: default;
@@ -885,6 +896,16 @@
 
 		.knowledge-queries-wrapper {
 			padding-bottom: 10px;
+			position: relative;
+			.queries-spinner {
+				position: absolute;
+				left: 40%;
+				font-size: 60px;
+				color: #000;
+				z-index: 5;
+				top: 20px;
+				display: none;
+			}
 			.confidence {
 				font-size: 0.7rem;
 				display: inline-block;
@@ -961,13 +982,6 @@
 					.icon-wrapper {
 						font-size: 40px;
 					}
-
-					.icon-spinner:before {
-						-webkit-animation: spin 2s 3 linear;
-						-o-animation: spin 2s 3 linear;
-						animation: spin 2s 3 linear;
-
-					}
 				}
 
 				.query-preview {
@@ -981,13 +995,21 @@
 					}
 					.travel-bahn {
 						border: 1px solid #ccc;
-						margin: 0 8px 10px;
-						min-width: 260px;
+						margin: 0 8px 10px 0;
+						width: 274px;
+						border-left: none;
 						float: left;
+						&:last-child {
+							border-left: 1px solid #ccc;
+							border-right: none;
+							margin-right: 0px;
+							float: right;
+						}
 
 						.from-to-wrapper {
 							background-color: #ccc;
 							padding: 10px 15px;
+							max-width: 100%;
 							.from-wrapper {
 								float: left;
 							}
@@ -999,6 +1021,7 @@
 								font-size: 12px;
 								font-weight: bold;
 								margin-bottom: 10px;
+								max-width: 136px;
 							}
 							.time {
 								font-size: 25px;
@@ -1023,10 +1046,10 @@
 						.price-wrapper {
 							min-height: 60px;
 							padding: 10px 15px;
-							.price-save {
+							.price-low {
 								float: left;
 							}
-							.price-flex {
+							.price-standard {
 								float: right;
 								text-align: right;
 							}
@@ -1037,7 +1060,7 @@
 								margin-bottom: 5px;
 							}
 							.price {
-								font-size: 18px;
+								font-size: 22px;
 								font-weight: bold;
 							}
 						}
