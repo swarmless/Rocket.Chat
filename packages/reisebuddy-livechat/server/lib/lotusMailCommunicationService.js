@@ -85,7 +85,7 @@ class LotusMailCommunicationService {
 		const self = this;
 
 		var regEx = /^\+?\d+@sms.db.de$/;
-		if (regEx.test(to)) {
+		if (to.match(regEx)) {
 			to = to.replace('@sms.db.de', '');
 			SystemLogger.debug("send sms to " + to);
 
@@ -112,8 +112,9 @@ class LotusMailCommunicationService {
 						SystemLogger.debug("mail successfully send to " + to, " with result: \n" + result);
 					}
 				});
+		} else {
+			SystemLogger.error("unable to send mail to " + to + " --  Couldn't extract phone number.");
 		}
-		SystemLogger.error("unable to send mail to " + to + " --  Couldn't extract phone number.");
 	}
 }
 
