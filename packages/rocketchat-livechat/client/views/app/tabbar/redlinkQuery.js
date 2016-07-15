@@ -1,7 +1,11 @@
 Template.redlinkQuery.helpers({
 	hasResult(){
-		return Template.instance().state.get('results').length > 0;
-
+		const results = Template.instance().state.get('results');
+		if (results) {
+			return results.length > 0;
+		} else {
+			return false;
+		}
 	},
 
 	isDirty(){
@@ -36,7 +40,8 @@ Template.redlinkQuery.helpers({
 			const creator = results[0].creator; //all results have got the same creator
 			let options = {
 				results: results,
-				roomId: instance.data.roomId };
+				roomId: instance.data.roomId
+			};
 
 			switch (creator) {
 				case 'bahn.de':

@@ -64,6 +64,9 @@ class RedlinkAdapter {
 				{
 					$set: {
 						result: responseRedlinkQuery.data
+					},
+					$unset: {
+						inlineResults: ""
 					}
 				});
 
@@ -104,27 +107,65 @@ class RedlinkAdapter {
 	}
 
 	getQueryResults(roomId, templateIndex, creator) {
+		// ---------------- private methods
+		const _getKeyForBuffer = function (templateIndex, creator) {
+			return templateIndex + '-' + creator.replace('.', '_');
+		};
+
+		const _getBufferedResults = function (latestKnowledgeProviderResult, templateIndex, creator) {
+			if ( latestKnowledgeProviderResult && latestKnowledgeProviderResult.knowledgeProvider === 'redlink' && latestKnowledgeProviderResult.inlineResults) {
+				return latestKnowledgeProviderResult.inlineResults[_getKeyForBuffer(templateIndex, creator)];
+			}
+		};
+		// ---------------- private methods
+
+		var results = [];
+
 		const latestKnowledgeProviderResult = this.getKnowledgeProviderCursor(roomId).fetch()[0];
 
-		try {
-			const request = {
-				data: {
-					messages: latestKnowledgeProviderResult.result.messages,
-					tokens: latestKnowledgeProviderResult.result.tokens,
-					queryTemplates: latestKnowledgeProviderResult.result.queryTemplates
-				},
-				headers: this.headers
-			};
-
-			const responseRedlinkResult = HTTP.post(this.properties.url + '/result/' + creator + '/?templateIdx=' + templateIndex, request);
-			if (responseRedlinkResult.data && responseRedlinkResult.statusCode === 200) {
-				return responseRedlinkResult.data;
-			} else {
-				console.error("Couldn't  read result from Redlink");
-			}
-		} catch (err) {
-			console.error('Retrieving Query-resuls from Redlink did not succeed -> ', err);
+		if(latestKnowledgeProviderResult){
+			results = _getBufferedResults(latestKnowledgeProviderResult, templateIndex, creator);
+		} else {
+			return []; // If there was no knowledge-provider-result, there cannot be any results either
 		}
+
+		if (!results) {
+			try {
+				const request = {
+					data: {
+						messages: latestKnowledgeProviderResult.result.messages,
+						tokens: latestKnowledgeProviderResult.result.tokens,
+						queryTemplates: latestKnowledgeProviderResult.result.queryTemplates
+					},
+					headers: this.headers
+				};
+
+				const responseRedlinkResult = HTTP.post(this.properties.url + '/result/' + creator + '/?templateIdx=' + templateIndex, request);
+				if (responseRedlinkResult.data && responseRedlinkResult.statusCode === 200) {
+					results = responseRedlinkResult.data;
+
+					//buffer the results
+					let inlineResultsMap = latestKnowledgeProviderResult.inlineResults || {};
+					inlineResultsMap[_getKeyForBuffer(templateIndex, creator)] = results;
+
+					RocketChat.models.LivechatExternalMessage.update(
+						{
+							_id: latestKnowledgeProviderResult._id
+						},
+						{
+							$set: {
+								inlineResults: inlineResultsMap
+							}
+						});
+
+				} else {
+					console.error("Couldn't  read result from Redlink");
+				}
+			} catch (err) {
+				console.error('Retrieving Query-resuls from Redlink did not succeed -> ', err);
+			}
+		}
+		return results;
 	}
 
 	purgePreviousResults(knowledgeProviderResultCursor) {
