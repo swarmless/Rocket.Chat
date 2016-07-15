@@ -16,21 +16,21 @@
 </template>
 
 <template name="redlinkInlineResult_VKL_community">
-	<div class="result-item-wrapper {{classExpanded}}">
-		<div class="query-preview-result-title clearfix">
-			<span class="result-title-wrapper">{{{result.title}}}</span>
+    <div class="result-item-wrapper {{classExpanded}}">
+        <div class="query-preview-result-title clearfix">
+            <span class="result-title-wrapper">{{{result.title}}}</span>
 			<span class="icon-wrapper">
 				<a href="{{result.link}}" target="_blank"><i class="icon-link-ext"></i></a>
 				<span class="js-toggle-results-expanded icon-up-open"></span>
 			</span>
-		</div>
-		<div class="query-preview-result-body">{{{result.body}}}</div>
+        </div>
+        <div class="query-preview-result-body">{{{result.body}}}</div>
     </div>
 </template>
 
 <template name="redlinkInlineResult_bahn_de">
-	<div class="travel-bahn">
-		<div class="from-to-wrapper clearfix">
+    <div class="travel-bahn">
+        <div class="from-to-wrapper clearfix">
 		<span class="from-wrapper">
 			<div class="location">{{result.departure.location}}</div>
 			<div class="time">{{result.departure.time}}</div>
@@ -40,36 +40,36 @@
 			<div class="arrival time">{{result.arrival.time}}</div>
 			<div class="day-offset">{{result.dateChange}}</div>
 		</span>
-		</div>
-		<div class="details-wrapper">
-			<div class="details">{{text 'duration'}}: {{result.travelDuration}}</div>
-			<div class="details">{{text 'track_changes'}}: {{result.travelChanges}}</div>
-			<div class="details">{{text 'products'}}: {{result.travelProducts}}</div>
-		</div>
+        </div>
+        <div class="details-wrapper">
+            <div class="details">{{text 'duration'}}: {{result.travelDuration}}</div>
+            <div class="details">{{text 'track_changes'}}: {{result.travelChanges}}</div>
+            <div class="details">{{text 'products'}}: {{result.travelProducts}}</div>
+        </div>
 		{{#if result.stdPrice}}
-			<div class="price-wrapper clearfix">
-				<div class="price-low">
-					<div class="price-label">{{text 'price_low'}}</div>
-					<div class="price">{{#if result.lowPrice}}{{result.lowPrice}}{{else}}-{{/if}} €</div>
-				</div>
-				<div class="price-standard">
-					<div class="price-label">{{text 'price_standard'}}</div>
-					<div class="price">{{#if result.stdPrice}}{{result.stdPrice}}{{else}}-{{/if}} €</div>
-				</div>
-			</div>
-			<div class="action-wrapper clearfix">
-				<a href={{result.bookingLink}}>
-					<button class="link-external">{{text 'connection_details'}}<i
-							class="action-icon icon-link-ext"></i></button>
-				</a>
-				<button class="js-copy-reply-suggestion link-message">{{text 'copy_to_message'}}<i
-						class="action-icon icon-chat"></i></button>
-			</div>
+            <div class="price-wrapper clearfix">
+                <div class="price-low">
+                    <div class="price-label">{{text 'price_low'}}</div>
+                    <div class="price">{{#if result.lowPrice}}{{result.lowPrice}}{{else}}-{{/if}} €</div>
+                </div>
+                <div class="price-standard">
+                    <div class="price-label">{{text 'price_standard'}}</div>
+                    <div class="price">{{#if result.stdPrice}}{{result.stdPrice}}{{else}}-{{/if}} €</div>
+                </div>
+            </div>
+            <div class="action-wrapper clearfix">
+                <a href={{result.bookingLink}}>
+                    <button class="link-external">{{text 'connection_details'}}<i
+                            class="action-icon icon-link-ext"></i></button>
+                </a>
+                <button class="js-copy-reply-suggestion link-message">{{text 'copy_to_message'}}<i
+                        class="action-icon icon-chat"></i></button>
+            </div>
 		{{else}}
-			<div class="not-available">
-				<button class="js-not-available">{{text 'connection_not_available'}}<i
-						class="action-icon icon-block"></i></button>
-			</div>
+            <div class="not-available">
+                <button class="js-not-available">{{text 'connection_not_available'}}<i
+                        class="action-icon icon-block"></i></button>
+            </div>
 		{{/if}}
-	</div>
+    </div>
 </template>
