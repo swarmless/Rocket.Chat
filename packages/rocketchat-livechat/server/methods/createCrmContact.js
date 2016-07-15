@@ -9,7 +9,7 @@ Meteor.methods({
 		if (emailAddress.length === 0 && mobileNumber.length > 0) {
 			emailAddress = mobileNumber + "@sms.db.de";
 		}
-		if (mobileNumber.length === 0 && emailAddress.length > 0 && /^\+?\d+@sms.db.de$/.test(emailAddress)) {
+		if (mobileNumber.length === 0 && emailAddress.length > 0 && emailAddress.match(/^\+?\d+@sms.db.de$/)) {
 			mobileNumber = emailAddress.replace("@sms.db.de", "");
 		}
 

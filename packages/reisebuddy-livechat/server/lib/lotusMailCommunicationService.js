@@ -85,7 +85,7 @@ class LotusMailCommunicationService {
 		const self = this;
 
 		var regEx = /^\+?\d+@sms.db.de$/;
-		if (regEx.test(to)) {
+		if (to.match(regEx)) {
 			to = to.replace('@sms.db.de', '');
 			SystemLogger.debug("send sms to " + to);
 
