@@ -121,6 +121,8 @@ Package.onUse(function(api) {
 	api.addFiles('client/views/app/tabbar/redlinkQuery.js', 'client');
 	api.addFiles('client/views/app/tabbar/redlinkInlineResult.html', 'client');
 	api.addFiles('client/views/app/tabbar/redlinkInlineResult.js', 'client');
+	api.addFiles('client/views/app/tabbar/redlinkResultContainers.html', 'client');
+	api.addFiles('client/views/app/tabbar/redlinkResultContainers.js', 'client');
 
 
 	// methods
