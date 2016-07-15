@@ -50,11 +50,11 @@
 			<div class="price-wrapper clearfix">
 				<div class="price-low">
 					<div class="price-label">{{text 'price_low'}}</div>
-					<div class="price">{{result.lowPrice}} €</div>
+					<div class="price">{{#if result.lowPrice}}{{result.lowPrice}}{{else}}-{{/if}} €</div>
 				</div>
 				<div class="price-standard">
 					<div class="price-label">{{text 'price_standard'}}</div>
-					<div class="price">{{result.stdPrice}} €</div>
+					<div class="price">{{#if result.stdPrice}}{{result.stdPrice}}{{else}}-{{/if}} €</div>
 				</div>
 			</div>
 			<div class="action-wrapper clearfix">
