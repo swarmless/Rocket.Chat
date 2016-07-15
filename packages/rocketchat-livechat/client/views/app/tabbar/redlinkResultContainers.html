@@ -1,18 +1,16 @@
 <template name="redlinkResultContainer_Slider">
 	{{#if needsNavigation}}
         <div class="query-preview-navigation">
-							<span class="arrow-navigation-wrapper">
-								<span class="js-previous-result"><i class="icon-left-big"></i></span>
-                                <!--<span>{{visibleResultNumer}}/{{resultsCount}}</span>-->
-								<span class="js-next-result"><i class="icon-right-big"></i></span>
-							</span>
+			<span class="arrow-navigation-wrapper">
+				<span class="js-previous-result"><i class="icon-left-big"></i></span>
+				<!--<span>{{visibleResultNumer}}/{{resultsCount}}</span>-->
+				<span class="js-next-result"><i class="icon-right-big"></i></span>
+			</span>
         </div>
 	{{/if}}
     <div class="clearfix results-slider">
 		{{#each visibleResult in visibleResults}}
-            <span>
-				{{> redlinkInlineResult result=visibleResult roomId=roomId}}
-            </span>
+			{{> redlinkInlineResult result=visibleResult roomId=roomId}}
 		{{/each}}
     </div>
 </template>
