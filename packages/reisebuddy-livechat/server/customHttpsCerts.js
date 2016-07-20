@@ -3,8 +3,12 @@
  */
 (function () {
 	var https = Npm.require('https');
-	var certDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/.nodeCaCerts/';
+	var certDir = process.env.CA_CERT_PATH;
 
+	if (!certDir) { //backwards compatible
+		process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/.nodeCaCerts/';
+	}
+	
 	var caMap = (function () {
 		try {
 			var fs = Npm.require('fs');
