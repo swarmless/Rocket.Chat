@@ -8,7 +8,7 @@
 	if (!certDir) { //backwards compatible
 		process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/.nodeCaCerts/';
 	}
-	
+
 	var caMap = (function () {
 		try {
 			var fs = Npm.require('fs');
@@ -30,6 +30,7 @@
 				var crt = caMap[options.hostname || options.host];
 				if(crt) {
 					options.ca = caMap[options.hostname || options.host];
+					console.info("Issuing secured request to ", (options.hostname || options.host));
 				}
 			}
 			return request.call(https, options, cb);
