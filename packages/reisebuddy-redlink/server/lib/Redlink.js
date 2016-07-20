@@ -1,10 +1,11 @@
 class RedlinkAdapter {
 	constructor(adapterProps) {
 		this.properties = adapterProps;
-		this.headers = {
-			'content-Type': 'application/json; charset=utf-8',
-			'authorization': 'basic ' + this.properties.token
-		};
+		this.headers = {};
+		this.headers['content-Type'] = 'application/json; charset=utf-8';
+		if (this.properties.token) {
+			this.headers['authorization'] = 'basic ' + this.properties.token;
+		}
 	}
 
 	createRedlinkStub(rid, latestKnowledgeProviderResult) {
@@ -113,7 +114,7 @@ class RedlinkAdapter {
 		};
 
 		const _getBufferedResults = function (latestKnowledgeProviderResult, templateIndex, creator) {
-			if ( latestKnowledgeProviderResult && latestKnowledgeProviderResult.knowledgeProvider === 'redlink' && latestKnowledgeProviderResult.inlineResults) {
+			if (latestKnowledgeProviderResult && latestKnowledgeProviderResult.knowledgeProvider === 'redlink' && latestKnowledgeProviderResult.inlineResults) {
 				return latestKnowledgeProviderResult.inlineResults[_getKeyForBuffer(templateIndex, creator)];
 			}
 		};
@@ -123,7 +124,7 @@ class RedlinkAdapter {
 
 		const latestKnowledgeProviderResult = this.getKnowledgeProviderCursor(roomId).fetch()[0];
 
-		if(latestKnowledgeProviderResult){
+		if (latestKnowledgeProviderResult) {
 			results = _getBufferedResults(latestKnowledgeProviderResult, templateIndex, creator);
 		} else {
 			return []; // If there was no knowledge-provider-result, there cannot be any results either

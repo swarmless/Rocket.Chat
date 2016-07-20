@@ -20,6 +20,10 @@
 					console.info('Loaded certificate ' + certList[i]);
 				}
 			}
+
+			console.info("HTTP-Proxy", process.env.HTTP_PROXY);
+			console.info("HTTPS-Proxy", process.env.HTTPS_PROXY);
+			console.info("No Proxy", process.env.NO_PROXY);
 		} catch (e) {
 			console.warn("unable to load private root certs from path: " + certDir, e);
 		}
