@@ -17,6 +17,7 @@
 				var certList = fs.readdirSync(certDir);
 				for (var i = 0; i < certList.length; i++) {
 					result[certList[i]] = fs.readFileSync(certDir +  certList[i]);
+					console.info('Loaded certificate ' + certList[i]);
 				}
 			}
 		} catch (e) {
