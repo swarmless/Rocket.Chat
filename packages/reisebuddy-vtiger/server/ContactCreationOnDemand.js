@@ -10,7 +10,7 @@ RocketChat.callbacks.add('afterCreateLivechat', function(guest, room){
 
 		RocketChat.callbacks.add('afterSaveMessage', function(message, room){
 			if (room._id === observedRoomId) {
-				Meteor.call('livechat:createCrmContact', room.v, room._id, (err, data)=> {
+				Meteor.call('livechat:createCrmContact', room.v._id, room._id, (err, data)=> {
 					if (err) {
 						console.error(err);
 					}

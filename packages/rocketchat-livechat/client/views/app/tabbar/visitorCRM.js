@@ -38,7 +38,7 @@ Template.visitorCRM.events({
 	},
 
 	'click .create-contact': function (event, instance) {
-		Meteor.call('livechat:createCrmContact', instance.user.get(), instance.data.rid, (err, data)=> {
+		Meteor.call('livechat:createCrmContact', instance.visitorId.get(), instance.data.rid, (err, data)=> {
 			if (err) {
 				console.error(err);
 				toastr.error(t('crm_communication_error'));

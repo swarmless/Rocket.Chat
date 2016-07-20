@@ -62,9 +62,7 @@ class LotusMailCommunicationService {
 	 * @return {*} stub
 	 */
 	extendNewUser(stub, requestBody) {
-		stub.emails = {
-			address: requestBody.sender
-		};
+		stub.email = requestBody.sender;
 		return stub;
 	}
 

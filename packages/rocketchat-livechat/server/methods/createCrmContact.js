@@ -1,15 +1,18 @@
 Meteor.methods({
-	'livechat:createCrmContact': function (user, roomId) {
+	'livechat:createCrmContact': function (userId, roomId) {
 
 		const SEND_IMMEDIATELY = 0;
+		const user = RocketChat.models.Users.findOneById(userId);
 
 		let mobileNumber = user.phone ? user.phone[0].phoneNumber : "";
 		let emailAddress = user.emails ? user.emails[0].address : "";
 
-		if (emailAddress.length === 0 && mobileNumber.length > 0) {
-			emailAddress = mobileNumber + "@sms.db.de";
+		if (!mobileNumber && emailAddress && ( emailAddress.search('@') === -1)) { //email most probably contains a phone number
+			mobileNumber = emailAddress;
+			emailAddress = emailAddress + "@sms.db.de";
 		}
-		if (mobileNumber.length === 0 && emailAddress.length > 0 && emailAddress.match(/^\+?\d+@sms.db.de$/)) {
+		
+		if (!mobileNumber && emailAddress && emailAddress.match(/^\+?\d+@sms.db.de$/)) {
 			mobileNumber = emailAddress.replace("@sms.db.de", "");
 		}
 
