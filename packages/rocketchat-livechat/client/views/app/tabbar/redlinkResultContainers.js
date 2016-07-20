@@ -8,7 +8,7 @@ class redlinkResultContainerHelpers {
 		const results = instance.data.results;
 		const stepping = instance.data.stepping;
 		const totalLength = results.length;
-		
+
 		let offset = instance.state.get('currentOffset');
 		if(offset >= totalLength){
 			//start over immediately
@@ -20,6 +20,24 @@ class redlinkResultContainerHelpers {
 			lastElement = offset + stepping;
 		}
 		return results.slice(offset, lastElement);
+	}
+
+	visiblePage() {
+		const instance = Template.instance();
+		const results = instance.data.results;
+		const totalLength = results.length;
+		const offset = instance.state.get('currentOffset');
+		const stepping = instance.data.stepping;
+
+		return Math.floor((offset/(totalLength-1))*stepping) + 1
+	}
+
+	totalPages() {
+		const instance = Template.instance();
+		const results = instance.data.results;
+		const stepping = instance.data.stepping;
+
+		return Math.floor(results.length/stepping) + 1
 	}
 
 	resultsCount(){

@@ -2,6 +2,13 @@
     <!--Represents a single proposed query which might include a preview-->
     <div class="query-item-wrapper {{classExpanded}}">
         <div class="query-item clearfix" data-template-index="{{templateIndex}}" data-query-index="{{queryIndex}}">
+			{{#if and query.inlineResultSupport hasResult}}
+                <div class="js-toggle-results-expanded query-results-toggle">
+                    <span class="icon-up-open"></span>
+                </div>
+			{{else}}
+                <div class="query-results-not-supported"></div>
+			{{/if}}
             <a class="query-item-url" href="{{query.url}}" target="_blank">
                 <span class="query-servicename">{{query.displayTitle}}</span>
                 <span class="icon-wrapper"><i class="icon-link-ext"></i></span>
@@ -10,11 +17,6 @@
                     src="/packages/rocketchat_livechat/assets/icons/{{query.replacedCreator}}.png"
                     onerror="this.onerror=null; this.src='/packages/rocketchat_livechat/assets/icons/fallback_logo.png';">
                 <span class="creator_label">{{_ query.replacedCreator}}</span></a>
-			{{#if and query.inlineResultSupport hasResult}}
-                <div class="query-results-toggle">
-                    <span class="js-toggle-results-expanded icon-up-open"></span>
-                </div>
-			{{/if}}
         </div>
 
 		{{#if and query.inlineResultSupport hasResult}}
