@@ -29,7 +29,7 @@ class redlinkResultContainerHelpers {
 		const offset = instance.state.get('currentOffset');
 		const stepping = instance.data.stepping;
 
-		return Math.floor((offset/(totalLength-1))*stepping) + 1
+		return Math.ceil((offset/(totalLength))*(totalLength/stepping)) + 1
 	}
 
 	totalPages() {
@@ -37,7 +37,7 @@ class redlinkResultContainerHelpers {
 		const results = instance.data.results;
 		const stepping = instance.data.stepping;
 
-		return Math.floor(results.length/stepping) + 1
+		return Math.ceil(results.length/stepping)
 	}
 
 	resultsCount(){
