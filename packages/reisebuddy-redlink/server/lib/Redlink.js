@@ -110,7 +110,7 @@ class RedlinkAdapter {
 	getQueryResults(roomId, templateIndex, creator) {
 		// ---------------- private methods
 		const _getKeyForBuffer = function (templateIndex, creator) {
-			return templateIndex + '-' + creator.replace('.', '_');
+			return templateIndex + '-' + creator.replace(/\./g, '_');
 		};
 
 		const _getBufferedResults = function (latestKnowledgeProviderResult, templateIndex, creator) {

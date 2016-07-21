@@ -73,7 +73,7 @@ Template.redlinkInlineResult_VKL_community.helpers({
 });
 
 Template.redlinkInlineResult_VKL_community.events({
-	'click .result-item-wrapper .js-toggle-results-expanded': function (event, instance) {
+	'click .result-item-wrapper .js-toggle-result-preview-expanded': function (event, instance) {
 		const current = instance.state.get('expanded');
 		instance.state.set('expanded', !current);
 	},
