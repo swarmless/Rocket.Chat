@@ -62,7 +62,7 @@ Template.redlinkQuery.helpers({
 });
 
 Template.redlinkQuery.events({
-	'click .query-results-toggle .js-toggle-results-expanded': function (event, instance) {
+	'click .js-toggle-results-expanded': function (event, instance) {
 		const current = instance.state.get('resultsExpanded');
 		instance.state.set('resultsExpanded', !current);
 	}
