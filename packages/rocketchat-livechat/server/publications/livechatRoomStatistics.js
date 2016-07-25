@@ -73,11 +73,6 @@ function addCrmDataToRoom(roomId, userId) {
 	let userData = RocketChat.models.Users.findOneById(userId);
 
 	if (userData.crmContactId) {
-		console.log(_vtiger.getAdapter().retrievePromise(userData.crmContactId)
-			.catch((err)=> {
-				throw new Meteor.Error(err)
-			}));
-
 		Meteor.call('livechat:getCrmContact', userData.crmContactId, (err, crmContact) => {
 			if (!err && crmContact) {
 				let crmName = (crmContact.lastname ? crmContact.lastname : '') +
@@ -85,6 +80,7 @@ function addCrmDataToRoom(roomId, userId) {
 					(crmContact.firstname ? crmContact.firstname : '');
 
 				// TODO liefert als crmContact IMMMER  { _37: 0, _12: null, _59: [] }
+				// console.log(crmContact);
 				if (crmName && crmName.length > 0) {
 					let fields = {};
 					fields.label = crmName;
