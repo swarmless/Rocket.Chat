@@ -19,7 +19,8 @@ for (var tpl in Template) {
 					dayOfWeekStart: 1,
 					format: 'L LT',
 					formatTime: 'LT',
-					formatDate: 'L'
+					formatDate: 'L',
+					validateOnBlur:false // prevent validation to use questionmark as placeholder
 				});
 			});
 		});
