@@ -45,6 +45,18 @@ Meteor.methods({
 		if (!closeRoom || !mergeRoom) {
 			throw new Meteor.Error('error-not-found', 'Not found', {method: 'livechat:mergeRooms'});
 		}
+
+		let settings = { answered: false };
+
+		let oldSubscription = RocketChat.models.Subscriptions.findOneByRoomIdAndUserId(roomToCloseId, Meteor.userId());
+		if(oldSubscription && oldSubscription.answered) {
+			settings.answered = oldSubscription.answered
+		}
+
+		if (closeRoom.rbInfo) {
+			settings.rbInfo = closeRoom.rbInfo;
+		}
+
 		const numOfMsgsToMove = RocketChat.models.Messages.findVisibleByRoomId(roomToCloseId).count();
 		RocketChat.models.Messages.updateAllRoomIds(roomToCloseId, newRoomId);
 		RocketChat.models.Rooms.incMsgCountAndSetLastMessageTimestampById(newRoomId, numOfMsgsToMove, new Date());
@@ -56,11 +68,12 @@ Meteor.methods({
 			$set: {open: true},
 			$unset: {comment: ''}
 		});
-		let settings = {answered: closeRoom.answered};
-		if(closeRoom.rbInfo) {
-			settings.rbInfo = closeRoom.rbInfo;
-		}
-        RocketChat.models.Subscriptions.update(newRoomId, {$set: settings});
+
+		RocketChat.models.Subscriptions.update(
+			{rid: newRoomId},
+			{$set: settings}
+		);
+
 		RocketChat.models.Subscriptions.openByRoomIdAndUserId(newRoomId, Meteor.userId());
 	}
 });
