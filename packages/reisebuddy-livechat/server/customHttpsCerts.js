@@ -6,7 +6,7 @@
 	var certDir = process.env.CA_CERT_PATH;
 
 	if (!certDir) { //backwards compatible
-		process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/.nodeCaCerts/';
+		certDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/.nodeCaCerts/';
 	}
 
 	var caMap = (function () {
