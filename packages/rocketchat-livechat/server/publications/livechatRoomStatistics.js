@@ -73,7 +73,7 @@ function addCrmDataToRoom(roomId, userId) {
 	let userData = RocketChat.models.Users.findOneById(userId);
 
 	if (userData.crmContactId) {
-		console.log(_vtiger.getAdapter().retrievePromise(crmContactId)
+		console.log(_vtiger.getAdapter().retrievePromise(userData.crmContactId)
 			.catch((err)=> {
 				throw new Meteor.Error(err)
 			}));
