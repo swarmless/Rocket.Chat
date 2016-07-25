@@ -11,7 +11,7 @@ mime.extensions['image/vnd.microsoft.icon'] = ['ico']
 assets =
 	'logo':
 		label: 'logo (svg, png, jpg)'
-		defaultUrl: 'images/logo/logo.svg'
+		defaultUrl: 'images/logo/Reisebuddy_Logo2.svg'
 		constraints:
 			type: 'image'
 			extensions: ['svg', 'png', 'jpg', 'jpeg']
