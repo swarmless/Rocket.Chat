@@ -62,7 +62,11 @@ class LotusMailCommunicationService {
 	 * @return {*} stub
 	 */
 	extendNewUser(stub, requestBody) {
-		stub.email = requestBody.sender;
+		if (requestBody.sender.search('@') != -1) {
+			stub.email = requestBody.sender; //assumption: eMail-address contains an @ - no matter which format
+		} else {
+			stub.phone = {number: requestBody.sender}; //no @ => most probably was a phone address
+		}
 		return stub;
 	}
 
