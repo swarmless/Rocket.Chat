@@ -42,10 +42,9 @@ Template.livechatRoomItem.onRendered(function () {
 
 	const self = this;
 	actualizeTimer(self);
-
 	this.timerId = Meteor.setInterval(() => {
 		actualizeTimer(self);
-	}, 1000);
+	}, 10000);
 });
 
 Template.livechatRoomItem.onCreated(function () {
@@ -53,20 +52,16 @@ Template.livechatRoomItem.onCreated(function () {
 	this.isLoadingCrmName = new ReactiveVar(true);
 
 	const self = this;
-	const currentData = self.data;
+	this.visitorName = new ReactiveVar(self.data.name);
 
-	this.visitorName = new ReactiveVar(currentData.name);
-
-	if (currentData && currentData.rid) {
-		this.subscribe('livechat:visitorInfo', {rid: currentData.rid});
-		this.subscribe('livechat:rooms', {rid: currentData.rid});
+	if (self.data && self.data.rid) {
+		this.subscribe('livechat:visitorInfo', {rid: self.data.rid});
+		this.subscribe('livechat:rooms', {rid: self.data.rid});
 
 		this.autorun(() => {
-			let room = ChatRoom.findOne(currentData.rid);
-
+			const room = ChatRoom.findOne(self.data.rid);
 			if (room && room.v && room.v._id) {
-				let user = Meteor.users.findOne({'_id': room.v._id});
-
+				const user = Meteor.users.findOne({'_id': room.v._id});
 				if(user) {
 					gatherAndDisplayAdditionalUserData(user);
 				}
@@ -135,11 +130,9 @@ Template.livechatRoomItem.events({
 
 function actualizeTimer(instance) {
 	let lastDate = instance.data.answered ? instance.data.lastActivity : instance.data.lastCustomerActivity;
-
 	if (!_.isDate(lastDate)) {
 		lastDate = new Date();
 	}
-
 	instance.lastActivityTimer.set(new _dbs.Duration(new Date() - lastDate).toMM());
 }
 
