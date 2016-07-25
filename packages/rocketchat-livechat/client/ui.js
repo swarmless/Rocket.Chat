@@ -58,7 +58,7 @@ RocketChat.TabBar.addButton({
 	groups: ['livechat'],
 	id: 'visitor-info',
 	i18nTitle: 'Visitor_Info',
-	icon: 'icon-male',
+	icon: 'icon-user',
 	template: 'visitorInfo',
 	order: 1
 });
