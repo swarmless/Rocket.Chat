@@ -85,10 +85,18 @@ class LotusMailCommunicationService {
 			subject: Match.Optional(String)
 		});
 		const self = this;
+		const REGEX_MAIL = /^\+?\d+@sms.db.de$/;
+		const REGEX_PHONE = /^\+?\d+/;
 
-		var regEx = /^\+?\d+@sms.db.de$/;
-		if (to.match(regEx)) {
+		//"to" may contain a phone number as well as an email-address.
+		// => determine which one it actually is and extract the actual number if necessary
+
+
+		if (to.match(REGEX_MAIL)) {
 			to = to.replace('@sms.db.de', '');
+		}
+
+		if (to.match(REGEX_PHONE)){
 			SystemLogger.debug("send sms to " + to);
 
 			let requestBody =
