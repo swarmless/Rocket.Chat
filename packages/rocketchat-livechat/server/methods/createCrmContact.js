@@ -35,11 +35,11 @@ Meteor.methods({
 			throw new Meteor.Error(err);
 		}
 
-		if (existingCrmContacts.length > 0) {
+		if (existingCrmContacts && existingCrmContacts.length > 0) {
 			updateData.crmContactId = existingCrmContacts[0].id;
 
 			RocketChat.models.Users.saveUserById(user._id, updateData);
-			
+
 			return existingCrmContacts.length;
 		} else {
 
@@ -77,7 +77,7 @@ Meteor.methods({
 						}
 					}
 				}
-				
+
 				return 0;
 			}
 			catch (err) {
