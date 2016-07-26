@@ -3,6 +3,8 @@ Meteor.methods({
 
 		const SEND_IMMEDIATELY = 0;
 		const DOMAIN_SMS = "@sms.db.de";
+		let updateData = {};
+
 		const user = RocketChat.models.Users.findOneById(userId);
 
 		let mobileNumber = user.phone ? user.phone[0].phoneNumber : "";
@@ -14,48 +16,74 @@ Meteor.methods({
 		}
 
 		// finally, create a mail-address out of the mobile number if no mail-address was specified
-		if (!emailAddress && mobileNumber){
+		if (!emailAddress && mobileNumber) {
 			emailAddress = mobileNumber + DOMAIN_SMS;
 		}
 
-		const contact = {
-			lastname: (mobileNumber.length > 0 ? mobileNumber : (emailAddress.length > 0 ? emailAddress : "Neuer Kunde")),
+		//check whether a CRM contact with either the same mobile number or email-address already exists
+		const contactSkeleton = {
 			mobile: mobileNumber,
 			email: emailAddress
 		};
 
-		const firstMessage = RocketChat.models.Messages.findFirstMessageFromUser(user._id);
-
+		let existingCrmContacts = [];
 		try {
-			const createContactResult = Promise.await(_vtiger.getAdapter().createContactWithMessagePromise(contact, firstMessage.msg));
-
-			let updateData = {};
-			updateData.crmContactId = createContactResult.createdContact.id;
-
-			RocketChat.models.Users.saveUserById(user._id, updateData);
-
-			if (createContactResult.messages) {
-				const immediatedMessagesString = createContactResult.messages.reduce(function (reduced, current) {
-					if (current.processingInstruction === SEND_IMMEDIATELY) {
-						return reduced ? reduced + current.message : current.message;
-					} else {
-						return reduced;
-					}
-				}, "");
-				if (immediatedMessagesString) {
-					let room = RocketChat.models.Rooms.findOne(roomId);
-					try {
-						RocketChat.models.Messages.createWithTypeRoomIdMessageAndUser("", room._id, immediatedMessagesString, room.servedBy);
-					} catch (err) {
-						console.error('Could not send registration messages', err);
-						throw new Meteor.Error(err);
-					}
-				}
-			}
+			existingCrmContacts = Promise.await(_vtiger.getAdapter().findContactsBySkeletonPromise(contactSkeleton, 'OR', 2));
 		}
 		catch (err) {
-			console.error("Couldn't create contact in crm system", err);
+			console.error("Couldn't check existing contact in crm system", err);
 			throw new Meteor.Error(err);
+		}
+
+		if (existingCrmContacts.length > 0) {
+			updateData.crmContactId = existingCrmContacts[0].id;
+
+			RocketChat.models.Users.saveUserById(user._id, updateData);
+			
+			return existingCrmContacts.length;
+		} else {
+
+			//create a new contact
+			const contact = {
+				lastname: (mobileNumber.length > 0 ? mobileNumber : (emailAddress.length > 0 ? emailAddress : "Neuer Kunde")),
+				mobile: mobileNumber,
+				email: emailAddress
+			};
+
+			const firstMessage = RocketChat.models.Messages.findFirstMessageFromUser(user._id);
+
+			try {
+				const createContactResult = Promise.await(_vtiger.getAdapter().createContactWithMessagePromise(contact, firstMessage.msg));
+
+				updateData.crmContactId = createContactResult.createdContact.id;
+
+				RocketChat.models.Users.saveUserById(user._id, updateData);
+
+				if (createContactResult.messages) {
+					const immediatedMessagesString = createContactResult.messages.reduce(function (reduced, current) {
+						if (current.processingInstruction === SEND_IMMEDIATELY) {
+							return reduced ? reduced + current.message : current.message;
+						} else {
+							return reduced;
+						}
+					}, "");
+					if (immediatedMessagesString) {
+						let room = RocketChat.models.Rooms.findOne(roomId);
+						try {
+							RocketChat.models.Messages.createWithTypeRoomIdMessageAndUser("", room._id, immediatedMessagesString, room.servedBy);
+						} catch (err) {
+							console.error('Could not send registration messages', err);
+							throw new Meteor.Error(err);
+						}
+					}
+				}
+				
+				return 0;
+			}
+			catch (err) {
+				console.error("Couldn't create contact in crm system", err);
+				throw new Meteor.Error(err);
+			}
 		}
 	}
 });
