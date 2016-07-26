@@ -1,11 +1,11 @@
 <template name="livechatCurrentChats">
 
 	{{#if Template.subscriptionsReady}}
-        <div class="list">
-            <h2>{{_ "Open_Conversations"}}</h2>
+        <div class="list livechatCurrentChats">
+            <h3>{{_ "Open_Conversations"}}</h3>
 			{{> reactiveTable collection=openLivechatRoom settings=tableSettings}}
 
-            <h2>{{_ "Closed_Conversations"}}</h2>
+            <h3>{{_ "Closed_Conversations"}}</h3>
 			{{> reactiveTable collection=closedLivechatRoom settings=tableSettings}}
         </div>
 	{{else}}

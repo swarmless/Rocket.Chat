@@ -933,7 +933,14 @@
 					border: 1px solid #CCC;
 					position: relative;
 					.query-servicename {
-						font-size: 12px;
+                        font-size: 12px;
+                        max-width: 225px;
+                        word-wrap: break-word;
+                        display: inline-block;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        vertical-align: middle;
+                        text-overflow: ellipsis;
 					}
 					.icon-wrapper {
 						position: relative;
@@ -1199,6 +1206,9 @@
 	cursor: pointer;
 }
 
-.list.h2 {
-	margin-top: 100px;
+.list.livechatCurrentChats {
+    .h3 {
+        font-weight: bold;
+        margin-top: 3em;
+    }
 }

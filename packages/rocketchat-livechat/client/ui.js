@@ -46,11 +46,21 @@ AccountBox.addItem({
 
 RocketChat.TabBar.addButton({
 	groups: ['livechat'],
+	id: 'external-search',
+	i18nTitle: 'Knowledge_Base',
+	icon: 'icon-lightbulb',
+	template: 'externalSearch',
+	order: 0,
+	initialOpen: true
+});
+
+RocketChat.TabBar.addButton({
+	groups: ['livechat'],
 	id: 'visitor-info',
 	i18nTitle: 'Visitor_Info',
-	icon: 'icon-info-circled',
+	icon: 'icon-user',
 	template: 'visitorInfo',
-	order: 0
+	order: 1
 });
 
 // RocketChat.TabBar.addButton({
@@ -75,16 +85,6 @@ RocketChat.TabBar.addGroup('message-search', ['livechat']);
 RocketChat.TabBar.addGroup('starred-messages', ['livechat']);
 RocketChat.TabBar.addGroup('uploaded-files-list', ['livechat']);
 RocketChat.TabBar.addGroup('push-notifications', ['livechat']);
-
-RocketChat.TabBar.addButton({
-	groups: ['livechat'],
-	id: 'external-search',
-	i18nTitle: 'Knowledge_Base',
-	icon: 'icon-lightbulb',
-	template: 'externalSearch',
-	order: 10,
-	initialOpen: true
-});
 
 RocketChat.MessageTypes.registerType({
 	id: 'livechat-close',
