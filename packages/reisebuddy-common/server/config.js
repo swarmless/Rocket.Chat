@@ -4,7 +4,7 @@ Meteor.startup(function () {
 	RocketChat.settings.add('Reisebuddy_active', true, {
 		type: 'boolean',
 		group: 'Reisebuddy',
-		section: 'Common',
+		section: 'General',
 		i18nLabel: 'Reisebuddy_active'
 	});
 });
