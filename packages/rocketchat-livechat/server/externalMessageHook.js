@@ -1,4 +1,4 @@
-/* globals HTTP, SystemLogger */
+/* globals SystemLogger */
 
 RocketChat.callbacks.add('afterSaveMessage', function (message, room) {
 	// skips this callback if the message was edited
@@ -24,14 +24,14 @@ RocketChat.callbacks.add('afterSaveMessage', function (message, room) {
 		return message;
 	}
 
-	this.knowledgeAdapter = RocketChat.Livechat.getKnowledgeAdapter();
+	const knowledgeAdapter = _dbs.getKnowledgeAdapter();
 	if (!knowledgeAdapter) {
 		return;
 	}
 
 	Meteor.defer(() => {
 		try {
-			this.knowledgeAdapter.onMessage(message);
+			knowledgeAdapter.onMessage(message);
 		}
 		catch (e) {
 			SystemLogger.error('Error using knowledge provider ->', e);

@@ -21,9 +21,21 @@ Package.onUse(function (api) {
 
 	api.versionsFrom('1.2.1');
 	api.use('ecmascript');
+	api.use('rocketchat:lib');
 	api.use('reisebuddy:common');
 
 	addDirectory(api, 'server/methods', 'server');
 	addDirectory(api, 'server/lib', 'server');
+	addDirectory(api, 'server/hooks', 'server');
 	// addDirectory(api, 'client/views', 'client');
+
+	//i18n
+	var _ = Npm.require('underscore');
+	var fs = Npm.require('fs');
+	var tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/reisebuddy-vtiger/i18n'), function(filename) {
+		return 'i18n/' + filename;
+	}));
+	api.addFiles(tapi18nFiles);
+
+	api.use('tap:i18n');
 });

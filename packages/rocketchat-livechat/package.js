@@ -33,7 +33,7 @@ Package.onUse(function(api) {
 	api.use('ddp-rate-limiter');
 	api.use('rocketchat:sms');
 	api.use('less@2.5.1');
-	api.use(['reisebuddy:livechat', 'reisebuddy:vtiger', 'reisebuddy:redlink']);
+	api.use(['reisebuddy:common', 'reisebuddy:livechat', 'reisebuddy:vtiger', 'reisebuddy:redlink']);
 	api.use('aslagle:reactive-table');
 
 	api.addFiles('livechat.js', 'server');
@@ -149,10 +149,6 @@ Package.onUse(function(api) {
 	api.addFiles('server/methods/sendOfflineMessage.js', 'server');
 	api.addFiles('server/methods/setCustomField.js', 'server');
 	api.addFiles('server/methods/webhookTest.js', 'server');
-	api.addFiles('server/methods/getCrmContact.js', 'server');
-	api.addFiles('server/methods/createCrmContact.js', 'server');
-	api.addFiles('server/methods/updateCrmContact.js', 'server');
-	api.addFiles('server/methods/updateKnowledgeProviderResult.js', 'server');
 
 	// models
 	api.addFiles('server/models/Users.js', 'server');
@@ -171,8 +167,6 @@ Package.onUse(function(api) {
 	api.addFiles('server/externalMessageHook.js', 'server');
 	api.addFiles('server/forwardUnclosedLivechats.js', 'server');
 	api.addFiles('server/setupWebhook.js', 'server');
-	api.addFiles('server/answerSubscriptionUpdateHook.js', 'server');
-	api.addFiles('server/lastActivitySubscriptionUpdateHook.js', 'server');
 
 	// publications
 	api.addFiles('server/publications/customFields.js', 'server');
@@ -182,35 +176,19 @@ Package.onUse(function(api) {
 	api.addFiles('server/publications/livechatDepartments.js', 'server');
 	api.addFiles('server/publications/livechatManagers.js', 'server');
 	api.addFiles('server/publications/livechatRooms.js', 'server');
-	api.addFiles('server/publications/livechatRoomStatistics.js', 'server');
 	api.addFiles('server/publications/visitorHistory.js', 'server');
 	api.addFiles('server/publications/visitorInfo.js', 'server');
 	api.addFiles('server/publications/visitorPageVisited.js', 'server');
-	api.addFiles('server/publications/visitorCrm.js', 'server');
 
 	// api
 	api.addFiles('server/api.js', 'server');
 
 	// livechat app
-	api.addFiles('assets/jquery.datetimepicker.full.min.js', 'client');
-	api.addFiles('assets/jquery.datetimepicker.css', 'client');
 	api.addAssets('assets/demo.html', 'client');
 	api.addAssets('assets/rocket-livechat.js', 'client');
 	api.addAssets('public/livechat.css', 'client');
 	api.addAssets('public/livechat.js', 'client');
 	api.addAssets('public/head.html', 'server');
-	api.addAssets('assets/icons/bahnDe.png', 'client');
-	api.addAssets('assets/icons/bahn_de.png', 'client');
-	api.addAssets('assets/icons/expedia.png', 'client');
-	api.addAssets('assets/icons/google.png', 'client');
-	api.addAssets('assets/icons/quixxit.png', 'client');
-	api.addAssets('assets/icons/fallback_logo.png', 'client');
-	api.addAssets('assets/icons/buld-grey.png', 'client');
-	api.addAssets('assets/icons/bahnDeSearchbox.png', 'client');
-	api.addAssets('assets/icons/community_bahn_de.png', 'client');
-	api.addAssets('assets/icons/VKL.png', 'client');
-	api.addAssets('assets/icons/yelp.png', 'client');
-	api.addAssets('assets/icons/maps_google-FoodAndBeverages.png', 'client');
 
 	//i18n
 	var _ = Npm.require('underscore');

@@ -1,37 +1,3 @@
-/* globals SystemLogger */
-
-class ApiAiAdapter {
-	constructor(adapterProps) {
-		this.properties = adapterProps;
-		this.headers = {
-			'Content-Type': 'application/json; charset=utf-8',
-			'Authorization': 'Bearer ' + this.properties.token
-		}
-	}
-
-	onMessage(message) {
-		const responseAPIAI = HTTP.post(this.properties.url, {
-			data: {
-				query: message.msg,
-				lang: this.properties.language
-			},
-			headers: this.headers
-		});
-		if (responseAPIAI.data && responseAPIAI.data.status.code === 200 && !_.isEmpty(responseAPIAI.data.result.fulfillment.speech)) {
-			RocketChat.models.LivechatExternalMessage.insert({
-				rid: message.rid,
-				msg: responseAPIAI.data.result.fulfillment.speech,
-				orig: message._id,
-				ts: new Date()
-			});
-		}
-	}
-
-	onClose() {
-		//do nothing, api.ai does not learn from us.
-	}
-}
-
 RocketChat.Livechat = {
 	logger: new Logger('Livechat', {
 		sections: {
@@ -225,50 +191,19 @@ RocketChat.Livechat = {
 		}
 		return RocketChat.models.Users.saveUserById(_id, updateData);
 	},
-	calculateDuration(rid){
-		const lastMessage = RocketChat.models.Messages.findVisibleByRoomId(rid, {sort: { ts: -1 }, limit :1}).fetch()[0];
-		const firstMessage = RocketChat.models.Messages.findVisibleByRoomId(rid, {sort: { ts: 1 }, limit :1}).fetch()[0];
-		return (lastMessage && lastMessage.ts && firstMessage && firstMessage.ts) ? lastMessage.ts - firstMessage.ts : 0;
-	},
-	closeRoom({user, room, closeProps}) {
+
+	closeRoom({ user, room, comment }) {
 		RocketChat.models.Rooms.closeByRoomId(room._id);
-
-		let updatedRBInfo = room.rbInfo ? room.rbInfo : {};
-		updatedRBInfo.knowledgeProviderUsage = closeProps.knowledgeProviderUsage;
-
-		RocketChat.models.Rooms.update(room._id, {
-			$set: {
-				comment: closeProps.comment,
-				topic: closeProps.topic,
-				tags: closeProps.tags,
-				rbInfo: updatedRBInfo,
-				duration: this.calculateDuration(room._id)
-			}
-		});
 
 		const message = {
 			t: 'livechat-close',
-			msg: closeProps.comment,
+			msg: comment,
 			groupable: false
 		};
 
 		RocketChat.sendMessage(user, message, room);
 
-		RocketChat.models.Subscriptions.handleCloseRoom(room._id);
 		RocketChat.models.Subscriptions.hideByRoomIdAndUserId(room._id, user._id);
-
-		Meteor.defer(() => {
-			try {
-				const knowledgeAdapter = this.getKnowledgeAdapter();
-                if (knowledgeAdapter && knowledgeAdapter.onClose) {
-					knowledgeAdapter.onClose(room);
-				} else {
-					SystemLogger.warn('No knowledge provider configured');
-				}
-			} catch (e) {
-				SystemLogger.error('Error submitting closed conversation to knowledge provider ->', e);
-			}
-		});
 
 		Meteor.defer(() => {
 			RocketChat.callbacks.run('closeLivechat', room);
@@ -298,41 +233,7 @@ RocketChat.Livechat = {
 
 		return settings;
 	},
-	getKnowledgeAdapter () {
-		var knowledgeSource = '';
 
-		const KNOWLEDGE_SRC_APIAI = "0";
-		const KNOWLEDGE_SRC_REDLINK = "1";
-
-		RocketChat.settings.get('Livechat_Knowledge_Source', function (key, value) {
-			knowledgeSource = value;
-		});
-
-		let adapterProps = {
-			url: '',
-			token: '',
-			language: ''
-		};
-
-		switch (knowledgeSource) {
-			case KNOWLEDGE_SRC_APIAI:
-				adapterProps.url = 'https://api.api.ai/api/query?v=20150910';
-
-				RocketChat.settings.get('Livechat_Knowledge_Apiai_Key', function (key, value) {
-					adapterProps.token = value;
-				});
-				RocketChat.settings.get('Livechat_Knowledge_Apiai_Language', function (key, value) {
-					adapterProps.language = value;
-				});
-
-				if (!this.apiaiAdapter) this.apiaiAdapter = new ApiAiAdapter(adapterProps);
-				return this.apiaiAdapter;
-				break;
-			case KNOWLEDGE_SRC_REDLINK:
-				return _dbs.RedlinkAdapterFactory.getInstance(); // buffering done inside the factory method
-				break;
-		}
-	},
 	saveRoomInfo(roomData, guestData) {
 		if (!RocketChat.models.Rooms.saveRoomById(roomData._id, roomData)) {
 			return false;
@@ -380,20 +281,3 @@ RocketChat.Livechat = {
 		});
 	}
 };
-
-/**
- * Refreshes the adapter instances on change of the configuration - the redlink-adapter factory does that on its own
- */
-Meteor.autorun(()=> {
-	RocketChat.settings.get('Livechat_Knowledge_Source', function (key, value) {
-		RocketChat.Livechat.apiaiAdapter = undefined;
-	});
-
-	RocketChat.settings.get('Livechat_Knowledge_Apiai_Key', function (key, value) {
-		RocketChat.Livechat.apiaiAdapter = undefined;
-	});
-
-	RocketChat.settings.get('Livechat_Knowledge_Apiai_Language', function (key, value) {
-		RocketChat.Livechat.apiaiAdapter = undefined;
-	});
-});

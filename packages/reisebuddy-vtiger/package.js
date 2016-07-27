@@ -27,13 +27,18 @@ Package.onUse(function (api) {
 	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.html', 'client');
 	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.js', 'client');
 
+	api.addFiles('server/methods/createCrmContact.js', 'server');
 	api.addFiles('server/methods/createDirectLivechatMessage.js', 'server');
 	api.addFiles('server/methods/crmIntegrationStatus.js', 'server');
+	api.addFiles('server/methods/getCrmContact.js', 'server');
+	api.addFiles('server/methods/updateCrmContact.js', 'server');
+
 	api.addFiles('server/ContactCreationOnDemand.js', 'server');
 
 	api.addFiles('server/models/Users.coffee', 'server');
 
 	api.addFiles('server/publications/userCrmAutocomplete.coffee', 'server');
+	api.addFiles('server/publications/visitorCrm.js', 'server');
 
 	//i18n
 	var _ = Npm.require('underscore');

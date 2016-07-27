@@ -209,7 +209,7 @@ Template.visitorInfo.events({
 			let closingProps = form;
 			closingProps.tags = form.tags.split(',');
 
-			Meteor.call('livechat:closeRoom', room._id, closingProps, function (error/*, result*/) {
+			Meteor.call('reisebuddy:closeRoom', room._id, closingProps, function (error/*, result*/) {
 				if (error) {
 					return handleError(error);
 				}

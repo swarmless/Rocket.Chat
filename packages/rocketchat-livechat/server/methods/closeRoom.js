@@ -1,5 +1,5 @@
 Meteor.methods({
-	'livechat:closeRoom'(roomId, closeProps) {
+	'livechat:closeRoom'(roomId, comment) {
 		if (!Meteor.userId() || !RocketChat.authz.hasPermission(Meteor.userId(), 'close-livechat-room')) {
 			throw new Meteor.Error('error-not-authorized', 'Not authorized', { method: 'livechat:closeRoom' });
 		}
@@ -15,7 +15,7 @@ Meteor.methods({
 		return RocketChat.Livechat.closeRoom({
 			user: user,
 			room: room,
-			closeProps: closeProps
+			closeProps: comment
 		});
 	}
 });
