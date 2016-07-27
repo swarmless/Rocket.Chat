@@ -1,4 +1,4 @@
-Reisebuddy_MailConf: Reisebuddy-Emailkonfiguration
+Reisebuddy_MailConf: Lotus Notes Anbindung
 SmsOut_Reisebuddy_lotusEndpoint: Adresse des Lotus Endpunkts für die HTTP-Requests
 SmsOut_Reisebuddy_baseAddress: Grundadresse des SMS-Gateways; 016012345@adresse
 SmsOut_Reisebuddy_defaultSubject: Standardbetreff
