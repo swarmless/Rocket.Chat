@@ -21,16 +21,9 @@ Package.onUse(function (api) {
 
 	api.versionsFrom('1.2.1');
 	api.use('ecmascript');
-	api.use('reisebuddy:livechat');
+	api.use('reisebuddy:common');
 
 	addDirectory(api, 'server/methods', 'server');
 	addDirectory(api, 'server/lib', 'server');
 	// addDirectory(api, 'client/views', 'client');
-});
-
-Package.onTest(function (api) {
-	api.use('ecmascript');
-	api.use('tinytest');
-	api.use('reisebuddy:redlink');
-	api.addFiles('reisebuddy-redlink-tests.js');
 });

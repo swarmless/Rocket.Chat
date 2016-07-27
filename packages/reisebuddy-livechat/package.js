@@ -9,22 +9,15 @@ Package.describe({
 
 Package.onUse(function(api) {
 	api.use(['ecmascript', 'underscore']);
+	api.use('reisebuddy:common');
 	api.use(['nimble:restivus', 'rocketchat:lib', 'rocketchat:authorization'], 'server');
-	api.use('templating', 'client'); //needed in order to be able to register global helpers on the Template-object
 
-	api.addFiles('server/customHttpsCerts.js', 'server');
-	api.addFiles('lib/core.js');
-	api.addFiles('lib/testing.js');
-	api.addFiles('lib/duration.js', 'client');
-	api.addFiles('client/lib/globalTemplateHelpers.js', 'client');
 	api.addFiles('server/config.js', 'server');
 
 	api.addFiles('server/lib/lotusMailCommunicationService.js', 'server');
 	api.addFiles('server/methods/mergeRooms.js', 'server');
 	api.addFiles('server/reisebuddyIncomingApi.js', 'server');
 	api.addFiles('server/sendMessageByService.js', 'server');
-
-	api.export('_dbs');
 
 	//i18n
 	var _ = Npm.require('underscore');
