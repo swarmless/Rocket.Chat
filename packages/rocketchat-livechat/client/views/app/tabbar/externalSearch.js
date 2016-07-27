@@ -301,7 +301,9 @@ Template.externalSearch.events({
 				return slot.role == slotRole;
 			});
 			if (qSlot && qSlot.inquiryMessage) {
-				$('#chat-window-' + inst.roomId + ' .input-message').val(qSlot.inquiryMessage).focus();
+				const inputBox = $('#chat-window-' + inst.roomId + ' .input-message');
+				const initialInputBoxValue = inputBox.val() ? inputBox.val() + ' ' : '';
+				inputBox.val(initialInputBoxValue + qSlot.inquiryMessage).focus();
 				inst.$(".knowledge-input-wrapper.active").removeClass("active");
 			}
 		}
