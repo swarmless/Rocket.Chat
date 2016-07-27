@@ -64,6 +64,12 @@ Template.redlinkInlineResult_bahn_de.events({
 	}
 });
 
+Template.redlinkInlineResult_bahn_de.helpers({
+	durationformat(val){
+		return new _dbs.Duration(val * 60*1000).toHHMMSS();
+	}
+});
+
 //----------------------------------- VKL and community ---------------------------------------
 Template.redlinkInlineResult_VKL_community.helpers({
 	classExpanded(){
