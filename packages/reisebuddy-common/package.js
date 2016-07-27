@@ -21,17 +21,4 @@ Package.onUse(function (api) {
 	api.addFiles('server/customHttpsCerts.js', 'server');
 
 	api.export('_dbs');
-
-	//i18n
-	var _ = Npm.require('underscore');
-	var fs = Npm.require('fs');
-	//todo can readdir work with regex within paths? packages/*/i18n ??
-	var tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/reisebuddy-common/i18n'), function(filename) {
-		return 'i18n/' + filename;
-	}));
-	api.addFiles(tapi18nFiles);
-
-	api.use('tap:i18n');
-
 });
-
