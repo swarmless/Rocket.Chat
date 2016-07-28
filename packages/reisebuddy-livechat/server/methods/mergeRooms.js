@@ -46,17 +46,24 @@ Meteor.methods({
 			throw new Meteor.Error('error-not-found', 'Not found', {method: 'livechat:mergeRooms'});
 		}
 
-		let settings = { answered: false };
+		let settings = {answered: false};
 
 		let oldSubscription = RocketChat.models.Subscriptions.findOneByRoomIdAndUserId(roomToCloseId, Meteor.userId());
-		if(oldSubscription && oldSubscription.answered) {
-			settings.answered = oldSubscription.answered
+		if (oldSubscription) {
+			if(oldSubscription.answered) {
+				settings.answered = oldSubscription.answered;
+			}
+			if(oldSubscription.lastActivity) {
+				settings.lastActivity = oldSubscription.lastActivity;
+			}
+			if(oldSubscription.lastCustomerActivity) {
+				settings.lastCustomerActivity = oldSubscription.lastCustomerActivity;
+			}
 		}
 
 		if (closeRoom.rbInfo) {
 			settings.rbInfo = closeRoom.rbInfo;
 		}
-
 		const numOfMsgsToMove = RocketChat.models.Messages.findVisibleByRoomId(roomToCloseId).count();
 		RocketChat.models.Messages.updateAllRoomIds(roomToCloseId, newRoomId);
 		RocketChat.models.Rooms.incMsgCountAndSetLastMessageTimestampById(newRoomId, numOfMsgsToMove, new Date());
