@@ -27,9 +27,11 @@ Package.onUse(function (api) {
 	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.html', 'client');
 	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.js', 'client');
 	api.addFiles('client/views/app/tabbar/visitorCRM.html', 'client');
-	api.addFiles('client/views/app/tabbar/visitorCRMEdit.html', 'client');
 	api.addFiles('client/views/app/tabbar/visitorCRM.js', 'client');
+	api.addFiles('client/views/app/tabbar/visitorCRMEdit.html', 'client');
 	api.addFiles('client/views/app/tabbar/visitorCRMEdit.js', 'client');
+	api.addFiles('client/views/app/tabbar/visitorEdit.html', 'client');
+	api.addFiles('client/views/app/tabbar/visitorEdit.js', 'client');
 
 	api.addFiles('server/models/Messages.js', 'server');
 	api.addFiles('server/models/Users.coffee', 'server');

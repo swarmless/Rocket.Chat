@@ -1,4 +1,4 @@
-Template.livechat.helpers({
+Template.reisebuddy_livechat.helpers({
 	isActive() {
 		if (ChatSubscription.findOne({
 			t: 'l',
@@ -36,6 +36,24 @@ Template.livechat.helpers({
 			}
 		});
 	},
+	roomsAnswered() {
+		return ChatSubscription.find({
+			t: 'l',
+			open: true,
+			answered: {$ne: false}
+		}, {
+			sort: {lastActivity: -1}
+		});
+	},
+	roomsUnanswered() {
+		return ChatSubscription.find({
+			t: 'l',
+			open: true,
+			answered: false
+		}, {
+			sort: {lastCustomerActivity: 1}
+		});
+	},
 	available() {
 		const user = Meteor.user();
 		return {
@@ -53,12 +71,16 @@ Template.livechat.helpers({
 	}
 });
 
-Template.livechat.events({
-	'click .livechat-status'() {
+Template.reisebuddy_livechat.events({
+	'click .livechat-status': function() {
 		Meteor.call('livechat:changeLivechatStatus', (err /*, results*/) => {
 			if (err) {
 				return handleError(err);
 			}
 		});
+	},
+	'click .livechat-section.available h3 .icon-plus': function () {
+		SideNav.setFlex("directLivechatMessagesFlex");
+		SideNav.openFlex();
 	}
 });

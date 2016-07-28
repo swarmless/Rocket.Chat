@@ -1,0 +1,28 @@
+<template name="reisebuddy_livechat">
+	<div class="livechat-section {{livechatAvailable}}">
+		<h3 class="{{isActive}}">
+			{{_ "Livechat"}}
+
+			{{#with available}}
+				<i class="livechat-status {{status}} {{icon}}" title="{{hint}}"></i>
+                <i class="icon-plus"></i>
+			{{/with}}
+		</h3>
+		<h4>{{_ "Unanswered"}}</h4>
+		<ul class="room-unanswered">
+			{{#each roomsUnanswered}}
+				{{> livechatRoomItem }}
+			{{else}}
+				<p class="empty">{{_ "No_unanswered_livechats" }}</p>
+			{{/each}}
+		</ul>
+		<h4>{{_ "Answered"}}</h4>
+		<ul class="room-answered">
+			{{#each roomsAnswered}}
+				{{> livechatRoomItem }}
+			{{else}}
+				<p class="empty">{{_ "No_answered_livechats" }}</p>
+			{{/each}}
+		</ul>
+	</div>
+</template>
