@@ -26,6 +26,13 @@ Package.onUse(function (api) {
 
 	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.html', 'client');
 	api.addFiles('client/views/sideNav/directLivechatMessagesFlex.js', 'client');
+	api.addFiles('client/views/app/tabbar/visitorCRM.html', 'client');
+	api.addFiles('client/views/app/tabbar/visitorCRMEdit.html', 'client');
+	api.addFiles('client/views/app/tabbar/visitorCRM.js', 'client');
+	api.addFiles('client/views/app/tabbar/visitorCRMEdit.js', 'client');
+
+	api.addFiles('server/models/Messages.js', 'server');
+	api.addFiles('server/models/Users.coffee', 'server');
 
 	api.addFiles('server/methods/createCrmContact.js', 'server');
 	api.addFiles('server/methods/createDirectLivechatMessage.js', 'server');
@@ -34,8 +41,6 @@ Package.onUse(function (api) {
 	api.addFiles('server/methods/updateCrmContact.js', 'server');
 
 	api.addFiles('server/ContactCreationOnDemand.js', 'server');
-
-	api.addFiles('server/models/Users.coffee', 'server');
 
 	api.addFiles('server/publications/userCrmAutocomplete.coffee', 'server');
 	api.addFiles('server/publications/visitorCrm.js', 'server');

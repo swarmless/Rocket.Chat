@@ -20,7 +20,8 @@ function addDirectory(api, pathInPackage, environment) {
 Package.onUse(function (api) {
 
 	api.versionsFrom('1.2.1');
-	api.use('ecmascript');
+	api.use(['ecmascript', 'underscore']);
+	api.use('templating', 'client');
 	api.use('rocketchat:lib');
 	api.use('reisebuddy:common');
 
@@ -28,7 +29,8 @@ Package.onUse(function (api) {
 	addDirectory(api, 'server/methods', 'server');
 	addDirectory(api, 'server/lib', 'server');
 	addDirectory(api, 'server/hooks', 'server');
-	// addDirectory(api, 'client/views', 'client');
+
+	addDirectory(api,'client/views/app/tabbar', 'client');
 
 	//i18n
 	var _ = Npm.require('underscore');

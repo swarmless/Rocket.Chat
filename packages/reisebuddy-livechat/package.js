@@ -9,7 +9,6 @@ Package.describe({
 
 /**TODO
  * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\app\client\stylesheets\_variables.less
- * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\app\i18n\de.i18n.json
  * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\stylesheets\livechat.less
  * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\views\app\tabbar
  * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\views\app\livechatCurrentChats.html
@@ -42,6 +41,9 @@ Package.onUse(function(api) {
 	api.addAssets('assets/icons/yelp.png', 'client');
 	api.addAssets('assets/icons/maps_google-FoodAndBeverages.png', 'client');
 
+	api.addFiles('server/models/Messages.js', 'server');
+	api.addFiles('server/models/Subscriptions.js', 'server');
+
 	api.addFiles('server/hooks/answerSubscriptionUpdateHook.js', 'server');
 	api.addFiles('server/hooks/lastActivitySubscriptionUpdateHook.js', 'server');
 
@@ -50,9 +52,11 @@ Package.onUse(function(api) {
 	api.addFiles('server/methods/closeRoom.js', 'server');
 	api.addFiles('server/methods/mergeRooms.js', 'server');
 
-	api.addFiles('server/models/Subscriptions.js', 'server');
-
 	api.addFiles('server/publications/livechatRoomStatistics.js', 'server');
+
+	api.addFiles('client/collections/LivechatRoomStatistics.js', 'client');
+	api.addFiles('client/views/sideNav/livechatRoomItem.html', 'client');
+	api.addFiles('client/views/sideNav/livechatRoomItem.js', 'client');
 
 	//i18n
 	var _ = Npm.require('underscore');

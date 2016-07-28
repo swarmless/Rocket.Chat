@@ -19,7 +19,7 @@ Package.onUse(function(api) {
 	api.versionsFrom('1.0');
 
 	api.use(['webapp', 'autoupdate'], 'server');
-	api.use(['ecmascript', 'underscore', 'coffeescript']);
+	api.use(['ecmascript', 'underscore']);
 	api.use('rocketchat:lib');
 	api.use('rocketchat:authorization');
 	api.use('rocketchat:logger');
@@ -59,7 +59,6 @@ Package.onUse(function(api) {
 	api.addFiles('client/collections/LivechatDepartment.js', 'client');
 	api.addFiles('client/collections/LivechatDepartmentAgents.js', 'client');
 	api.addFiles('client/collections/LivechatPageVisited.js', 'client');
-	api.addFiles('client/collections/LivechatRoomStatistics.js', 'client');
 	api.addFiles('client/collections/LivechatTrigger.js', 'client');
 
 	api.addFiles('client/methods/changeLivechatStatus.js', 'client');
@@ -97,34 +96,16 @@ Package.onUse(function(api) {
 	api.addFiles('client/views/app/tabbar/visitorEdit.js', 'client');
 	api.addFiles('client/views/app/tabbar/visitorInfo.html', 'client');
 	api.addFiles('client/views/app/tabbar/visitorInfo.js', 'client');
-	api.addFiles('client/views/app/tabbar/visitorCRM.html', 'client');
-	api.addFiles('client/views/app/tabbar/visitorCRMEdit.html', 'client');
-	api.addFiles('client/views/app/tabbar/visitorCRM.js', 'client');
-	api.addFiles('client/views/app/tabbar/visitorCRMEdit.js', 'client');
 
 	api.addFiles('client/views/sideNav/livechat.html', 'client');
 	api.addFiles('client/views/sideNav/livechat.js', 'client');
 	api.addFiles('client/views/sideNav/livechatFlex.html', 'client');
 	api.addFiles('client/views/sideNav/livechatFlex.js', 'client');
 
-	api.addFiles('client/views/sideNav/livechatRoomItem.html', 'client');
-	api.addFiles('client/views/sideNav/livechatRoomItem.js', 'client');
-
 	api.addFiles('client/views/app/triggers/livechatTriggerAction.html', 'client');
 	api.addFiles('client/views/app/triggers/livechatTriggerAction.js', 'client');
 	api.addFiles('client/views/app/triggers/livechatTriggerCondition.html', 'client');
 	api.addFiles('client/views/app/triggers/livechatTriggerCondition.js', 'client');
-
-	//redlink-knowledge-base-integration
-	api.addFiles('client/views/app/tabbar/redlinkQueries.html', 'client');
-	api.addFiles('client/views/app/tabbar/redlinkQueries.js', 'client');
-	api.addFiles('client/views/app/tabbar/redlinkQuery.html', 'client');
-	api.addFiles('client/views/app/tabbar/redlinkQuery.js', 'client');
-	api.addFiles('client/views/app/tabbar/redlinkInlineResult.html', 'client');
-	api.addFiles('client/views/app/tabbar/redlinkInlineResult.js', 'client');
-	api.addFiles('client/views/app/tabbar/redlinkResultContainers.html', 'client');
-	api.addFiles('client/views/app/tabbar/redlinkResultContainers.js', 'client');
-
 
 	// methods
 	api.addFiles('server/methods/addAgent.js', 'server');
@@ -190,5 +171,4 @@ Package.onUse(function(api) {
 	api.addAssets('public/livechat.css', 'client');
 	api.addAssets('public/livechat.js', 'client');
 	api.addAssets('public/head.html', 'server');
-
 });
