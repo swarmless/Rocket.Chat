@@ -131,6 +131,8 @@ random@1.0.5
 rate-limit@1.0.0
 reactive-dict@1.1.3
 reactive-var@1.0.6
+reisebuddy:common@0.0.1
+reisebuddy:communication@0.0.1
 reisebuddy:livechat@0.0.1
 reisebuddy:redlink@0.0.1
 reisebuddy:vtiger@0.8.2
