@@ -68,9 +68,12 @@ Meteor.methods({
 						}
 					}, "");
 					if (immediatedMessagesString) {
-						let room = RocketChat.models.Rooms.findOne(roomId);
+						const room = RocketChat.models.Rooms.findOne(roomId);
+						if(!room){
+							throw new Meteor.Error("Room created could not be found in order to send a message to the visitor");
+						}
 						try {
-							RocketChat.models.Messages.createWithTypeRoomIdMessageAndUser("", room._id, immediatedMessagesString, room.servedBy);
+							RocketChat.sendMessage(room.servedBy, {msg: immediatedMessagesString}, room);
 						} catch (err) {
 							console.error('Could not send registration messages', err);
 							throw new Meteor.Error(err);
