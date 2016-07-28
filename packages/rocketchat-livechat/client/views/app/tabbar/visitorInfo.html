@@ -54,17 +54,21 @@
 					{{/with}}
                 </div>
 
-                <nav class="centered-buttons">
-                    <button class='button lightblue edit-livechat button-block'><span><i
-                            class='icon-edit'></i> {{_ "Edit"}}</span></button>
-					{{#if roomOpen}}
-                        <button class='button close-livechat button-block'><span><i
-                                class='icon-download'></i> {{_ "Close"}}</span></button>
-                        <button class='button lightblue merge-livechat button-block'><span><i
-                                class='icon-recycle'></i> {{_ "Merge"}}</span></button>
-					{{/if}}
-                    <!-- <button class="button pvt-msg"><span><i class="icon-forward"></i> {{_ "Forward"}}</span></button> -->
-                </nav>
+                <div class="list-view">
+                    <h4>{{_ "Conversation"}}</h4>
+
+                    <nav class="centered-buttons">
+                        <button class='button lightblue edit-livechat button-block'><span><i
+                                class='icon-edit'></i> {{_ "Edit_Metadata"}}</span></button>
+						{{#if roomOpen}}
+                            <button class='button close-livechat button-block'><span><i
+                                    class='icon-download'></i> {{_ "Close_Conversation"}}</span></button>
+                            <button class='button lightblue merge-livechat button-block'><span><i
+                                    class='icon-recycle'></i> {{_ "Merge"}}</span></button>
+						{{/if}}
+                        <!-- <button class="button pvt-msg"><span><i class="icon-forward"></i> {{_ "Forward"}}</span></button> -->
+                    </nav>
+                </div>
 
 				{{#if customFields}}
                     <div class="visitor-custom-fields">
