@@ -158,7 +158,7 @@
 	};
 
 	// exports
-		w.RocketChat.livechat = {
+	w.RocketChat.livechat = {
 		pageVisited: pageVisited,
 		setCustomField: setCustomField
 	};
