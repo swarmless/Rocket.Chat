@@ -25,10 +25,10 @@ _dbs.getKnowledgeAdapter = function () {
 			adapterProps.language = value;
 		});
 
-		if (!this.apiaiAdapter) {
-			this.apiaiAdapter = new _dbs.ApiAiAdapter(adapterProps);
+		if (!_dbs.apiaiAdapter) {
+			_dbs.apiaiAdapter = new _dbs.ApiAiAdapterClass(adapterProps);
 		}
-		return this.apiaiAdapter;
+		return _dbs.apiaiAdapter;
 		break;
 	case KNOWLEDGE_SRC_REDLINK:
 		return _dbs.RedlinkAdapterFactory.getInstance(); // buffering done inside the factory method
@@ -41,14 +41,14 @@ _dbs.getKnowledgeAdapter = function () {
  */
 Meteor.autorun(()=> {
 	RocketChat.settings.get('Livechat_Knowledge_Source', function (key, value) {
-		RocketChat.Livechat.apiaiAdapter = undefined;
+		_dbs.apiaiAdapter = undefined;
 	});
 
 	RocketChat.settings.get('Livechat_Knowledge_Apiai_Key', function (key, value) {
-		RocketChat.Livechat.apiaiAdapter = undefined;
+		_dbs.apiaiAdapter = undefined;
 	});
 
 	RocketChat.settings.get('Livechat_Knowledge_Apiai_Language', function (key, value) {
-		RocketChat.Livechat.apiaiAdapter = undefined;
+		_dbs.apiaiAdapter = undefined;
 	});
 });

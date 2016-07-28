@@ -30,4 +30,4 @@ class ApiAiAdapter {
 	}
 }
 
-_dbs.ApiAiAdapter = ApiAiAdapter;
+_dbs.ApiAiAdapterClass = ApiAiAdapter;

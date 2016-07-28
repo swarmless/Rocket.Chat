@@ -46,5 +46,6 @@ Template.livechatCurrentChats.events({
 });
 
 Template.livechatCurrentChats.onCreated(function () {
+	i18n.setLanguage(TAPi18n.getLanguage());
 	this.subscribe('livechat:room_statistics');
 });

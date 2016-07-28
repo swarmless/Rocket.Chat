@@ -33,7 +33,8 @@ Package.onUse(function(api) {
 	api.use('ddp-rate-limiter');
 	api.use('rocketchat:sms');
 	api.use('less@2.5.1');
-	api.use(['reisebuddy:common', 'reisebuddy:livechat', 'reisebuddy:vtiger', 'reisebuddy:redlink']);
+	api.use(['reisebuddy:common', 'reisebuddy:vtiger', 'reisebuddy:redlink']);
+	api.use(['reisebuddy:livechat'], ['client', 'server'], {unordered: true}); // http://docs.meteor.com/api/packagejs.html#PackageAPI-use --> It's okay to load this dependency after your package.
 	api.use('aslagle:reactive-table');
 
 	api.addFiles('livechat.js', 'server');
@@ -190,13 +191,4 @@ Package.onUse(function(api) {
 	api.addAssets('public/livechat.js', 'client');
 	api.addAssets('public/head.html', 'server');
 
-	//i18n
-	var _ = Npm.require('underscore');
-	var fs = Npm.require('fs');
-	var tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/rocketchat-livechat/i18n'), function(filename) {
-		return 'i18n/' + filename;
-	}));
-	api.addFiles(tapi18nFiles);
-
-	api.use('tap:i18n');
 });

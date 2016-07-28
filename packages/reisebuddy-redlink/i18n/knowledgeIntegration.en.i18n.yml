@@ -14,3 +14,9 @@ price_standard: Flex price
 connection_details: Details
 copy_to_message: Send
 connection_not_available: Connection not available
+
+Livechat_Knowledge_Source : Knowledge source
+Livechat_Knowledge_Source_APIAI : API.ai
+Livechat_Knowledge_Source_Redlink : Redlink
+Livechat_Knowledge_Redlink_URL : URL of  Redlink service
+Livechat_Knowledge_Redlink_Auth_Token : Basic-Auth token

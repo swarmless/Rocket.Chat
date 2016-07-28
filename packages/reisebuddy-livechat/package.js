@@ -25,10 +25,10 @@ Package.onUse(function(api) {
 	api.use(['ecmascript', 'underscore']);
 	api.use('reisebuddy:common');
 	api.use('reisebuddy:communication');
-	api.use(['rocketchat:lib']);
+	api.use(['rocketchat:lib', 'rocketchat:livechat']);
 
-	api.addAssets('assets/jquery.datetimepicker.full.min.js', 'client');
-	api.addAssets('assets/jquery.datetimepicker.css', 'client');
+	api.addFiles('assets/jquery.datetimepicker.full.min.js', 'client');
+	api.addFiles('assets/jquery.datetimepicker.css', 'client');
 	api.addAssets('assets/icons/bahnDe.png', 'client');
 	api.addAssets('assets/icons/bahn_de.png', 'client');
 	api.addAssets('assets/icons/expedia.png', 'client');

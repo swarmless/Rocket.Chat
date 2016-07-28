@@ -24,6 +24,7 @@ Package.onUse(function (api) {
 	api.use('rocketchat:lib');
 	api.use('reisebuddy:common');
 
+	api.addFiles('server/config.js', 'server');
 	addDirectory(api, 'server/methods', 'server');
 	addDirectory(api, 'server/lib', 'server');
 	addDirectory(api, 'server/hooks', 'server');
@@ -32,7 +33,7 @@ Package.onUse(function (api) {
 	//i18n
 	var _ = Npm.require('underscore');
 	var fs = Npm.require('fs');
-	var tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/reisebuddy-vtiger/i18n'), function(filename) {
+	var tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/reisebuddy-redlink/i18n'), function(filename) {
 		return 'i18n/' + filename;
 	}));
 	api.addFiles(tapi18nFiles);
