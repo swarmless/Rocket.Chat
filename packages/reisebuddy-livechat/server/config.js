@@ -11,7 +11,7 @@ Meteor.startup(function() {
 		section: 'Reisebuddy_MailConf',
 		i18nLabel: 'SmsOut_Reisebuddy_baseAddress'
 	});
-	RocketChat.settings.add('SMS_Out_Reisebuddy_defaultSubject', 'Reisebuddy', {
+	RocketChat.settings.add('SMS_Out_Reisebuddy_defaultSubject', '', {
 		type: 'string',
 		group: 'Livechat',
 		section: 'Reisebuddy_MailConf',

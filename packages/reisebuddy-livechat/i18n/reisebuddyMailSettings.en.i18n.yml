@@ -1,4 +1,4 @@
-Reisebuddy_MailConf: Reisebuddy-Emailkonfiguration
+Reisebuddy_MailConf: Lotus Notes connection
 SmsOut_Reisebuddy_lotusEndpoint: endpoint of lotus for outgoing sms
 SmsOut_Reisebuddy_baseAddress: base address of the sms-gateway; 016012345@address
 SmsOut_Reisebuddy_defaultSubject: Default subject
