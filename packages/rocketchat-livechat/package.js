@@ -34,7 +34,6 @@ Package.onUse(function(api) {
 	api.use('rocketchat:sms');
 	api.use('less@2.5.1');
 	api.use(['reisebuddy:common', 'reisebuddy:vtiger', 'reisebuddy:redlink']);
-	api.use(['reisebuddy:livechat'], ['client', 'server'], {unordered: true}); // http://docs.meteor.com/api/packagejs.html#PackageAPI-use --> It's okay to load this dependency after your package.
 	api.use('aslagle:reactive-table');
 
 	api.addFiles('livechat.js', 'server');

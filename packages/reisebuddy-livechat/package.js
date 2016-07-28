@@ -21,7 +21,8 @@ Package.describe({
  */
 
 Package.onUse(function(api) {
-	api.use(['ecmascript', 'underscore']);
+	api.use(['ecmascript', 'underscore', 'mongo']);
+	api.use('templating', 'client');
 	api.use('reisebuddy:common');
 	api.use('reisebuddy:communication');
 	api.use(['rocketchat:lib', 'rocketchat:livechat']);
