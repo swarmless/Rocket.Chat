@@ -72,7 +72,6 @@ class LotusMailCommunicationService {
 
 	/**
 	 * Sends a mail to the given parameters asynchronously. Log on error.
-	 * @param sender optional - default: Mail_Reisebuddy_defaultSSender
 	 * @param to
 	 * @param message
 	 * @param subject optional - default: Mail_Reisebuddy_defaultSubject
@@ -98,7 +97,7 @@ class LotusMailCommunicationService {
 
 		if (to.match(REGEX_PHONE)){
 			let effectiveSubject = subject || self.defaultSubject;
-			if (!effectiveSubject){ // no default subject => we need a subject in order to get the message sent from Notes
+			if (!effectiveSubject.trim()){ // no default subject => we need a subject in order to get the message sent from Notes
 				effectiveSubject = message;
 				message = '';
 			}
