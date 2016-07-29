@@ -1,7 +1,4 @@
 /* globals Restivus */
-
-if(!RocketChat.settings.get('Reisebuddy_active')) {
-
 const Api = new Restivus({
 	apiPath: 'livechat-api/',
 	useDefaultAuth: true,
@@ -10,6 +7,10 @@ const Api = new Restivus({
 
 Api.addRoute('sms-incoming/:service', {
 	post() {
+		if(!!RocketChat.settings.get('Reisebuddy_active')) {
+			return {statusCode: 404}
+		}
+
 		const SMSService = RocketChat.SMS.getService(this.urlParams.service);
 
 		const sms = SMSService.parse(this.bodyParams);
@@ -74,5 +75,3 @@ Api.addRoute('sms-incoming/:service', {
 		return message;
 	}
 });
-
-}
