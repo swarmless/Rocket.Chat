@@ -54,11 +54,11 @@ class ClosingDialog {
 					reject();
 				}
 				let form = this.swalForm;
-				for (let key in  form) {
+				for (let key in form) {
 					if (!form.hasOwnProperty(key)) {
 						continue;
 					}
-					if (!form[key]) {
+					if (!form[key] && key !== 'comment') { //comment is not mandatory
 						swal.showInputError(t('Please_add_a_' + key + '_to_close_the_room'));
 						$('.sa-input-error').hide(); //hide an unwanted marker
 						return false;
