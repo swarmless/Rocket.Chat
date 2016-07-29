@@ -304,6 +304,7 @@ Template.externalSearch.events({
 				const inputBox = $('#chat-window-' + inst.roomId + ' .input-message');
 				const initialInputBoxValue = inputBox.val() ? inputBox.val() + ' ' : '';
 				inputBox.val(initialInputBoxValue + qSlot.inquiryMessage).focus();
+				inputBox.trigger('keyup');
 				inst.$(".knowledge-input-wrapper.active").removeClass("active");
 			}
 		}
