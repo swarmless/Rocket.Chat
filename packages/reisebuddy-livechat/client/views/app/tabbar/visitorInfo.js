@@ -19,11 +19,7 @@ Template.reisebuddy_visitorInfo.helpers({
 	},
 
 	room() {
-		let room = ChatRoom.findOne({_id: this.rid});
-		if (room.duration) {
-			room.formattedDuration = new _dbs.Duration(room.duration).toHHMMSS();
-		}
-		return room;
+		return ChatRoom.findOne({ _id: this.rid });
 	},
 
 	joinTags() {
@@ -101,115 +97,20 @@ Template.reisebuddy_visitorInfo.helpers({
 	}
 });
 
-/**
- * Provides a closing dialog with inputs for comment, topic and tags for a given room.
- */
-class ClosingDialog {
-	/**
-	 * @param room the room to get the values from
-	 * @param properties (optional) SweetAlert options
-	 */
-	constructor(room, properties) {
-		this.room = room;
-		this.properties = _.isObject(properties) ? properties : {};
-	}
-
-	/**
-	 * @return Promise (keep in mind that native es6-promises aren't cancelable. So always provide a then & catch)
-	 */
-	display() {
-		var self = this;
-		return new Promise(function (resolve, reject) {
-			swal.withForm(_.extend({
-				title: t('Closing_chat'),
-				text: '',
-				formFields: [{
-					id: 'comment',
-					value: self.room.comment,
-					type: 'input',
-					label: t("comment"),
-					placeholder: t('Please_add_a_comment')
-				}, {
-					id: 'topic',
-					value: self.room.topic,
-					type: 'input',
-					placeholder: t('Please_add_a_topic')
-				}, {
-					id: 'tags',
-					value: self.room.tags ? self.room.tags.join(", ") : "",
-					type: 'input',
-					placeholder: t('Please_add_a_tag')
-				}, {
-					id: 'knowledgeProviderUsage',
-					type: 'select',
-					options: [
-						{value: 'Unknown', text: t("knowledge_provider_usage_unknown")},
-						{value: 'Perfect', text: t("knowledge_provider_usage_perfect")},
-						{value: 'Helpful', text: t("knowledge_provider_usage_helpful")},
-						{value: 'NotUsed', text: t("knowledge_provider_usage_not_used")},
-						{value: 'Useless', text: t("knowledge_provider_usage_useless")}
-					]
-				}],
-				showCancelButton: true,
-				closeOnConfirm: false
-			}, self.properties), function (isConfirm) {
-				if (!isConfirm) { //on cancel
-					reject();
-				}
-				let form = this.swalForm;
-				for (let key in  form) {
-					if (!form.hasOwnProperty(key)) {
-						continue;
-					}
-					if (!form[key]) {
-						swal.showInputError(t('Please_add_a_' + key + '_to_close_the_room'));
-						$('.sa-input-error').hide(); //hide an unwanted marker
-						return false;
-					}
-				}
-				resolve(form);
-			});
-
-			//dropdowns are not properly formatted in th library - let's fix this by applying style directly
-			//more beautiful would be to change the stylesheet, but as this is defined in the swa-forms-package,
-			//this would be far more effort
-			$('.swal-form select').css({
-				'display': 'block',
-				'margin': '0',
-				'width': '96%',
-				'font-family': 'sans-serif',
-				'font-size': '18px',
-				'box-shadow': 'none',
-				'padding': '10px',
-				'border': 'solid 1px #dcdcdc',
-				'transition': 'box-shadow 0.3s, border 0.3s',
-				'height': 'initial',
-				'color': '#bdbdbd'
-			});
-		}).then((r) => {
-			$('.sa-input-error').show();
-			return r;
-		}).catch((reason) => {
-			throw reason
-		});
-	}
-}
-
 Template.reisebuddy_visitorInfo.events({
 	'click .edit-livechat': function (event, instance) {
 		event.preventDefault();
-
 		instance.editing.set(true);
 	},
 	'click .close-livechat': function (event) {
 		event.preventDefault();
 
 		var room = RocketChat.models.Rooms.findOne({_id: this.rid});
-		new ClosingDialog(room).display().then(function (form) {
+		new _dbs.ClosingDialog(room).display().then(function (form) {
 			let closingProps = form;
 			closingProps.tags = form.tags.split(',');
 
-			Meteor.call('reisebuddy:closeRoom', room._id, closingProps, function (error/*, result*/) {
+			Meteor.call('reisebuddy:closeRoom', room._id, closingProps, function (error) {
 				if (error) {
 					return handleError(error);
 				}
@@ -221,8 +122,7 @@ Template.reisebuddy_visitorInfo.events({
 					showConfirmButton: false
 				});
 			});
-		}).catch(() => {
-		});
+		}).catch(() => {});
 	},
 	'click .merge-livechat': function (event) {
 		event.preventDefault();
@@ -237,7 +137,7 @@ Template.reisebuddy_visitorInfo.events({
 					showConfirmButton: false
 				})
 			} else {
-				new ClosingDialog(newRoom, {
+				new _dbs.ClosingDialog(newRoom, {
 					title: t('Merging_Chat'),
 					text: t('title_and_tags_discarded_old_infos'),
 					closeOnConfirm: true
@@ -266,8 +166,7 @@ Template.reisebuddy_visitorInfo.onCreated(function () {
 		}
 	});
 
-	var currentData = Template.currentData();
-
+	const currentData = Template.currentData();
 	if (currentData && currentData.rid) {
 		this.autorun(() => {
 			let room = ChatRoom.findOne(currentData.rid);
