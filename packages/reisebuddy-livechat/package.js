@@ -7,12 +7,6 @@ Package.describe({
 	documentation: null
 });
 
-/**TODO
- * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\app\client\stylesheets\_variables.less
- * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\views\app\tabbar
- * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\ui.js
- */
-
 Package.onUse(function(api) {
 	api.use(['ecmascript', 'underscore', 'mongo']);
 	api.use('templating', 'client');
