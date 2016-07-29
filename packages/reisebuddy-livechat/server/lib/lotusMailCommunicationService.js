@@ -97,8 +97,6 @@ class LotusMailCommunicationService {
 		}
 
 		if (to.match(REGEX_PHONE)){
-			SystemLogger.debug("send sms to " + to);
-
 			let effectiveSubject = subject || self.defaultSubject;
 			if (!effectiveSubject){ // no default subject => we need a subject in order to get the message sent from Notes
 				effectiveSubject = message;
@@ -111,6 +109,8 @@ class LotusMailCommunicationService {
 				subject: effectiveSubject,
 				body: message || ''
 			};
+
+			SystemLogger.debug("Sending sms" + JSON.stringify(requestBody));
 
 			let options = {
 				"headers": {
