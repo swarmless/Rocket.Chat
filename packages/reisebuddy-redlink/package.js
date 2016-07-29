@@ -21,8 +21,11 @@ Package.onUse(function (api) {
 	api.versionsFrom('1.2.1');
 	api.use(['ecmascript', 'underscore']);
 	api.use('templating', 'client');
+	api.use('less@2.5.1');
 	api.use('rocketchat:lib');
 	api.use('reisebuddy:common');
+
+	api.addAssets('assets/stylesheets/redlink.less', 'server');
 
 	api.addFiles('server/config.js', 'server');
 	addDirectory(api, 'server/methods', 'server');

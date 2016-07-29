@@ -29,3 +29,7 @@ Meteor.startup(function () {
 		i18nLabel: 'Livechat_Knowledge_Redlink_Auth_Token'
 	});
 });
+
+RocketChat.theme.addPackageAsset(() => {
+	return Assets.getText('assets/stylesheets/redlink.less');
+});

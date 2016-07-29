@@ -33,8 +33,7 @@ Package.onUse(function(api) {
 	api.use('ddp-rate-limiter');
 	api.use('rocketchat:sms');
 	api.use('less@2.5.1');
-	api.use(['reisebuddy:common', 'reisebuddy:vtiger', 'reisebuddy:redlink']);
-	api.use('aslagle:reactive-table');
+	api.use(['reisebuddy:common']);
 
 	api.addFiles('livechat.js', 'server');
 	api.addFiles('server/startup.js', 'server');

@@ -9,24 +9,19 @@ Package.describe({
 
 /**TODO
  * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\app\client\stylesheets\_variables.less
- * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\stylesheets\livechat.less
  * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\views\app\tabbar
- * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\views\app\livechatCurrentChats.html
- * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\views\app\livechatCurrentChats.js
- * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\views\sideNav\livechat.html
- * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\views\sideNav\livechat.js
- * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\views\sideNav\livechatRoomItem.js
- * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\views\sideNav\livechatRoomItem.html
  * D:\Projekte\reisebuddy\rocket.chat\packages\rocketchat-livechat\client\ui.js
  */
 
 Package.onUse(function(api) {
 	api.use(['ecmascript', 'underscore', 'mongo']);
 	api.use('templating', 'client');
-	api.use('reisebuddy:common');
-	api.use('reisebuddy:communication');
+	api.use('less@2.5.1');
+	api.use('aslagle:reactive-table');
+	api.use(['reisebuddy:common', 'reisebuddy:communication']);
 	api.use(['rocketchat:lib', 'rocketchat:livechat']);
 
+	api.addAssets('assets/stylesheets/rb_livechat.less', 'server');
 	api.addFiles('assets/jquery.datetimepicker.full.min.js', 'client');
 	api.addFiles('assets/jquery.datetimepicker.css', 'client');
 	api.addAssets('assets/icons/bahnDe.png', 'client');
@@ -42,6 +37,8 @@ Package.onUse(function(api) {
 	api.addAssets('assets/icons/yelp.png', 'client');
 	api.addAssets('assets/icons/maps_google-FoodAndBeverages.png', 'client');
 
+	api.addFiles('server/config.js', 'server');
+
 	api.addFiles('server/models/Messages.js', 'server');
 	api.addFiles('server/models/Subscriptions.js', 'server');
 
@@ -56,6 +53,8 @@ Package.onUse(function(api) {
 	api.addFiles('server/publications/livechatRoomStatistics.js', 'server');
 
 	api.addFiles('client/collections/LivechatRoomStatistics.js', 'client');
+	api.addFiles('client/views/app/livechatCurrentChats.html', 'client');
+	api.addFiles('client/views/app/livechatCurrentChats.js', 'client');
 	api.addFiles('client/views/sideNav/livechat.html', 'client');
 	api.addFiles('client/views/sideNav/livechat.js', 'client');
 	api.addFiles('client/views/sideNav/livechatRoomItem.html', 'client');
