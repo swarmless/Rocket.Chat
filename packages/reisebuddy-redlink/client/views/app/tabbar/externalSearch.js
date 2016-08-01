@@ -303,7 +303,7 @@ Template.reisebuddy_externalSearch.events({
 			if (qSlot && qSlot.inquiryMessage) {
 				const inputBox = $('#chat-window-' + inst.roomId + ' .input-message');
 				const initialInputBoxValue = inputBox.val() ? inputBox.val() + ' ' : '';
-				inputBox.val(initialInputBoxValue + qSlot.inquiryMessage).focus();
+				inputBox.val(initialInputBoxValue + qSlot.inquiryMessage).focus().trigger('keyup');
 				inst.$(".knowledge-input-wrapper.active").removeClass("active");
 			}
 		}
