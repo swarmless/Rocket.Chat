@@ -1,8 +1,8 @@
 /* globals Package */
 Package.describe({
 	name: 'reisebuddy:livechat',
-	version: '0.0.1',
-	summary: 'Extension to rocketchat-livechat.',
+	version: '0.0.2',
+	summary: 'Extension to rocketchat-livechat',
 	git: '',
 	documentation: null
 });

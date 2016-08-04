@@ -1,9 +1,9 @@
 <template name="reisebuddy_livechat">
     <div class="livechat-section {{livechatAvailable}}">
         <h3 class="{{isActive}}">
-			{{_ "Livechat"}}
 			{{#with available}}
                 <i class="livechat-status {{status}} {{icon}}" title="{{hint}}"></i>
+				{{_ "Livechat"}}
                 <i class="icon-plus"></i>
 			{{/with}}
         </h3>
