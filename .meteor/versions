@@ -114,6 +114,7 @@ oauth2@1.1.5
 observe-sequence@1.0.7
 ordered-dict@1.0.4
 ostrio:cookies@2.0.2
+p2phelp-api@0.0.1
 pauli:accounts-linkedin@1.3.1
 pauli:linkedin@1.3.1
 peerlibrary:aws-sdk@2.2.42_1
