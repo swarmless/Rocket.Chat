@@ -23,7 +23,7 @@ Template.reisebuddy_visitorInfo.helpers({
 	},
 
 	joinTags() {
-		return this.tags.join(', ');
+		return this.tags && this.tags.join(', ');
 	},
 
 	customFields() {
@@ -47,9 +47,9 @@ Template.reisebuddy_visitorInfo.helpers({
 				if (livechatData.hasOwnProperty(_id)) {
 					let customFields = Template.instance().customFields.get();
 					if (customFields) {
-						let field = _.findWhere(customFields, {_id: _id});
+						let field = _.findWhere(customFields, { _id: _id });
 						if (field && field.visibility !== 'hidden') {
-							fields.push({label: field.label, value: livechatData[_id]});
+							fields.push({ label: field.label, value: livechatData[_id] });
 						}
 					}
 				}
@@ -73,7 +73,11 @@ Template.reisebuddy_visitorInfo.helpers({
 	},
 
 	editing() {
-		return Template.instance().editing.get();
+		return Template.instance().action.get() === 'edit';
+	},
+
+	forwarding() {
+		return Template.instance().action.get() === 'forward';
 	},
 
 	editDetails() {
@@ -83,24 +87,64 @@ Template.reisebuddy_visitorInfo.helpers({
 			visitorId: user ? user._id : null,
 			roomId: this.rid,
 			save() {
-				instance.editing.set(false);
+				instance.action.set();
 			},
 			cancel() {
-				instance.editing.set(false);
+				instance.action.set();
+			}
+		};
+	},
+
+	forwardDetails() {
+		const instance = Template.instance();
+		const user = instance.user.get();
+		return {
+			visitorId: user ? user._id : null,
+			roomId: this.rid,
+			save() {
+				instance.action.set();
+			},
+			cancel() {
+				instance.action.set();
 			}
 		};
 	},
 
 	roomOpen() {
-		const room = ChatRoom.findOne({_id: this.rid});
-		return room && room.open;
+		const room = ChatRoom.findOne({ _id: this.rid });
+
+		return room.open;
+	},
+
+	guestPool() {
+		return RocketChat.settings.get('Livechat_Routing_Method') === 'Guest_Pool';
+	},
+
+	showDetail() {
+		if (Template.instance().action.get()) {
+			return 'hidden';
+		}
+	},
+
+	canSeeButtons() {
+		if (RocketChat.authz.hasRole(Meteor.userId(), 'livechat-manager')) {
+			return true;
+		}
+
+		const data = Template.currentData();
+		if (data && data.rid) {
+			const room = RocketChat.models.Rooms.findOne(data.rid);
+			const user = Meteor.user();
+			return room.usernames.indexOf(user && user.username) !== -1;
+		}
+		return false;
 	}
 });
 
 Template.reisebuddy_visitorInfo.events({
 	'click .edit-livechat': function (event, instance) {
 		event.preventDefault();
-		instance.editing.set(true);
+		instance.action.set('edit');
 	},
 	'click .close-livechat': function (event) {
 		event.preventDefault();
@@ -124,6 +168,35 @@ Template.reisebuddy_visitorInfo.events({
 			});
 		}).catch(() => {});
 	},
+
+	'click .return-inquiry': function (event) {
+	    event.preventDefault();
+
+	swal({
+            title: t('Would_you_like_to_return_the_inquiry'),
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: t('Yes')
+        }, () => {
+            Meteor.call('livechat:returnAsInquiry', this.rid, function(error/*, result*/) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    Session.set('openedRoom');
+                    FlowRouter.go('/home');
+                }
+            });
+        });
+    },
+
+    'click .forward-livechat': function(event, instance) {
+	    event.preventDefault();
+
+	    instance.action.set('forward');
+    },
+
 	'click .merge-livechat': function (event) {
 		event.preventDefault();
 		const self = this;
@@ -157,7 +230,7 @@ Template.reisebuddy_visitorInfo.events({
 Template.reisebuddy_visitorInfo.onCreated(function () {
 	this.visitorId = new ReactiveVar(null);
 	this.customFields = new ReactiveVar([]);
-	this.editing = new ReactiveVar(false);
+	this.action = new ReactiveVar();
 	this.user = new ReactiveVar();
 
 	Meteor.call('livechat:getCustomFields', (err, customFields) => {
@@ -167,6 +240,7 @@ Template.reisebuddy_visitorInfo.onCreated(function () {
 	});
 
 	const currentData = Template.currentData();
+
 	if (currentData && currentData.rid) {
 		this.autorun(() => {
 			let room = ChatRoom.findOne(currentData.rid);
@@ -177,10 +251,10 @@ Template.reisebuddy_visitorInfo.onCreated(function () {
 			}
 		});
 
-		this.subscribe('livechat:visitorInfo', {rid: currentData.rid});
+		this.subscribe('livechat:visitorInfo', { rid: currentData.rid });
 	}
 
 	this.autorun(() => {
-		this.user.set(Meteor.users.findOne({'_id': this.visitorId.get()}));
+		this.user.set(Meteor.users.findOne({ '_id': this.visitorId.get() }));
 	});
 });
