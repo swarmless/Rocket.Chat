@@ -1,7 +1,8 @@
 Meteor.startup(function() {
+	RocketChat.settings.addGroup('CRM');
+
 	RocketChat.settings.add('CRM_vtiger_url', true, {
 		type: 'string',
-		group: 'Reisebuddy',
 		section: 'CRM',
 		public: true,
 		i18nLabel: 'DBRB_vtiger_url'
@@ -9,7 +10,6 @@ Meteor.startup(function() {
 
 	RocketChat.settings.add('CRM_vtiger_username', true, {
 		type: 'string',
-		group: 'Reisebuddy',
 		section: 'CRM',
 		public: true,
 		i18nLabel: 'DBRB_vtiger_username'
@@ -17,7 +17,6 @@ Meteor.startup(function() {
 
 	RocketChat.settings.add('CRM_vtiger_user_id', true, {
 		type: 'string',
-		group: 'Reisebuddy',
 		section: 'CRM',
 		public: true,
 		i18nLabel: 'DBRB_vtiger_user_id'
@@ -25,7 +24,6 @@ Meteor.startup(function() {
 
 	RocketChat.settings.add('CRM_vtiger_userAccessKey', true, {
 		type: 'string',
-		group: 'Reisebuddy',
 		section: 'CRM',
 		public: true,
 		i18nLabel: 'DBRB_vtiger_userAccessKey'

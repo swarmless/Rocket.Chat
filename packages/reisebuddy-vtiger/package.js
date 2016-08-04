@@ -19,6 +19,7 @@ Package.onUse(function (api) {
 	api.use(['ecmascript', 'underscore', 'coffeescript']);
 	api.use('templating', 'client');
 	api.use('rocketchat:lib');
+	api.use('reisebuddy:common');
 
 	api.addFiles('server/startup/settings.js', 'server');
 	api.addFiles('reisebuddy-vtiger.js', 'server');
