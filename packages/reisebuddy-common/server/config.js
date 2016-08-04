@@ -5,6 +5,7 @@ Meteor.startup(function () {
 		type: 'boolean',
 		group: 'Reisebuddy',
 		section: 'General',
+		public: true,
 		i18nLabel: 'Reisebuddy_active'
 	});
 });
