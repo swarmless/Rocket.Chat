@@ -2,7 +2,7 @@
  * Restful API endpoints for interaction with external systems
  */
 
-// import {P2pHelpApi} from './api';
+// import {p2ph.P2pHelpApi} from './api';
 // import {Restivus} from 'nimble:restivus';
 
 const API = new Restivus({
@@ -20,7 +20,7 @@ API.addRoute('helpDiscussion', {
 	post() {
 		const api = new p2ph.P2pHelpApi();
 		try {
-			P2pHelpApi.validateHelpDiscussionPostRequest(this.bodyParams)
+			p2ph.P2pHelpApi.validateHelpDiscussionPostRequest(this.bodyParams)
 		} catch(err) {
 			console.log('P2PHelp rejected malformed request:', JSON.stringify(this.request.body, " ", 2));
 			return {
@@ -37,7 +37,7 @@ API.addRoute('helpDiscussion', {
 
 		return {
 			statusCode: 200,
-			message: JSON.stringify(creationResult)
+			result: creationResult
 		}
 	}
 });
