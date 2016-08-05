@@ -490,6 +490,7 @@
   "Importer_Prepare_Uncheck_Deleted_Users" : "Gelöschte Nutzer deaktivieren",
   "Importer_progress_error" : "Fehler beim Erhalt des Verlaufs des Imports.",
   "Importer_setup_error" : "Bei der Konfiguration des Importers ist ein Fehler aufgetreten.",
+  "Incoming_Livechats" : "Eingehende Livechats",
   "inline_code" : "Code",
   "Install_Extension" : "Erweiterung installieren",
   "Install_FxOs" : "Rocket.Chat in deinem Firefox-Browser aktivieren",
