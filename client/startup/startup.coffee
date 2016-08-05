@@ -39,7 +39,6 @@ Meteor.startup ->
 
 		language = language.split('-').shift()
 		TAPi18n.setLanguage(language)
-		i18n.setLanguage(language)
 
 		language = language.toLowerCase()
 		if language isnt 'en'

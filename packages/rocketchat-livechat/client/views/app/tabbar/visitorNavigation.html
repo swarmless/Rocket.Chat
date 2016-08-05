@@ -1,5 +1,5 @@
 <template name="visitorNavigation">
-		<div class="list-view">
+		<div class="list-view" style="{{#if isReisebuddy }} display: none{{/if}}">
 			<h4>{{_ "Navigation_History"}}</h4>
 			<div class="visitor-navigation">
 				{{#if loadingNavigation}}

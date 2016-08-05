@@ -1,50 +1,21 @@
 Template.livechatCurrentChats.helpers({
-	closedLivechatRoom() {
-		return LivechatRoomsStats.find({t: 'l', open: {$ne: true}}, {sort: {ts: -1}});
+	livechatRoom() {
+		return ChatRoom.find({ t: 'l' }, { sort: { ts: -1 } });
 	},
-	openLivechatRoom() {
-		return LivechatRoomsStats.find({t: 'l', open: true}, {sort: {ts: -1}});
+	startedAt() {
+		return moment(this.ts).format('L LTS');
 	},
-	tableSettings: () => {
-		return {
-			fields: [
-				{
-					key: 'label',
-					label: TAPi18n.__('Customer_Name')
-				},
-				{
-					key: 'ts',
-					label: TAPi18n.__('Started_At')
-				},
-				{
-					key: 'lm',
-					label: TAPi18n.__('Last_Message'),
-					sortOrder: 0,
-					sortDirection: 'desc'
-				},
-				{
-					key: 'rbInfo.source',
-					label: TAPi18n.__('Used_Medium')
-				},
-				{
-					key: 'topic',
-					label: TAPi18n.__('Topic')
-				},
-				{
-					key: 'involvedAgents',
-					label: TAPi18n.__('Agent_Names')
-				}
-			]
-		}
+	lastMessage() {
+		return moment(this.lm).format('L LTS');
 	}
 });
 
 Template.livechatCurrentChats.events({
-	'click .reactive-table tbody tr': function () {
-		FlowRouter.go('live', {code: this.code});
+	'click .row-link'() {
+		FlowRouter.go('live', { code: this.code });
 	}
 });
 
-Template.livechatCurrentChats.onCreated(function () {
-	this.subscribe('livechat:room_statistics');
+Template.livechatCurrentChats.onCreated(function() {
+	this.subscribe('livechat:rooms');
 });

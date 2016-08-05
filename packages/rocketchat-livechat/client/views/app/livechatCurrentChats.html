@@ -1,14 +1,24 @@
 <template name="livechatCurrentChats">
-
-	{{#if Template.subscriptionsReady}}
-        <div class="list livechatCurrentChats">
-            <h3>{{_ "Open_Conversations"}}</h3>
-			{{> reactiveTable collection=openLivechatRoom settings=tableSettings}}
-
-            <h3>{{_ "Closed_Conversations"}}</h3>
-			{{> reactiveTable collection=closedLivechatRoom settings=tableSettings}}
-        </div>
-	{{else}}
-		{{_ "Loading"}}
-	{{/if}}
+{{#if isReisebuddy }} {{>reisebuddy_livechatCurrentChats}} {{else}}
+	<div class="list">
+		<table>
+			<thead>
+				<tr>
+					<th width="34%">{{_ "Name"}}</th>
+					<th width="33%">{{_ "Started_At"}}</th>
+					<th width="33%">{{_ "Last_Message_At"}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each livechatRoom}}
+					<tr class="row-link">
+						<td>{{label}}</td>
+						<td>{{startedAt}}</td>
+						<td>{{lastMessage}}</td>
+					</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+{{/if}}
 </template>

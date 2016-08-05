@@ -101,8 +101,43 @@ RocketChat.models.Rooms.findByVisitorId = function(visitorId) {
 	return this.find(query);
 };
 
-RocketChat.models.Rooms.closeByRoomId = function(roomId) {
-	return this.update({ _id: roomId }, { $set: { open: false } });
+RocketChat.models.Rooms.setResponseByRoomId = function(roomId, response) {
+	return this.update({
+		_id: roomId
+	}, {
+		$set: {
+			responseBy: {
+				_id: response.user._id,
+				username: response.user.username
+			},
+			responseDate: response.responseDate,
+			responseTime: response.responseTime
+		},
+		$unset: {
+			waitingResponse: 1
+		}
+	});
+};
+
+RocketChat.models.Rooms.closeByRoomId = function(roomId, closeInfo) {
+	return this.update({
+		_id: roomId
+	}, {
+		$set: {
+			closedBy: {
+				_id: closeInfo.user._id,
+				username: closeInfo.user.username
+			},
+			closedAt: closeInfo.closedAt,
+			chatDuration: closeInfo.chatDuration
+		},
+// RB: Classify room as closed (instead of "undefined" in the Rocket.Chat default implementation)
+// 		in order to allow to copy this information (e. g. when displaying a livechat-room)
+		$set: {
+			open: false
+		}
+// RB
+	});
 };
 
 RocketChat.models.Rooms.setLabelByRoomId = function(roomId, label) {

@@ -70,21 +70,29 @@ RocketChat.models.Users = new class extends RocketChat.models._Base
 	findUsersByUsernamesWithHighlights: (usernames, options) ->
 		query =
 			username: { $in: usernames }
-			'settings.preferences.highlights':
+			'settings.preferences.highlights.0':
 				$exists: true
 
 		return @find query, options
 
-	findActiveByUsernameRegexWithExceptions: (username, exceptions = [], options = {}) ->
+	findActiveByUsernameOrNameRegexWithExceptions: (searchTerm, exceptions = [], options = {}) ->
 		if not _.isArray exceptions
 			exceptions = [ exceptions ]
 
-		usernameRegex = new RegExp username, "i"
+		termRegex = new RegExp s.escapeRegExp(searchTerm), "i"
 		query =
 			$and: [
 				{ active: true }
-				{ username: { $nin: exceptions } }
-				{ username: usernameRegex }
+				{'$or': [
+					{'$and': [
+						{ username: { $nin: exceptions } }
+						{ username: termRegex }
+					]}
+					{'$and': [
+						{ name: { $nin: exceptions } }
+						{ name: termRegex }
+					]}
+				]}
 			]
 			type:
 				$in: ['user', 'bot']
@@ -314,12 +322,14 @@ RocketChat.models.Users = new class extends RocketChat.models._Base
 			else
 				unsetData.phone = 1
 
+# RB: CRM integration: Persist ID of user in CRM-System
 		if data.crmContactId?
 			if not _.isEmpty(s.trim(data.crmContactId))
 				setData.crmContactId = data.crmContactId
 			else
 				unsetData.crmContactId = 1
-
+# /RB
+		
 		update = {}
 
 		if not _.isEmpty setData

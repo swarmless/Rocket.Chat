@@ -22,15 +22,6 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base
 
 		return @findOne query, options
 
-	findFirstMessageFromUser: (userId) ->
-		query =
-			'u._id': userId
-		options = {}
-		options.sort = { ts: 1 }
-		options.limit = 1
-
-		return @findOne query, options
-
 	# FIND
 	findByMention: (username, options) ->
 		query =
@@ -206,17 +197,6 @@ RocketChat.models.Messages = new class extends RocketChat.models._Base
 				urls: urls
 
 		return @update query, update
-
-	# Updates all messages with rid = oldRid to newRid
-	updateAllRoomIds: (oldRid, newRid) ->
-		query =
-			'rid': oldRid
-
-		update =
-			$set:
-				"rid": newRid
-
-		return @update query, update, { multi: true }
 
 	updateAllUsernamesByUserId: (userId, username) ->
 		query =

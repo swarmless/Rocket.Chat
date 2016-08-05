@@ -1,30 +1,61 @@
 /* globals Package */
 Package.describe({
 	name: 'reisebuddy:livechat',
-	version: '0.0.1',
-	summary: 'Extension to rocketchat-livechat. Cannot work without',
+	version: '0.0.2',
+	summary: 'Extension to rocketchat-livechat',
 	git: '',
 	documentation: null
 });
 
 Package.onUse(function(api) {
-	api.use(['ecmascript', 'underscore']);
-	api.use(['nimble:restivus', 'rocketchat:lib', 'rocketchat:authorization'], 'server');
-	api.use('templating', 'client'); //needed in order to be able to register global helpers on the Template-object
+	api.use(['ecmascript', 'underscore', 'mongo']);
+	api.use('templating', 'client');
+	api.use('less@2.5.1');
+	api.use('aslagle:reactive-table');
+	api.use(['reisebuddy:common', 'reisebuddy:communication']);
+	api.use(['rocketchat:lib', 'rocketchat:livechat']);
 
-	api.addFiles('server/customHttpsCerts.js', 'server');
-	api.addFiles('lib/core.js');
-	api.addFiles('lib/testing.js');
-	api.addFiles('lib/duration.js', 'client');
-	api.addFiles('client/lib/globalTemplateHelpers.js', 'client');
+	api.addAssets('assets/stylesheets/rb_livechat.less', 'server');
+	api.addFiles('assets/jquery.datetimepicker.full.min.js', 'client');
+	api.addFiles('assets/jquery.datetimepicker.css', 'client');
+	api.addAssets('assets/icons/bahnDe.png', 'client');
+	api.addAssets('assets/icons/bahn_de.png', 'client');
+	api.addAssets('assets/icons/expedia.png', 'client');
+	api.addAssets('assets/icons/google.png', 'client');
+	api.addAssets('assets/icons/quixxit.png', 'client');
+	api.addAssets('assets/icons/fallback_logo.png', 'client');
+	api.addAssets('assets/icons/buld-grey.png', 'client');
+	api.addAssets('assets/icons/bahnDeSearchbox.png', 'client');
+	api.addAssets('assets/icons/community_bahn_de.png', 'client');
+	api.addAssets('assets/icons/VKL.png', 'client');
+	api.addAssets('assets/icons/yelp.png', 'client');
+	api.addAssets('assets/icons/maps_google-FoodAndBeverages.png', 'client');
+
 	api.addFiles('server/config.js', 'server');
 
-	api.addFiles('server/lib/lotusMailCommunicationService.js', 'server');
-	api.addFiles('server/methods/mergeRooms.js', 'server');
-	api.addFiles('server/reisebuddyIncomingApi.js', 'server');
-	api.addFiles('server/sendMessageByService.js', 'server');
+	api.addFiles('server/models/Messages.js', 'server');
+	api.addFiles('server/models/Subscriptions.js', 'server');
 
-	api.export('_dbs');
+	api.addFiles('server/hooks/answerSubscriptionUpdateHook.js', 'server');
+	api.addFiles('server/hooks/lastActivitySubscriptionUpdateHook.js', 'server');
+
+	api.addFiles('server/lib/LivechatCustomizations.js', 'server');
+
+	api.addFiles('server/methods/closeRoom.js', 'server');
+	api.addFiles('server/methods/mergeRooms.js', 'server');
+
+	api.addFiles('server/publications/livechatRoomStatistics.js', 'server');
+
+	api.addFiles('client/collections/LivechatRoomStatistics.js', 'client');
+	api.addFiles('client/lib/ClosingDialog.js', 'client');
+	api.addFiles('client/views/app/livechatCurrentChats.html', 'client');
+	api.addFiles('client/views/app/livechatCurrentChats.js', 'client');
+	api.addFiles('client/views/app/tabbar/visitorInfo.html', 'client');
+	api.addFiles('client/views/app/tabbar/visitorInfo.js', 'client');
+	api.addFiles('client/views/sideNav/livechat.html', 'client');
+	api.addFiles('client/views/sideNav/livechat.js', 'client');
+	api.addFiles('client/views/sideNav/livechatRoomItem.html', 'client');
+	api.addFiles('client/views/sideNav/livechatRoomItem.js', 'client');
 
 	//i18n
 	var _ = Npm.require('underscore');

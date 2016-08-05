@@ -108,27 +108,15 @@ Meteor.startup(function() {
 
 	RocketChat.settings.add('Livechat_Knowledge_Enabled', false, {
 		type: 'boolean',
-		group: 'Livechat',
+		group: 'Reisebuddy',
 		section: 'Knowledge Base',
 		public: true,
 		i18nLabel: 'Enabled'
 	});
 
-	RocketChat.settings.add('Livechat_Knowledge_Source', '', {
-		type: 'select',
-		group: 'Livechat',
-		section: 'Knowledge Base',
-		values: [
-			{ key: '0', i18nLabel: 'Livechat_Knowledge_Source_APIAI' },
-			{ key: '1', i18nLabel: 'Livechat_Knowledge_Source_Redlink' }
-		],
-		public: true ,
-		i18nLabel: 'Livechat_Knowledge_Source'
-	});
-
 	RocketChat.settings.add('Livechat_Knowledge_Apiai_Key', '', {
 		type: 'string',
-		group: 'Livechat',
+		group: 'Reisebuddy',
 		section: 'Knowledge Base',
 		public: true,
 		i18nLabel: 'Apiai_Key'
@@ -136,27 +124,44 @@ Meteor.startup(function() {
 
 	RocketChat.settings.add('Livechat_Knowledge_Apiai_Language', 'en', {
 		type: 'string',
-		group: 'Livechat',
+		group: 'Reisebuddy',
 		section: 'Knowledge Base',
 		public: true,
 		i18nLabel: 'Apiai_Language'
 	});
 
-	RocketChat.settings.add('Livechat_Knowledge_Redlink_URL', '', {
-		type: 'string',
+	RocketChat.settings.add('Livechat_history_monitor_type', 'url', {
+		type: 'select',
 		group: 'Livechat',
-		section: 'Knowledge Base',
-		public: true,
-		i18nLabel: 'Livechat_Knowledge_Redlink_URL'
+		i18nLabel: 'Monitor_history_for_changes_on',
+		values: [
+			{ key: 'url', i18nLabel: 'Page_URL' },
+			{ key: 'title', i18nLabel: 'Page_title' }
+		]
 	});
 
-	/* Currently, Redlink does not offer hashed API_keys, but uses simple password-auth
-	 * This is of course far from perfect and is hopeully going to change sometime later */
-	RocketChat.settings.add('Livechat_Knowledge_Redlink_Auth_Token', '', {
-		type: 'string',
+	RocketChat.settings.add('Livechat_Routing_Method', 'Least_Amount', {
+		type: 'select',
 		group: 'Livechat',
-		section: 'Knowledge Base',
 		public: true,
-		i18nLabel: 'Livechat_Knowledge_Redlink_Auth_Token'
+		values: [
+			{key: 'Least_Amount', i18nLabel: 'Least_Amount'},
+			{key: 'Guest_Pool', i18nLabel: 'Guest_Pool'}
+		]
+	});
+
+	RocketChat.settings.add('Livechat_guest_pool_with_no_agents', false, {
+		type: 'boolean',
+		group: 'Livechat',
+		i18nLabel: 'Accept_with_no_online_agents',
+		i18nDescription: 'Accept_incoming_livechat_requests_even_if_there_are_no_online_agents',
+		enableQuery: { _id: 'Livechat_Routing_Method', value: 'Guest_Pool' }
+	});
+
+	RocketChat.settings.add('Livechat_show_queue_list_link', false, {
+		type: 'boolean',
+		group: 'Livechat',
+		public: true,
+		i18nLabel: 'Show_queue_list_to_all_agents'
 	});
 });
