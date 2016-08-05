@@ -1,5 +1,11 @@
 <template name="livechatCurrentChats">
-{{#if isReisebuddy }} {{>reisebuddy_livechatCurrentChats}} {{else}}
+	{{#if isReisebuddy }}
+		{{>reisebuddy_livechatCurrentChats}}
+	{{else}}
+		{{>default_livechatCurrentChats}}
+	{{/if}}
+</template>
+<template name="default_livechatCurrentChats">
 	<div class="list">
 		<table>
 			<thead>
@@ -20,5 +26,4 @@
 			</tbody>
 		</table>
 	</div>
-{{/if}}
 </template>
