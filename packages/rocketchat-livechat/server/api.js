@@ -7,9 +7,13 @@ const Api = new Restivus({
 
 Api.addRoute('sms-incoming/:service', {
 	post() {
+
+// RB: Deactivate SMS-Inbpund via other services than Notes-Communication service
+//		@see packages/reisebuddy-communication/server/reisebuddyIncomingApi.js
 		if(!!RocketChat.settings.get('Reisebuddy_active')) {
 			return {statusCode: 404}
 		}
+// /RB
 
 		const SMSService = RocketChat.SMS.getService(this.urlParams.service);
 

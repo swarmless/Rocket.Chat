@@ -50,7 +50,9 @@ RocketChat.Livechat = {
 			const routingMethod = RocketChat.settings.get('Livechat_Routing_Method');
 			room = RocketChat.QueueMethods[routingMethod](guest, message, roomInfo);
 
+// RB: Callback added in order to be able to create a new contact in CRM for the user who starte the livechat
 			Meteor.defer(RocketChat.callbacks.run('afterCreateLivechat', guest, room));
+// /RB
 
 			newRoom = true;
 		} else {
@@ -61,7 +63,10 @@ RocketChat.Livechat = {
 		}
 		return _.extend(RocketChat.sendMessage(guest, message, room), { newRoom: newRoom });
 	},
+
+//RB: extend signature to allow propagation of further user characteristics on joining a room(e. g. the CRM ID)
 	registerGuest({ token, name, email, department, phone, loginToken, username, other } = {}) {
+// /RB
 		check(token, String);
 
 		const user = RocketChat.models.Users.getVisitorByToken(token, { fields: { _id: 1 } });

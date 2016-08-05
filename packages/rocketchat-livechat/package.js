@@ -162,7 +162,9 @@ Package.onUse(function(api) {
 	api.addFiles('server/lib/QueueMethods.js', 'server');
 
 	api.addFiles('server/sendMessageBySMS.js', 'server');
-	//api.addFiles('server/externalMessageHook.js', 'server');  disabled in favor of
+// RB: disabled, functionality is even integrated as optional provider, @see packages/reisebuddy-redlink/server/lib/KnowledgeAdapterProvider.js
+	//api.addFiles('server/externalMessageHook.js', 'server');
+// /RB
 	api.addFiles('server/forwardUnclosedLivechats.js', 'server');
 	api.addFiles('server/setupWebhook.js', 'server');
 

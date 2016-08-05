@@ -44,6 +44,7 @@ AccountBox.addItem({
 	}
 });
 
+// RB: Reorder panels on the right-hand-side of livechats: Knowledge-base to appear on top
 RocketChat.TabBar.addButton({
 	groups: ['livechat'],
 	id: 'external-search',
@@ -53,6 +54,7 @@ RocketChat.TabBar.addButton({
 	order: 0,
 	initialOpen: true
 });
+// /RB
 
 RocketChat.TabBar.addButton({
 	groups: ['livechat'],
