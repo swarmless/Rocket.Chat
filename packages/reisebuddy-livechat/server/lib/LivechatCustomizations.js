@@ -17,8 +17,7 @@ function calculateDuration(rid) {
 	return (lastMessage && lastMessage.ts && firstMessage && firstMessage.ts) ? lastMessage.ts - firstMessage.ts : 0;
 }
 
-RocketChat.Livechat.closeReisebuddyRoom = function ({user, room, closeProps}) {
-	RocketChat.models.Rooms.closeByRoomId(room._id);
+RocketChat.Livechat.extendClosedRoomWithReisebuddyInfos = function ({room, closeProps}) {
 	RocketChat.models.Rooms.update(room._id, {
 		$set: {
 			comment: closeProps.comment,
