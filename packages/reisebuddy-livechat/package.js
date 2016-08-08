@@ -46,14 +46,15 @@ Package.onUse(function(api) {
 
 	api.addFiles('server/publications/livechatRoomStatistics.js', 'server');
 
+	api.addFiles('client/livechat_ui.js', 'client');
 	api.addFiles('client/collections/LivechatRoomStatistics.js', 'client');
 	api.addFiles('client/lib/ClosingDialog.js', 'client');
 	api.addFiles('client/views/app/livechatCurrentChats.html', 'client');
 	api.addFiles('client/views/app/livechatCurrentChats.js', 'client');
 	api.addFiles('client/views/app/tabbar/visitorInfo.html', 'client');
 	api.addFiles('client/views/app/tabbar/visitorInfo.js', 'client');
-	api.addFiles('client/views/sideNav/livechat.html', 'client');
-	api.addFiles('client/views/sideNav/livechat.js', 'client');
+	api.addFiles('client/views/sideNav/reisebuddy_livechat.html', 'client');
+	api.addFiles('client/views/sideNav/reisebuddy_livechat.js', 'client');
 	api.addFiles('client/views/sideNav/livechatRoomItem.html', 'client');
 	api.addFiles('client/views/sideNav/livechatRoomItem.js', 'client');
 

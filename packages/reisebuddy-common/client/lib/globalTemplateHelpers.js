@@ -15,3 +15,5 @@ Template.registerHelper('text', (i18n_alias) => t(i18n_alias));
 Template.registerHelper('isReisebuddy', () => !!RocketChat.settings.get('Reisebuddy_active'));
 
 Template.registerHelper('formatDateMilliseconds', (val) => new _dbs.Duration(val).toHHMMSS());
+
+Template.registerHelper('templateExists', (val) => !!Template[val]);

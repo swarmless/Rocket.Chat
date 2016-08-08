@@ -1,7 +1,11 @@
 <template name="reisebuddy_visitorInfo">
     <div class="content">
 		{{#if editing}}
-			{{> visitorEdit (editDetails)}}
+			{{#if templateExists 'reisebuddy_visitorEdit'}}
+				{{> reisebuddy_visitorEdit (editDetails)}}
+			{{else}}
+				{{> visitorEdit (editDetails)}}
+			{{/if}}
 		{{/if}}
 		{{#if forwarding}}
 			{{> visitorForward (forwardDetails)}}
@@ -58,7 +62,7 @@
                             <button class='button lightblue merge-livechat button-block'><span><i class='icon-recycle'></i> {{_ "Merge"}}</span></button>
 						{{/if}}
 						{{#if guestPool}}
-                            <button class="button return-inquiry button-block"><span><i class="icon-ccw"></i> {{_ "Return"}}</span></button>
+                            <button class="button return-inquiry button-block"><span><i class="icon-ccw"></i> {{_ "Return_Conversation"}}</span></button>
 						{{/if}}
                     </nav>
 				{{/if}}

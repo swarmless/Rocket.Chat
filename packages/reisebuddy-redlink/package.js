@@ -32,6 +32,7 @@ Package.onUse(function (api) {
 	addDirectory(api, 'server/lib', 'server');
 	addDirectory(api, 'server/hooks', 'server');
 
+	api.addFiles('client/redlink_ui.js', 'client');
 	addDirectory(api,'client/views/app/tabbar', 'client');
 
 	//i18n

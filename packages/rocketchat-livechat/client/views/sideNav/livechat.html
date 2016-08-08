@@ -1,5 +1,5 @@
 <template name="livechat">
-{{#if isReisebuddy }} {{>reisebuddy_livechat}} {{else}}
+    <!--This has a complete replacement in reisebuddy_ui.js-->
 	<div class="livechat-section {{livechatAvailable}}">
 		<h3 class="{{isActive}}">
 			{{#with available}}
@@ -43,5 +43,4 @@
 			{{/each}}
 		</ul>
 	</div>
-{{/if}}
 </template>

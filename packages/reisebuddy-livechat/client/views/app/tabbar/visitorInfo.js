@@ -170,26 +170,25 @@ Template.reisebuddy_visitorInfo.events({
 	},
 
 	'click .return-inquiry': function (event) {
-	    event.preventDefault();
-
-	swal({
-            title: t('Would_you_like_to_return_the_inquiry'),
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: t('Yes')
-        }, () => {
-            Meteor.call('livechat:returnAsInquiry', this.rid, function(error/*, result*/) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    Session.set('openedRoom');
-                    FlowRouter.go('/home');
-                }
-            });
-        });
-    },
+		event.preventDefault();
+		swal({
+			title: t('Would_you_like_to_return_the_inquiry'),
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: t('Yes')
+		}, () => {
+			Meteor.call('livechat:returnAsInquiry', this.rid, function (error/*, result*/) {
+				if (error) {
+					console.log(error);
+				} else {
+					Session.set('openedRoom');
+					FlowRouter.go('/home');
+				}
+			});
+		});
+	},
 
     'click .forward-livechat': function(event, instance) {
 	    event.preventDefault();

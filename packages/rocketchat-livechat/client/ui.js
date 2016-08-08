@@ -44,25 +44,13 @@ AccountBox.addItem({
 	}
 });
 
-// RB: Reorder panels on the right-hand-side of livechats: Knowledge-base to appear on top
-RocketChat.TabBar.addButton({
-	groups: ['livechat'],
-	id: 'external-search',
-	i18nTitle: 'Knowledge_Base',
-	icon: 'icon-lightbulb',
-	template: 'externalSearch',
-	order: 0,
-	initialOpen: true
-});
-// /RB
-
 RocketChat.TabBar.addButton({
 	groups: ['livechat'],
 	id: 'visitor-info',
 	i18nTitle: 'Visitor_Info',
-	icon: 'icon-user',
+	icon: 'icon-info-circled',
 	template: 'visitorInfo',
-	order: 1
+	order: 0
 });
 
 // RocketChat.TabBar.addButton({
@@ -87,6 +75,15 @@ RocketChat.TabBar.addGroup('message-search', ['livechat']);
 RocketChat.TabBar.addGroup('starred-messages', ['livechat']);
 RocketChat.TabBar.addGroup('uploaded-files-list', ['livechat']);
 RocketChat.TabBar.addGroup('push-notifications', ['livechat']);
+
+RocketChat.TabBar.addButton({
+	groups: ['livechat'],
+	id: 'external-search',
+	i18nTitle: 'Knowledge_Base',
+	icon: 'icon-lightbulb',
+	template: 'externalSearch',
+	order: 10
+});
 
 RocketChat.MessageTypes.registerType({
 	id: 'livechat-close',

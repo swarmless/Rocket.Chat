@@ -1,5 +1,5 @@
 <template name="visitorInfo">
-{{#if isReisebuddy }} {{>reisebuddy_visitorInfo}} {{else}}
+    <!--This has a complete replacement in reisebuddy_ui.js-->
 	<div class="content">
 		{{#if editing}}
 			{{> visitorEdit (editDetails)}}
@@ -75,5 +75,4 @@
 			{{> visitorNavigation .}}
 		</div>
 	</div>
-{{/if}}
 </template>
