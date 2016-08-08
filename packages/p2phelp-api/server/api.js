@@ -108,10 +108,10 @@ class P2pHelpApi {
 	 * @param providers: An array of Users who should join the conversation in order to resolve the question. EMail-addresses and IDs accepted
 	 * @param message: The message describing the problematic situation
 	 * @param environment: Context information about the current system-context of the seeker
-	 * @param callbackUrl: An optional URL which shall be called on reply of a provider
+	 * @param callback_url: An optional URL which shall be called on reply of a provider
 	 * @private
 	 */
-	_createHelpDiscussion(seeker, providers, message, environment = {}, callbackUrl = "") {
+	_createHelpDiscussion(seeker, providers, message, environment = {}, callback_url = "") {
 		const seekerUser = this._findUsers([seeker])[0];
 		const providerUsers = this._findUsers(providers);
 		if (!seekerUser) {
