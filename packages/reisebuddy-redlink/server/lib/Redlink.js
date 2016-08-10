@@ -76,7 +76,7 @@ class RedlinkAdapter {
 		}
 	}
 
-	onMessage(message) {
+	onMessage(message, context={}) {
 		const knowledgeProviderResultCursor = this.getKnowledgeProviderCursor(message.rid);
 		const latestKnowledgeProviderResult = knowledgeProviderResultCursor.fetch()[0];
 
@@ -87,20 +87,25 @@ class RedlinkAdapter {
 
 			const responseRedlinkPrepare = HTTP.post(this.properties.url + '/prepare', {
 				data: requestBody,
-				headers: this.headers
+				headers: this.headers,
+				context: context
 			});
 
 			if (responseRedlinkPrepare.data && responseRedlinkPrepare.statusCode === 200) {
 
 				this.purgePreviousResults(knowledgeProviderResultCursor);
 
-				RocketChat.models.LivechatExternalMessage.insert({
+				const externalMessageId = RocketChat.models.LivechatExternalMessage.insert({
 					rid: message.rid,
 					knowledgeProvider: "redlink",
 					originMessage: {_id: message._id, ts: message.ts},
 					result: responseRedlinkPrepare.data,
 					ts: new Date()
 				});
+
+				const externalMessage = RocketChat.models.LivechatExternalMessage.findOneById(externalMessageId);
+
+				Meteor.defer( () =>	RocketChat.callbacks.run('afterExternalMessage', externalMessage) );
 			}
 		} catch (e) {
 			console.error('Redlink-Prepare/Query with results from prepare did not succeed -> ', e);
