@@ -6,4 +6,10 @@ Meteor.startup(()=>{
 		group: 'Peer2PeerHelp',
 		i18nLabel: 'P2pHelp_room_count'
 	});
+
+	RocketChat.settings.add('P2pHelp_Bot_Username', 1, {
+		type: 'string',
+		group: 'Peer2PeerHelp',
+		i18nLabel: 'P2pHelp_Bot_Username'
+	});
 });

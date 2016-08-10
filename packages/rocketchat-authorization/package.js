@@ -26,7 +26,7 @@ Package.onUse(function(api) {
 
 	api.addFiles('client/lib/ChatPermissions.coffee', ['client']);
 	api.addFiles('client/lib/models/Roles.coffee', ['client']);
-	api.addFiles('client/lib/models/Users.js', ['client']);
+	api.addFiles('client/lib/models/users.js', ['client']);
 	api.addFiles('client/lib/models/Subscriptions.js', ['client']);
 
 	api.addFiles('client/startup.coffee', ['client']);
@@ -47,7 +47,7 @@ Package.onUse(function(api) {
 	api.addFiles('server/models/Permissions.coffee', ['server']);
 	api.addFiles('server/models/Roles.coffee', ['server']);
 	api.addFiles('server/models/Base.js', ['server']);
-	api.addFiles('server/models/Users.js', ['server']);
+	api.addFiles('server/models/users.js', ['server']);
 	api.addFiles('server/models/Subscriptions.js', ['server']);
 
 	api.addFiles('server/functions/addUserRoles.coffee', ['server']);

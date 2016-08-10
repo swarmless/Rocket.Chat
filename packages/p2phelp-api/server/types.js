@@ -2,7 +2,7 @@
 class HelpDiscussionCreatedResponse{
 	constructor(url, providersJoined){
 		this.url = url;
-		this.providersJoined = providersJoined;
+		this.providers_joined = providersJoined;
 	}
 }
 

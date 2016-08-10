@@ -146,7 +146,7 @@ Package.onUse(function(api) {
 	api.addFiles('server/methods/returnAsInquiry.js', 'server');
 
 	// models
-	api.addFiles('server/models/Users.js', 'server');
+	api.addFiles('server/models/users.js', 'server');
 	api.addFiles('server/models/Rooms.js', 'server');
 	api.addFiles('server/models/LivechatExternalMessage.js', ['client', 'server']);
 	api.addFiles('server/models/LivechatCustomField.js', 'server');

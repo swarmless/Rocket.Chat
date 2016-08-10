@@ -13,6 +13,10 @@ class P2pHelpApi {
 			throw new Meteor.Error('Post body empty');
 		}
 
+		if (!bodyParams.support_area || bodyParams.support_area.trim() === '') {
+			throw new Meteor.Error('No support area defined');
+		}
+
 		if (!bodyParams.seeker || bodyParams.seeker.trim() === '') {
 			throw new Meteor.Error('No user provided who is seeking help');
 		}
@@ -27,14 +31,10 @@ class P2pHelpApi {
 	}
 
 	processHelpDiscussionPostRequest(bodyParams) {
-		let environment = {};
-		if (bodyParams.environment) {
-			environment = JSON.parse(bodyParams.environment)
-		}
-
+		let environment = bodyParams.environment || {};
 		let callbackUrl = bodyParams.callbackUrl || "";
 
-		const creationResult = this._createHelpDiscussion(bodyParams.seeker, bodyParams.providers, bodyParams.message, environment, callbackUrl);
+		const creationResult = this._createHelpDiscussion(bodyParams.support_area, bodyParams.seeker, bodyParams.providers, bodyParams.message, environment, callbackUrl);
 
 		//todo: record the helpdesk metadata
 
@@ -111,19 +111,22 @@ class P2pHelpApi {
 	 * @param callback_url: An optional URL which shall be called on reply of a provider
 	 * @private
 	 */
-	_createHelpDiscussion(seeker, providers, message, environment = {}, callback_url = "") {
+	_createHelpDiscussion(support_area, seeker, providers, message, environment = {}, callback_url = "") {
 		const seekerUser = this._findUsers([seeker])[0];
 		const providerUsers = this._findUsers(providers);
 		if (!seekerUser) {
 			throw new Meteor.Error("Invalid user " + seeker + ' provided');
 		}
 
-		let nameValidation = new RegExp(/\W/g); //cf. server/methods/createChannel.coffee:6
-
-		let channel = "";
+		let channel = {};
+		let helpRequest = {};
 		try {
 			Meteor.runAsUser(seekerUser._id, () => {
 				channel = Meteor.call('createChannel', 'P2P-Help_' + P2pHelpApi.getNextP2pHelpRoomCode(), providerUsers.map((user) => user.username));
+				const room = RocketChat.models.Rooms.findOneById(channel.rid);
+				helpRequest = RocketChat.models.HelpRequests.createForSupportArea(support_area, channel.rid, message, environment);
+				//propagate help-id to room in order to identify it as a "helped" room
+				RocketChat.models.Rooms.addHelpRequestInfo(room, helpRequest._id);
 
 				try {
 
@@ -131,6 +134,7 @@ class P2pHelpApi {
 						username: seekerUser.username,
 						_id: seekerUser._id
 					}, {msg: message}, {_id: channel.rid});
+
 				} catch (err) {
 					console.error('Could not add help message', err);
 					throw new Meteor.Error(err);
