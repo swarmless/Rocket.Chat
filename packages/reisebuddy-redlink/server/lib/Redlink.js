@@ -76,7 +76,7 @@ class RedlinkAdapter {
 		}
 	}
 
-	onMessage(message, environment={}) {
+	onMessage(message, context={}) {
 		const knowledgeProviderResultCursor = this.getKnowledgeProviderCursor(message.rid);
 		const latestKnowledgeProviderResult = knowledgeProviderResultCursor.fetch()[0];
 
@@ -88,7 +88,7 @@ class RedlinkAdapter {
 			const responseRedlinkPrepare = HTTP.post(this.properties.url + '/prepare', {
 				data: requestBody,
 				headers: this.headers,
-				environment: environment
+				context: context
 			});
 
 			if (responseRedlinkPrepare.data && responseRedlinkPrepare.statusCode === 200) {
