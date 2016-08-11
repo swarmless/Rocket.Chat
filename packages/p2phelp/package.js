@@ -1,5 +1,5 @@
 Package.describe({
-	name: 'p2phelp-api',
+	name: 'p2phelp',
 	version: '0.0.1',
 	summary: 'Peer-to-peer help - communication with external clients',
 	git: '',
@@ -11,7 +11,7 @@ Package.onUse(function (api) {
 	api.use(['ecmascript', 'underscore', 'coffeescript']);
 	api.use(['nimble:restivus', 'rocketchat:lib', 'rocketchat:authorization', 'rocketchat:api'], 'server');
 	api.use(['reisebuddy:redlink', 'reisebuddy:common']);
-	api.addFiles('p2phelp-api.js', 'server');
+	api.addFiles('p2phelp.js', 'server');
 	api.addFiles('server/types.js', 'server');
 	api.addFiles('server/api.js', 'server');
 	api.addFiles('server/routes.js', 'server');
@@ -31,6 +31,6 @@ Package.onUse(function (api) {
 Package.onTest(function (api) {
 	api.use('ecmascript');
 	api.use('tinytest');
-	api.use('p2phelp-api');
+	api.use('p2phelp');
 	api.addFiles('p2phelp-api-tests.js');
 });
