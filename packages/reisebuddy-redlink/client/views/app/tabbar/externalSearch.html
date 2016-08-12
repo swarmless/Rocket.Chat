@@ -1,14 +1,26 @@
 <template name="reisebuddy_externalSearch">
     <div class="content external-search-content">
         <div class="title">
-            <h2><span class="title-icon"><img src="/packages/reisebuddy_livechat/assets/icons/buld-grey.png"></span>{{_ "Knowledge_Base"}}</h2>
+            <h2><span class="title-icon"><img
+                    src="/packages/reisebuddy_livechat/assets/icons/buld-grey.png"></span>{{_ "Knowledge_Base"}}</h2>
         </div>
+		{{#let helpRequest=helpRequestByRoom }}
+			{{#if helpRequest}}
+				{{> HelpRequestContext helpRequest }}
+			{{/if}}
+		{{/let}}
 		{{#each messages}}
 			{{#if result}}
                 <div class="external-message">
 					{{#each filledQueryTemplate}}
                         <div class="query-template-wrapper {{state}} {{collapsed}}" data-template-index="{{@index}}">
-                            <span class="query-template-tools-wrapper"><span class="query-template-tools-icon icon-up-open" title="Anfrage ein-/ausblende"></span><span class="query-template-tools-icon icon-ok" title="Passt die Anfrage zur Konversation?"></span><span class="query-template-tools-icon icon-cancel" title="Anfrage passt nicht, verwerfen!"></span></span>
+                            <span class="query-template-tools-wrapper"><span
+                                    class="query-template-tools-icon icon-up-open"
+                                    title="Anfrage ein-/ausblende"></span><span
+                                    class="query-template-tools-icon icon-ok"
+                                    title="Passt die Anfrage zur Konversation?"></span><span
+                                    class="query-template-tools-icon icon-cancel"
+                                    title="Anfrage passt nicht, verwerfen!"></span></span>
 							{{#if dynamicTemplateExists}}
 								{{>UI.dynamic template=queryTemplate}}
 							{{else}}
@@ -104,7 +116,8 @@
 </template>
 
 <template name="dynamic_tpl_redlinkItem">
-    <div class="field-with-label" data-token-type="{{tokenType}}" data-slot-role="{{role}}" data-parent-tpl-index="{{parentTplIndex}}"
+    <div class="field-with-label" data-token-type="{{tokenType}}" data-slot-role="{{role}}"
+         data-parent-tpl-index="{{parentTplIndex}}"
          data-token-index="{{tokenIndex}}">
         <label for="{{htmlId}}" class="knowledge-base-label">{{_ label}}</label>
         <div class="knowledge-input-wrapper">
@@ -118,6 +131,18 @@
             </div>
             <div class="edit-icons-set"><span class="icon-cancel"></span><span class="icon-floppy"></span>
             </div>
+        </div>
+    </div>
+</template>
+
+<template name="dynamic_redlink_ApplicationSupport">
+    <div class="query-template">
+        <div class="knowledge-title">{{text queryType}}</div>
+        <div class="value-line-wrapper">
+			{{>dynamic_tpl_redlinkItem (forItem 'supportType') }}
+            <!--</div>-->
+            <!--<div class="value-line-wrapper">-->
+			{{>dynamic_tpl_redlinkItem (forItem 'keyword') }}
         </div>
     </div>
 </template>

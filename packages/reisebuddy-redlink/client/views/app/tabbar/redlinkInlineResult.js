@@ -1,5 +1,4 @@
-Template.redlinkInlineResult._copyReplySuggestion = function(event, instance)
-{
+Template.redlinkInlineResult._copyReplySuggestion = function (event, instance) {
 	if (instance.data.result.replySuggestion) {
 		$('#chat-window-' + instance.data.roomId + ' .input-message').val(instance.data.result.replySuggestion);
 	}
@@ -21,7 +20,11 @@ Template.redlinkInlineResult.helpers({
 				templateSuffix = "VKL_community";
 				break;
 			default:
-				templateSuffix = "generic";
+				if (!!Template['redlinkInlineResult_' + instance.data.result.creator]) {
+					templateSuffix = instance.data.result.creator;
+				} else {
+					templateSuffix = "generic";
+				}
 				break;
 		}
 		return 'redlinkInlineResult_' + templateSuffix;
@@ -59,14 +62,14 @@ Template.redlinkInlineResult_generic.helpers({
 //------------------------------------- Bahn.de -----------------------------------------------
 
 Template.redlinkInlineResult_bahn_de.events({
-	'click .js-copy-reply-suggestion': function(event, instance){
+	'click .js-copy-reply-suggestion': function (event, instance) {
 		return Template.redlinkInlineResult._copyReplySuggestion(event, instance)
 	}
 });
 
 Template.redlinkInlineResult_bahn_de.helpers({
 	durationformat(val){
-		return new _dbs.Duration(val * 60*1000).toHHMMSS();
+		return new _dbs.Duration(val * 60 * 1000).toHHMMSS();
 	}
 });
 
@@ -94,4 +97,34 @@ Template.redlinkInlineResult_VKL_community.onCreated(function () {
 	});
 });
 
+//-------------------------------------- Peer-to-Peer-Helpdesk --------------------------------
+Template.redlinkInlineResult_peerToPeerHelp.helpers({
+	classExpanded(){
+		const instance = Template.instance();
+		return instance.state.get('expanded') ? 'expanded' : 'collapsed';
+	},
+	originQuestion(){
+		const instance = Template.instance();
+		return instance.data.result.messages[0].text;
+	},
+	latestResponse(){
+		const instance = Template.instance();
+		return instance.data.result.messages.filter((message)=>message.origin === 'provider').pop().text;
+	}
+});
 
+Template.redlinkInlineResult_peerToPeerHelp.events({
+	'click .result-item-wrapper .js-toggle-result-preview-expanded': function (event, instance) {
+		const current = instance.state.get('expanded');
+		instance.state.set('expanded', !current);
+	}
+});
+
+Template.redlinkInlineResult_peerToPeerHelp.onCreated(function () {
+	const instance = this;
+
+	this.state = new ReactiveDict();
+	this.state.setDefault({
+		expanded: false
+	});
+});

@@ -3,7 +3,9 @@
  * Publish Peer-to-peer-specific enhancements to Rocket.Chat models
  *
  */
-Meteor.publish('p2phelp:room', function ({rid: roomId}) {
+
+
+Meteor.publish('p2phelp:helpRequests', function (roomId) {
 	if (!this.userId) {
 		return this.error(new Meteor.Error('error-not-authorized', 'Not authorized', {publish: 'livechat:visitorInfo'}));
 	}
@@ -13,5 +15,18 @@ Meteor.publish('p2phelp:room', function ({rid: roomId}) {
 	// 	return this.error(new Meteor.Error('error-not-authorized', 'Not authorized', {publish: 'livechat:visitorInfo'}));
 	// }
 
-	return RocketChat.models.Rooms.findOneById(roomId, {fields: {helpRequestId: 1}});
+	const room = RocketChat.models.Rooms.findOneById(roomId, {fields: {helpRequestId: 1}});
+
+	if(room.helpRequestId) {
+		return RocketChat.models.HelpRequests.findOneByRoomId(room.helpRequestId, {
+			fields: {
+				_id: 1,
+				roomId: 1,
+				supportArea: 1,
+				question: 1,
+				environment: 1,
+				resolutionStatus: 1
+			}
+		});
+	}
 });

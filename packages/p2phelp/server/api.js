@@ -119,14 +119,14 @@ class P2pHelpApi {
 		}
 
 		let channel = {};
-		let helpRequest = {};
+		let helpRequestId = "";
 		try {
 			Meteor.runAsUser(seekerUser._id, () => {
 				channel = Meteor.call('createChannel', 'P2P-Help_' + P2pHelpApi.getNextP2pHelpRoomCode(), providerUsers.map((user) => user.username));
 				const room = RocketChat.models.Rooms.findOneById(channel.rid);
-				helpRequest = RocketChat.models.HelpRequests.createForSupportArea(support_area, channel.rid, message, environment);
+				helpRequestId = RocketChat.models.HelpRequests.createForSupportArea(support_area, channel.rid, message, environment);
 				//propagate help-id to room in order to identify it as a "helped" room
-				RocketChat.models.Rooms.addHelpRequestInfo(room, helpRequest._id);
+				RocketChat.models.Rooms.addHelpRequestInfo(room, helpRequestId);
 
 				try {
 

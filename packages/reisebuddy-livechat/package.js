@@ -14,6 +14,7 @@ Package.onUse(function(api) {
 	api.use('aslagle:reactive-table');
 	api.use(['reisebuddy:common', 'reisebuddy:communication']);
 	api.use(['rocketchat:lib', 'rocketchat:livechat']);
+	api.use('p2phelp');
 
 	api.addAssets('assets/stylesheets/rb_livechat.less', 'server');
 	api.addFiles('assets/jquery.datetimepicker.full.min.js', 'client');
