@@ -50,9 +50,9 @@ RocketChat.Livechat = {
 			const routingMethod = RocketChat.settings.get('Livechat_Routing_Method');
 			room = RocketChat.QueueMethods[routingMethod](guest, message, roomInfo);
 
-// RB: Callback added in order to be able to create a new contact in CRM for the user who starte the livechat
+//	RB: Callback added in order to be able to create a new contact in CRM for the user who starte the livechat
 			Meteor.defer(RocketChat.callbacks.run('afterCreateLivechat', guest, room));
-// /RB
+//	RB
 
 			newRoom = true;
 		} else {
@@ -64,9 +64,9 @@ RocketChat.Livechat = {
 		return _.extend(RocketChat.sendMessage(guest, message, room), { newRoom: newRoom });
 	},
 
-//RB: extend signature to allow propagation of further user characteristics on joining a room(e. g. the CRM ID)
+//	RB: extend signature to allow propagation of further user characteristics on joining a room(e. g. the CRM ID)
 	registerGuest({ token, name, email, department, phone, loginToken, username, other } = {}) {
-// /RB
+//	RB
 		check(token, String);
 
 		const user = RocketChat.models.Users.getVisitorByToken(token, { fields: { _id: 1 } });
@@ -229,11 +229,33 @@ RocketChat.Livechat = {
 		}
 	},
 
+	returnInquiry(rid, userId) {
+		// //delete agent and room subscription
+		RocketChat.models.Subscriptions.removeByRoomId(rid);
+		// remove user from room
+		const username = RocketChat.models.Users.findOneById(userId).username;
+		RocketChat.models.Rooms.removeUsernameById(rid, username);
+		// find inquiry corresponding to room
+		var inquiry = RocketChat.models.LivechatInquiry.findOne({rid: rid});
+		// mark inquiry as open
+		return RocketChat.models.LivechatInquiry.openInquiry(inquiry._id);
+	},
+
 	forwardOpenChats(userId) {
-		RocketChat.models.Rooms.findOpenByAgent(userId).forEach((room) => {
-			const guest = RocketChat.models.Users.findOneById(room.v._id);
-			this.transfer(room, guest, { departmentId: guest.department });
-		});
+//	RB: rooms should go into the pool if agent goes offline
+		if (RocketChat.settings.get('Livechat_Routing_Method') === 'Guest_Pool') {
+			SystemLogger.log("User offline forward his conversations: " + userId);
+			RocketChat.models.Rooms.findOpenByAgent(userId).forEach((room) => {
+				SystemLogger.log("forwarding back to pool: " + room._id);
+				this.returnInquiry(room._id, userId);
+			});
+//	RB
+		} else {
+			RocketChat.models.Rooms.findOpenByAgent(userId).forEach((room) => {
+				const guest = RocketChat.models.Users.findOneById(room.v._id);
+				this.transfer(room, guest, {departmentId: guest.department});
+			});
+		}
 	},
 
 	savePageHistory(token, pageInfo) {
