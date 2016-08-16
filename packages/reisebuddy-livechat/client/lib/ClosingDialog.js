@@ -51,6 +51,7 @@ class ClosingDialog {
 				closeOnConfirm: false
 			}, self.properties), function (isConfirm) {
 				if (!isConfirm) { //on cancel
+					$('.swal-form').remove(); //possible bug? why I have to do this manually
 					reject();
 				}
 				let form = this.swalForm;
