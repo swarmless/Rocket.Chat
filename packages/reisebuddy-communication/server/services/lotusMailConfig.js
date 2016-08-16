@@ -5,6 +5,14 @@ Meteor.startup(function() {
 		section: 'Reisebuddy_MailConf',
 		i18nLabel: 'SmsOut_Reisebuddy_lotusEndpoint'
 	});
+
+	RocketChat.settings.add('SMS_Out_Reisebuddy_enabled', true, {
+		type: 'boolean',
+		group: 'Reisebuddy',
+		section: 'Reisebuddy_MailConf',
+		i18nLabel: 'SMS_Out_Reisebuddy_enabled'
+	});
+
 	RocketChat.settings.add('SMS_Out_Reisebuddy_baseAddress', '@iat-vfsms@DEUTSCHE BAHN AG@DBKOM', {
 		type: 'string',
 		group: 'Reisebuddy',
