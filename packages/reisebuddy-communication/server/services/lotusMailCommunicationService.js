@@ -80,6 +80,7 @@ class LotusMailCommunicationService {
 	 */
 	send({to, message, subject} = {}) {
 		if (!this.isSendEnabled) {
+			SystemLogger.warn("SMS output is disabled!");
 			return;
 		}
 		check(arguments[0], {
