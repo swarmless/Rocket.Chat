@@ -131,7 +131,10 @@ Template.livechatRoomItem.events({
 function actualizeTimer(instance) {
 	let lastDate = instance.data.answered ? instance.data.lastActivity : instance.data.lastCustomerActivity;
 	if (!_.isDate(lastDate)) {
-		lastDate = new Date();
+		lastDate = instance.data._updatedAt;
+		if (!_.isDate(lastDate)) {
+			lastDate = new Date();
+		}
 	}
 	instance.lastActivityTimer.set(new _dbs.Duration(new Date() - lastDate).toMM());
 }
