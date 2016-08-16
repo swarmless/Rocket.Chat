@@ -39,7 +39,6 @@ Template.reisebuddy_livechat.helpers({
 	inquiries() {
 		// get all inquiries of the department
 		var inqs = LivechatInquiry.find({
-			agents: Meteor.userId(),
 			status: 'open'
 		}, {
 			sort: {
