@@ -17,3 +17,5 @@ Template.registerHelper('isReisebuddy', () => !!RocketChat.settings.get('Reisebu
 Template.registerHelper('formatDateMilliseconds', (val) => new _dbs.Duration(val).toHHMMSS());
 
 Template.registerHelper('templateExists', (val) => !!Template[val]);
+
+Template.registerHelper('floatToFixed', (size, val) => val ? val.toFixed(size) : '');
