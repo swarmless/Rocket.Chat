@@ -50,6 +50,7 @@ class LotusMailCommunicationService {
 	parse({sender, body, subject} = {}) {
 		check(sender, String);
 		check(body, String);
+		debugger;
 		return {
 			from: sender,
 			body: _.filter([subject, body], (e) => !!e).join(': ') // filter with boolean existence check
