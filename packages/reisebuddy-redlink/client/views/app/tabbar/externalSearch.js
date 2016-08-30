@@ -360,11 +360,11 @@ Template.reisebuddy_externalSearch.onCreated(function () {
 		}
 
 		if(self.roomId){
-			// self.subscribe('p2phelp:helpRequest', self.roomId);
-			// const helpRequest = RocketChat.models.HelpRequests.findOneByRoomId(self.roomId);
-			// self.helpRequest.set(helpRequest);
+			self.subscribe('p2phelp:helpRequest', self.roomId);
+			const helpRequest = RocketChat.models.HelpRequests.findOneByRoomId(self.roomId);
+			self.helpRequest.set(helpRequest);
 
-			// if(!helpRequest){ //todo remove after PoC: Non-reactive method call
+			if(!helpRequest){ //todo remove after PoC: Non-reactive method call
 				Meteor.call('p2phelp:helpRequestByRoomId', self.roomId,(err, result) => {
 					if(!err){
 						self.helpRequest.set(result);
@@ -372,7 +372,7 @@ Template.reisebuddy_externalSearch.onCreated(function () {
 						console.log(err);
 					}
 				});
-			// }
+			}
 		}
 	});
 });

@@ -9,7 +9,7 @@ class HelpRequest extends RocketChat.models._Base {
 
 //-------------------------- FIND ONE
 	findOneById(_id, options) {
-		const query = {id: _id};
+		const query = {_id: _id};
 		return this.findOne(query, options);
 	}
 
@@ -33,6 +33,11 @@ class HelpRequest extends RocketChat.models._Base {
 		return this.find(query, options);
 	}
 
+	findByRoomId(roomId, options) {
+		const query = {roomId: roomId};
+		return this.find(query, options);
+	}
+
 //---------------------------- CREATE
 	createForSupportArea(supportArea, roomId, question, environment) {
 		const helpRequest = {
@@ -41,7 +46,7 @@ class HelpRequest extends RocketChat.models._Base {
 			roomId: roomId,
 			question: question,
 			environment: environment,
-			resolutionStatus: RESOLUTION_STATUS.open,
+			resolutionStatus: HelpRequest.RESOLUTION_STATUS.open,
 		};
 
 		return this.insert(helpRequest);
@@ -50,7 +55,7 @@ class HelpRequest extends RocketChat.models._Base {
 //---------------------------- UPDATE
 	markResolved(_id) {
 		const query = {_id: _id};
-		const update = {$set: {resolutionStatus: RESOLUTION_STATUS.resolved}};
+		const update = {$set: {resolutionStatus: HelpRequest.RESOLUTION_STATUS.resolved}};
 
 		return this.update(query, update);
 	}

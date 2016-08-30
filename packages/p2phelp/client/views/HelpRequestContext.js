@@ -4,11 +4,13 @@ Template.HelpRequestContext.helpers({
 		const environment = instance.data.environment;
 		let relevantParameters = [];
 
-		if(environment) {
+		if (environment) {
+			let value = '';
+			let name = '';
 
 			if (environment.SYSTEM) {
 				let systemClient = environment.SYSTEM;
-				if(environment.CLIENT){
+				if (environment.CLIENT) {
 					systemClient = systemClient + "(" + environment.CLIENT + ")";
 				}
 				relevantParameters.push({
@@ -24,24 +26,24 @@ Template.HelpRequestContext.helpers({
 				});
 			}
 
+			// Transaction +  Title
+			name = '';
+			value = environment.TCODE || environment.PROGRAM;
+			if (environment.TITLE) {
+				value = value + ' - ' + environment.TITLE;
+			}
 			if (environment.TCODE) {
-				relevantParameters.push({
-					name: 'transaction',
-					value: environment.TCODE
-				});
+				name = 'transaction';
 			} else {
 				if (environment.PROGRAM) {
-					relevantParameters.push({
-						name: 'program',
-						value: environment.PROGRAM
-					});
+					name = 'program';
 				}
 			}
 
-			if (environment.TITLE) {
+			if (name) {
 				relevantParameters.push({
-					name: 'gui_title',
-					value: environment.TITLE
+					name,
+					value
 				});
 			}
 		}
@@ -50,12 +52,14 @@ Template.HelpRequestContext.helpers({
 	}
 });
 
-Template.HelpRequestContext.onCreated(function(){
+Template.HelpRequestContext.onCreated(function () {
 	this.helpRequest = new ReactiveVar({});
 	this.autorun(() => {
-		this.subscribe('p2phelp:helpRequests', Template.currentData().rid);
-		this.helpRequest.set(
-			RocketChat.models.HelpRequests.findOneByRoomId(Template.currentData())
-		);
+		if (Template.currentData().rid && this.helpRequest.get()) {
+			this.subscribe('p2phelp:helpRequests', Template.currentData().rid);
+			this.helpRequest.set(
+				RocketChat.models.HelpRequests.findOneByRoomId(Template.currentData())
+			);
+		}
 	});
 });

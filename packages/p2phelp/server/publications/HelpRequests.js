@@ -18,7 +18,7 @@ Meteor.publish('p2phelp:helpRequests', function (roomId) {
 	const room = RocketChat.models.Rooms.findOneById(roomId, {fields: {helpRequestId: 1}});
 
 	if(room.helpRequestId) {
-		return RocketChat.models.HelpRequests.findOneByRoomId(room.helpRequestId, {
+		return RocketChat.models.HelpRequests.findByRoomId(room.helpRequestId, {
 			fields: {
 				_id: 1,
 				roomId: 1,
@@ -28,5 +28,7 @@ Meteor.publish('p2phelp:helpRequests', function (roomId) {
 				resolutionStatus: 1
 			}
 		});
+	} else {
+		return this.ready();
 	}
 });

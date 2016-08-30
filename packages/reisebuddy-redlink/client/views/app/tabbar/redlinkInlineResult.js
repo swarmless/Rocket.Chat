@@ -110,6 +110,11 @@ Template.redlinkInlineResult_peerToPeerHelp.helpers({
 	latestResponse(){
 		const instance = Template.instance();
 		return instance.data.result.messages.filter((message)=>message.origin === 'provider').pop().text;
+	},
+
+	subsequentCommunication(){
+		const instance = Template.instance();
+		return instance.data.result.messages.slice(1);
 	}
 });
 
