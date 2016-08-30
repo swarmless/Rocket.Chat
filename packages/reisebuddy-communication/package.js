@@ -7,7 +7,7 @@ Package.describe({
 
 Package.onUse(function (api) {
 	api.versionsFrom('1.2.1');
-	api.use(['ecmascript', 'underscore']);
+	api.use(['ecmascript', 'underscore', 'peerlibrary:punycode@1.3.2_1']);
 	api.use(['nimble:restivus', 'rocketchat:lib', 'rocketchat:authorization'], 'server');
 	api.use('reisebuddy:common');
 

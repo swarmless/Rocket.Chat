@@ -37,7 +37,7 @@ Package.onUse(function(api) {
 	api.addFiles('server/models/Messages.js', 'server');
 	api.addFiles('server/models/Subscriptions.js', 'server');
 
-	api.addFiles('server/hooks/answerSubscriptionUpdateHook.js', 'server');
+	api.addFiles('server/hooks/answerSubscriptionUpdateHooks.js', 'server');
 	api.addFiles('server/hooks/lastActivitySubscriptionUpdateHook.js', 'server');
 
 	api.addFiles('server/lib/LivechatCustomizations.js', 'server');

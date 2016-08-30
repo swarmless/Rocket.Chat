@@ -34,6 +34,7 @@ Package.onUse(function (api) {
 	api.addFiles('client/views/app/tabbar/visitorEdit.html', 'client');
 	api.addFiles('client/views/app/tabbar/visitorEdit.js', 'client');
 
+	api.addFiles('server/models/CustomLivechatInquiry.js', 'server');
 	api.addFiles('server/models/Messages.js', 'server');
 	api.addFiles('server/models/Users.coffee', 'server');
 

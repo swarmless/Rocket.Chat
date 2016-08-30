@@ -10,6 +10,8 @@ topic_start: start
 topic_end: end
 topic_location: location
 topic_date: date
+topic_card: BahnCard
+topic_class: Class
 bahnDe: Bahn.de
 bahn_de: Bahn.de
 community_bahn_de: Service-Community

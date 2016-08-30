@@ -11,6 +11,7 @@
 			{{> visitorForward (forwardDetails)}}
 		{{/if}}
         <div class="user-view {{showDetail}}">
+            <h4>{{_ "Conversation"}}</h4>
             <div class="about clearfix">
 				{{#unless user.crmContactId}}
 					{{#with user}}
@@ -53,7 +54,6 @@
             </div>
 
             <div class="list-view">
-                <h4>{{_ "Conversation"}}</h4>
 				{{#if canSeeButtons}}
                     <nav class="centered-buttons">
                         <button class='button lightblue edit-livechat button-block'><span><i class='icon-edit'></i> {{_ "Edit_Metadata"}}</span></button>

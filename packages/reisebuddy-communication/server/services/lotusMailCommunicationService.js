@@ -15,6 +15,7 @@ class LotusMailCommunicationService {
 
 		this.basicHeader = 'Basic ' + new Buffer(RocketChat.settings.get('Mail_In_Reisebuddy_username') + ':' +
 				RocketChat.settings.get('Mail_In_Reisebuddy_password')).toString('base64');
+		this.isSendEnabled = RocketChat.settings.get('SMS_Out_Reisebuddy_enabled');
 	}
 
 	static SERVICE_NAME() {
@@ -49,6 +50,7 @@ class LotusMailCommunicationService {
 	parse({sender, body, subject} = {}) {
 		check(sender, String);
 		check(body, String);
+		debugger;
 		return {
 			from: sender,
 			body: _.filter([subject, body], (e) => !!e).join(': ') // filter with boolean existence check
@@ -78,6 +80,10 @@ class LotusMailCommunicationService {
 	 * @throws Match.Error if params are invalid
 	 */
 	send({to, message, subject} = {}) {
+		if (!this.isSendEnabled) {
+			SystemLogger.warn("SMS output is disabled!");
+			return;
+		}
 		check(arguments[0], {
 			to: String,
 			message: String,

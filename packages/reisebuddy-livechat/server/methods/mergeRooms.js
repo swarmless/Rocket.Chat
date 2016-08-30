@@ -73,7 +73,7 @@ Meteor.methods({
 
 		RocketChat.models.Rooms.update(newRoomId, {
 			$set: {open: true},
-			$unset: {comment: ''}
+			$unset: {comment: '', duration: ''}
 		});
 
 		RocketChat.models.Subscriptions.update(

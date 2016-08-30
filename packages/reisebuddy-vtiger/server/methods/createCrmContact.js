@@ -60,6 +60,7 @@ Meteor.methods({
 				RocketChat.models.Users.saveUserById(user._id, updateData);
 
 				if (createContactResult.messages) {
+					SystemLogger.debug("we shall send welcome messages from crm to user: " + userId);
 					const immediatedMessagesString = createContactResult.messages.reduce(function (reduced, current) {
 						if (current.processingInstruction === SEND_IMMEDIATELY) {
 							return reduced ? reduced + current.message : current.message;
@@ -73,12 +74,15 @@ Meteor.methods({
 							throw new Meteor.Error("Room created could not be found in order to send a message to the visitor");
 						}
 						try {
-							RocketChat.sendMessage(room.servedBy, {msg: immediatedMessagesString}, room);
+							const servedBy = RocketChat.models.Users.findOneById('rocket.cat');
+                            RocketChat.sendMessage(servedBy, {msg: immediatedMessagesString}, room);
 						} catch (err) {
 							console.error('Could not send registration messages', err);
 							throw new Meteor.Error(err);
 						}
 					}
+				} else {
+					SystemLogger.debug("no welcome messages from crm to send to user: " + userId);
 				}
 
 				return 0;

@@ -51,7 +51,7 @@ function formatDates(roomObject) { //todo this should be done by frontend (i18n)
 
 function addAgentsToRoom(roomId, room) {
 	let involvedAgents = [];
-	let roomsMessages = RocketChat.models.Messages.find({rid: roomId});
+	let roomsMessages = RocketChat.models.Messages.find({rid: roomId, "u._id": {$ne: "rocket.cat"}});
 
 	roomsMessages.forEach(
 		message => {

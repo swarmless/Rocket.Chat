@@ -48,6 +48,12 @@ Meteor.methods({
 		});
 
 		if (existingRoom) {
+			if (RocketChat.settings.get('Livechat_Routing_Method') === 'Guest_Pool' &&
+				RocketChat.models.LivechatInquiry.findeOpenByRoomId(existingRoom._id)) {
+				throw new Meteor.Error('error-is-in-pool',
+					"Room is waiting in GuestPool",
+					{method: 'createDirectLivechatMessage'});
+			}
 			if (existingRoom.servedBy && existingRoom.servedBy._id === Meteor.userId()) {
 				return existingRoom;
 			}
@@ -87,7 +93,7 @@ Meteor.methods({
 				serviceName: communicationService.getServiceName()
 			};
 		}
-		
+
 		// Make sure we have a room
 		RocketChat.models.Rooms.upsert({
 			_id: rid
@@ -119,6 +125,18 @@ Meteor.methods({
 				}
 			}
 		});
+
+		if(RocketChat.settings.get('Livechat_Routing_Method') === 'Guest_Pool') {
+			RocketChat.models.LivechatInquiry.insert({
+				rid: rid,
+				message: '',
+				name: to.name || to.username,
+				ts: new Date(),
+				code: roomCode,
+				status: 'taken',
+				t: 'l'
+			});
+		}
 
 		return {
 			rid: rid,
