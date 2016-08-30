@@ -24,9 +24,10 @@ Meteor.startup( () => {
 		Meteor.defer(() => {
 
 			const helpRequest = RocketChat.models.HelpRequests.findOneById(room.helpRequestId);
-
+			let context = helpRequest.environment;
+			context.support_area = helpRequest.supportArea;
 			try {
-				knowledgeAdapter.onMessage(message, helpRequest.environment);
+				knowledgeAdapter.onMessage(message, context);
 			}
 			catch (e) {
 				SystemLogger.error('Error using knowledge provider ->', e);
