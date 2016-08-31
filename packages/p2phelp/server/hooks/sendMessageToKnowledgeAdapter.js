@@ -24,8 +24,10 @@ Meteor.startup( () => {
 		Meteor.defer(() => {
 
 			const helpRequest = RocketChat.models.HelpRequests.findOneById(room.helpRequestId);
-			let context = helpRequest.environment;
-			context.support_area = helpRequest.supportArea;
+			let context = {};
+			context.contextType = 'ApplicationHelp';
+			context.environmentType = helpRequest.supportArea;
+			context.environment = helpRequest.environment;
 			try {
 				knowledgeAdapter.onMessage(message, context);
 			}
