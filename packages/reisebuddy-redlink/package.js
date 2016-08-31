@@ -28,6 +28,7 @@ Package.onUse(function (api) {
 	api.addAssets('assets/stylesheets/redlink.less', 'server');
 
 	api.addAssets('assets/icons/sapTransaction.png', 'client');
+	api.addAssets('assets/icons/peerToPeerHelp.png', 'client');
 
 	api.addFiles('server/config.js', 'server');
 	addDirectory(api, 'server/methods', 'server');

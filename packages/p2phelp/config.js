@@ -15,4 +15,8 @@ Meteor.startup(()=>{
 		group: 'Peer2PeerHelp',
 		i18nLabel: 'P2pHelp_Bot_Automated_Response_Threshold'
 	});
+
+	RocketChat.theme.addPackageAsset(() => {
+		return Assets.getText('assets/stylesheets/helpRequestContext.less');
+	});
 });

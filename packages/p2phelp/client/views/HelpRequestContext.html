@@ -1,8 +1,8 @@
 <template name="HelpRequestContext">
 
-    <div class="help-request-context" style="padding: 15px;">
-        <div class="title" style="background-color: #ccc; font-weight: 700; padding: 10px; font-size: 15px; color: #757575">{{text 'SystemContext'}}</div>
-        <ul class="context-parameters-wrapper" style="border: solid; border-width: 1px; border-color: #CCCCCC;">
+    <div class="help-request-context">
+        <div class="title">{{text 'SystemContext'}}</div>
+        <ul class="context-parameters-wrapper">
 			{{#each contextParameter in relevantParameters}}
 				{{> HelpRequestContextParameter parameter=contextParameter}}
 			{{/each}}
