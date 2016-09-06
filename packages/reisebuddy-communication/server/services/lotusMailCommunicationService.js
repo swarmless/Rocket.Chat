@@ -69,7 +69,7 @@ class LotusMailCommunicationService {
 	 * @param str
 	 * @return {string}
 	 */
-	function handleEncodings(str) {
+	handleEncodings(str) {
 		return /^([0-9A-Fa-f]{4})+$/.test(str) ? parseHexString(str) : str; // regex: exactly multiple 4byte hex
 	}
 
