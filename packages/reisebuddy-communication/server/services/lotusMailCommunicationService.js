@@ -44,17 +44,47 @@ class LotusMailCommunicationService {
 
 	/**
 	 * Converts and verifies payload to message stub
-	 * @return {{from: {}, body: {}}}
+	 * @return {{from: {}, body: string}}
 	 * @throws Match.Error id
 	 */
 	parse({sender, body, subject} = {}) {
 		check(sender, String);
 		check(body, String);
 		debugger;
+
+		let returnBody = handleEncodings(body);
+
+		if (!subject.startsWith('SMS an Zielnummer')) { //diiop: the sms may be in the subject => concat subject and body; smtp: subject contains the fixed string
+			returnBody = _.filter([handleEncodings(subject), returnBody], (e) => !!e).join(': '); // filter with boolean existence check
+		}
+
 		return {
 			from: sender,
-			body: _.filter([subject, body], (e) => !!e).join(': ') // filter with boolean existence check
+			body: returnBody
 		};
+	}
+
+	/**
+	 * we may get an hexstring for ucs2 sms. Check via regex: exactly multiple 4byte hex
+	 * @param str
+	 * @return {string}
+	 */
+	function handleEncodings(str) {
+		return /^([0-9A-Fa-f]{4})+$/.test(str) ? parseHexString(str) : str; // regex: exactly multiple 4byte hex
+	}
+
+	/**
+	 * Decodes hex string
+	 * @param str utf16le hex string like: D83DDE0400200044
+	 * @return {string} the resulting utf16le string
+	 */
+	parseHexString(str) {
+		var result = '';
+		while (str.length >= 4) {
+			result += String.fromCharCode(parseInt(str.substring(0, 4), 16));
+			str = str.substring(4, str.length);
+		}
+		return result;
 	}
 
 	/**
