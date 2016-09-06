@@ -98,7 +98,7 @@ Template.redlinkInlineResult_VKL_community.onCreated(function () {
 });
 
 //-------------------------------------- Peer-to-Peer-Helpdesk --------------------------------
-Template.redlinkInlineResult_peerToPeerHelp.helpers({
+Template.redlinkInlineResult_conversation.helpers({
 	classExpanded(){
 		const instance = Template.instance();
 		return instance.state.get('expanded') ? 'expanded' : 'collapsed';
@@ -118,15 +118,17 @@ Template.redlinkInlineResult_peerToPeerHelp.helpers({
 	}
 });
 
-Template.redlinkInlineResult_peerToPeerHelp.events({
+Template.redlinkInlineResult_conversation.events({
 	'click .result-item-wrapper .js-toggle-result-preview-expanded': function (event, instance) {
 		const current = instance.state.get('expanded');
 		instance.state.set('expanded', !current);
 	}
 });
 
-Template.redlinkInlineResult_peerToPeerHelp.onCreated(function () {
+Template.redlinkInlineResult_conversation.onCreated(function () {
 	const instance = this;
+
+	let transformedSnippet = instance.data.result.snippet;
 
 	this.state = new ReactiveDict();
 	this.state.setDefault({

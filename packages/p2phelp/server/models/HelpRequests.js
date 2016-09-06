@@ -60,6 +60,12 @@ class HelpRequest extends RocketChat.models._Base {
 		return this.update(query, update);
 	}
 
+	registerBotResponse(_id, botMessage) {
+		const query = {_id: _id};
+		const update = {$set: {latestBotReply: botMessage}};
+
+		return this.update(query, update);
+	}
 
 //----------------------------- REMOVE
 	removeById(_id) {

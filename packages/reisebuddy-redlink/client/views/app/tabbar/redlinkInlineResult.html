@@ -75,10 +75,10 @@
 </template>
 
 <!--Peer-To-Peer-Help-specific result templates-->
-<template name="redlinkInlineResult_peerToPeerHelp">
+<template name="redlinkInlineResult_conversation">
     <div class="result-item-wrapper {{classExpanded}}">
         <div class="query-preview-result-title clearfix">
-            <span class="result-title-wrapper">{{originQuestion}}</span>
+            <span class="result-title-wrapper">{{{originQuestion}}}</span>
             <span class="icon-wrapper">
 					{{#if result.link}}<a href="{{result.link}}" target="_blank"><i
                             class="icon-link-ext"></i></a>
@@ -91,13 +91,14 @@
 			{{#each message in subsequentCommunication}}
 				{{> inlineResultMessage message=message}}
 			{{/each}}
-            </ul>
-        </div>
+        </ul>
+
+		</div>
     </div>
 </template>
 
 <template name="inlineResultMessage">
-	<li class="conversationMessage"><span class="{{message.origin}}">{{message.text}}</span></li>
+	<li class="conversationMessage"><span class="{{message.origin}}">{{{message.text}}}</span></li>
 </template>
 
 <template name="redlinkInlineResult_sapTransaction">

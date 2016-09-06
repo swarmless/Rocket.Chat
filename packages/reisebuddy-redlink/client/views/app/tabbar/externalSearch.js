@@ -89,6 +89,17 @@ Template.reisebuddy_externalSearch.helpers({
 					}
 					return returnValue;
 				};
+
+				extendedQueryTpl.dummyEinstiegshilfe = function() { //todo: Entfernen, wenn Redlink die Hilfeart erkennt
+					return {
+						htmlId: Meteor.uuid(),
+						item: "Einstiegshilfe",
+						itemStyle: "",
+						inquiryStyle: "",
+						label: t('topic_supportType'),
+						parentTplIndex: 0 //todo replace with looping index in html
+					};
+				};
 				filledTemplate.push(extendedQueryTpl);
 			});
 		}

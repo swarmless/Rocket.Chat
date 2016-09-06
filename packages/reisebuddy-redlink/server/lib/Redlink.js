@@ -76,19 +76,20 @@ class RedlinkAdapter {
 		}
 	}
 
-	onMessage(message, context={}) {
+	onMessage(message, context = {}) {
 		const knowledgeProviderResultCursor = this.getKnowledgeProviderCursor(message.rid);
 		const latestKnowledgeProviderResult = knowledgeProviderResultCursor.fetch()[0];
 
 		const requestBody = this.createRedlinkStub(message.rid, latestKnowledgeProviderResult);
 		requestBody.messages = this.getConversation(message.rid, latestKnowledgeProviderResult);
 
+		requestBody.context = context;
+
 		try {
 
 			const responseRedlinkPrepare = HTTP.post(this.properties.url + '/prepare', {
 				data: requestBody,
-				headers: this.headers,
-				context: context
+				headers: this.headers
 			});
 
 			if (responseRedlinkPrepare.data && responseRedlinkPrepare.statusCode === 200) {
@@ -105,7 +106,7 @@ class RedlinkAdapter {
 
 				const externalMessage = RocketChat.models.LivechatExternalMessage.findOneById(externalMessageId);
 
-				Meteor.defer( () =>	RocketChat.callbacks.run('afterExternalMessage', externalMessage) );
+				Meteor.defer(() => RocketChat.callbacks.run('afterExternalMessage', externalMessage));
 			}
 		} catch (e) {
 			console.error('Redlink-Prepare/Query with results from prepare did not succeed -> ', e);
@@ -141,7 +142,8 @@ class RedlinkAdapter {
 					data: {
 						messages: latestKnowledgeProviderResult.result.messages,
 						tokens: latestKnowledgeProviderResult.result.tokens,
-						queryTemplates: latestKnowledgeProviderResult.result.queryTemplates
+						queryTemplates: latestKnowledgeProviderResult.result.queryTemplates,
+						context: latestKnowledgeProviderResult.result.context
 					},
 					headers: this.headers
 				};
@@ -149,6 +151,34 @@ class RedlinkAdapter {
 				const responseRedlinkResult = HTTP.post(this.properties.url + '/result/' + creator + '/?templateIdx=' + templateIndex, request);
 				if (responseRedlinkResult.data && responseRedlinkResult.statusCode === 200) {
 					results = responseRedlinkResult.data;
+
+					if (creator === 'conversation') {
+						results.forEach(function (result)						{
+							// Some dirty string operations to convert the snippet to javascript objects
+							let transformedSnippet = JSON.stringify(result.snippet);
+							transformedSnippet = transformedSnippet.slice(1, transformedSnippet.length - 1); //remove quotes in the beginning and at the end
+
+							if (transformedSnippet) {
+								transformedSnippet = '[' + transformedSnippet;
+								transformedSnippet = transformedSnippet.replace(/\\n/g, '');
+								transformedSnippet = transformedSnippet.replace(/<div class=\\"message seeker\\">/g, '{"origin": "seeker", "text": "');
+								transformedSnippet = transformedSnippet.replace(/<div class=\\"message provider\\">/g, '{"origin": "provider", "text": "');
+								transformedSnippet = transformedSnippet.replace(/<\/div>/g, '"},');
+								transformedSnippet = transformedSnippet.trim();
+								if (transformedSnippet.endsWith(',')) {
+									transformedSnippet = transformedSnippet.slice(0, transformedSnippet.length - 1);
+								}
+								transformedSnippet = transformedSnippet + ']';
+							}
+							try {
+								const messages = JSON.parse(transformedSnippet);
+								result.messages = messages;
+							} catch(err){
+								console.error('Error parsing conversation',err)
+								}
+						});
+						results.reduce((result)=>!!result.messages);
+					}
 
 					//buffer the results
 					let inlineResultsMap = latestKnowledgeProviderResult.inlineResults || {};

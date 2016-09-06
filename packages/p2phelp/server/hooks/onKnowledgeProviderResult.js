@@ -1,5 +1,14 @@
 Meteor.startup(() => {
+	/*
+	Trigger a bot to reply with the most relevant result one AI has retrieved results
+	Do this only once in order to avoid user-frustration
+	*/
 	RocketChat.callbacks.add('afterExternalMessage', function (externalMessage) {
+
+		const helpRequest = RocketChat.models.HelpRequests.findOneByRoomId(externalMessage.rid);
+		if(!helpRequest || helpRequest.latestBotReply){
+			return;
+		}
 
 		let totalResults = [];
 
@@ -39,10 +48,13 @@ Meteor.startup(() => {
 					}
 					try {
 
-						RocketChat.sendMessage({
+						const botMessage = RocketChat.sendMessage({
 							username: botUser.username,
 							_id: botUser._id
 						}, {msg: mostRelevantResult.replySuggestion}, {_id: externalMessage.rid});
+
+						helpRequest.latestBotReply = botMessage;
+						RocketChat.models.HelpRequests.registerBotResponse(helpRequest._id, botMessage);
 
 					} catch (err) {
 						console.error('Could not add bot help message', err);
