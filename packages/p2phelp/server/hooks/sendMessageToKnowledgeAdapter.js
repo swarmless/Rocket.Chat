@@ -21,6 +21,12 @@ Meteor.startup( () => {
 			return;
 		}
 
+		//do not trigger a new evaluation if the message was sent from a bot (particularly P2P-Help
+		const botUsername = RocketChat.settings.get('P2pHelp_Bot_Username');
+		if(message.u.username === botUsername){
+			return;
+		}
+
 		Meteor.defer(() => {
 
 			const helpRequest = RocketChat.models.HelpRequests.findOneById(room.helpRequestId);

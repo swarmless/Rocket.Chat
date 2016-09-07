@@ -29,12 +29,6 @@ RocketChat.callbacks.add('afterSaveMessage', function (message, room) {
 		return;
 	}
 
-	//do not trigger a new evaluation if the message was sent from a bot (particularly P2P-Help
-	const botUsername = RocketChat.settings.get('P2pHelp_Bot_Username');
-	if(message.u.username === botUsername){
-		return;
-	}
-
 	Meteor.defer(() => {
 		try {
 			knowledgeAdapter.onMessage(message);
