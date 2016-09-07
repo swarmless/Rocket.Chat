@@ -10,11 +10,11 @@ class LotusMailCommunicationService {
 
 		this.lotusEndpoint = RocketChat.settings.get('SMS_Out_Reisebuddy_lotusEndpoint');
 		this.outgoingAuthHeader = 'Basic ' + new Buffer(RocketChat.settings.get('SMS_Out_Reisebuddy_username') + ':' +
-				RocketChat.settings.get('SMS_Out_Reisebuddy_password')).toString('base64');
+														RocketChat.settings.get('SMS_Out_Reisebuddy_password')).toString('base64');
 		this.baseAddress = RocketChat.settings.get('SMS_Out_Reisebuddy_baseAddress');
 
 		this.basicHeader = 'Basic ' + new Buffer(RocketChat.settings.get('Mail_In_Reisebuddy_username') + ':' +
-				RocketChat.settings.get('Mail_In_Reisebuddy_password')).toString('base64');
+												 RocketChat.settings.get('Mail_In_Reisebuddy_password')).toString('base64');
 		this.isSendEnabled = RocketChat.settings.get('SMS_Out_Reisebuddy_enabled');
 	}
 
@@ -44,17 +44,47 @@ class LotusMailCommunicationService {
 
 	/**
 	 * Converts and verifies payload to message stub
-	 * @return {{from: {}, body: {}}}
+	 * @return {{from: {}, body: string}}
 	 * @throws Match.Error id
 	 */
 	parse({sender, body, subject} = {}) {
 		check(sender, String);
 		check(body, String);
 		debugger;
+
+		let returnBody = this.handleEncodings(body);
+
+		if (!subject.startsWith('SMS an Zielnummer')) { //diiop: the sms may be in the subject => concat subject and body; smtp: subject contains the fixed string
+			returnBody = _.filter([this.handleEncodings(subject), returnBody], (e) => !!e).join(': '); // filter with boolean existence check
+		}
+
 		return {
 			from: sender,
-			body: _.filter([subject, body], (e) => !!e).join(': ') // filter with boolean existence check
+			body: returnBody.trim()
 		};
+	}
+
+	/**
+	 * We may get an hexstring for ucs2 sms => try to find and resolve this problem.
+	 * @param str value to handle. may be null
+	 * @return {string} the parsed hex or str if it doesn't look like a hexstring
+	 */
+	handleEncodings(str) {
+		return /^([0-9A-Fa-f]{4})+$/.test(str) ? this.parseHexString(str) : str; // regex: exactly multiple 4byte hex
+	}
+
+	/**
+	 * Decodes hex string
+	 * @param str utf16le hex string like: D83DDE0400200044
+	 * @return {string} the resulting utf16le string
+	 */
+	parseHexString(str) {
+		var result = '';
+		while (str.length >= 4) {
+			result += String.fromCharCode(parseInt(str.substring(0, 4), 16));
+			str = str.substring(4, str.length);
+		}
+		return result;
 	}
 
 	/**
@@ -96,26 +126,24 @@ class LotusMailCommunicationService {
 		//"to" may contain a phone number as well as an email-address.
 		// => determine which one it actually is and extract the actual number if necessary
 
-
 		if (to.match(REGEX_MAIL)) {
 			to = to.replace('@sms.db.de', '');
 		}
 
-		if (to.match(REGEX_PHONE)){
+		if (to.match(REGEX_PHONE)) {
+			SystemLogger.debug("send sms to " + to);
+
 			let effectiveSubject = subject || self.defaultSubject;
-			if (!effectiveSubject.trim()){ // no default subject => we need a subject in order to get the message sent from Notes
+			if (!effectiveSubject.trim()) { // no default subject => we need a subject in order to get the message sent from Notes
 				effectiveSubject = message;
 				message = '';
 			}
 
-			let requestBody =
-			{
+			let requestBody = {
 				to: to + self.baseAddress,
 				subject: effectiveSubject,
 				body: message || ''
 			};
-
-			SystemLogger.debug("Sending sms" + JSON.stringify(requestBody));
 
 			let options = {
 				"headers": {
@@ -125,8 +153,7 @@ class LotusMailCommunicationService {
 				"data": requestBody
 			};
 
-			HTTP.post(self.lotusEndpoint, options,
-				(error, result) => {
+			HTTP.post(self.lotusEndpoint, options, (error, result) => {
 					if (error) {
 						SystemLogger.error("unable to send mail to " + to + " -- " + error);
 					} else if (result) {
@@ -146,8 +173,8 @@ class LotusMailCommunicationService {
  */
 _dbs.getCommunicationService = function (serviceName) {
 	switch (serviceName) {
-		case LotusMailCommunicationService.SERVICE_NAME():
-			return new LotusMailCommunicationService();
+	case LotusMailCommunicationService.SERVICE_NAME():
+		return new LotusMailCommunicationService();
 	}
 	return null;
 };

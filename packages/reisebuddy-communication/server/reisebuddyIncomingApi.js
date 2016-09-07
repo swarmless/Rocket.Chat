@@ -26,7 +26,8 @@ RB_API.addRoute('incoming/:service', {
 			debugger;
 			message = service.parse(this.bodyParams);
 		} catch (e) {
-			SystemLogger.warn("rejected malformed request: " + JSON.stringify(this.bodyParams));
+			SystemLogger.warn("rejected malformed request: " + JSON.stringify(this.bodyParams) + "\nException: " +
+							  e.message);
 			return {statusCode: 500, message: "malformed request"};
 		}
 
