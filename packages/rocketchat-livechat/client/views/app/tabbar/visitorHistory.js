@@ -1,8 +1,4 @@
 Template.visitorHistory.helpers({
-	historyLoaded() {
-		return !Template.instance().loadHistory.ready();
-	},
-
 	previousChats() {
 		return ChatRoom.find({
 			_id: { $ne: this.rid },
@@ -17,7 +13,9 @@ Template.visitorHistory.helpers({
 	title() {
 		let title = moment(this.ts).format('L LTS');
 
-		if (this.label) {
+		if (this.topic && this.topic.length) {
+			title += ' - ' + this.topic;
+		} else if (this.label) {
 			title += ' - ' + this.label;
 		}
 
@@ -37,6 +35,6 @@ Template.visitorHistory.onCreated(function() {
 	});
 
 	if (currentData && currentData.rid) {
-		this.loadHistory = this.subscribe('livechat:visitorHistory', { rid: currentData.rid });
+		this.subscribe('livechat:visitorHistory', { rid: currentData.rid });
 	}
 });
