@@ -151,6 +151,9 @@ class LotusMailCommunicationService {
 					"Authorization": self.outgoingAuthHeader,
 					"Content-Type": "application/json"
 				},
+				npmRequestOptions: { //todo find out why we get a SELF_SIGNED_CERT_IN_CHAIN Error - cert should be correct
+					rejectUnauthorized: false
+				},
 				"data": requestBody
 			};
 
@@ -158,7 +161,7 @@ class LotusMailCommunicationService {
 					if (error) {
 						SystemLogger.error("unable to send mail to " + to + " -- " + error);
 					} else if (result) {
-						SystemLogger.debug("mail successfully send to " + to, " with result: \n" + result);
+						SystemLogger.debug("mail successfully send to " + to, " with result: \n" + JSON.stringify(result));
 					}
 				});
 		} else {
