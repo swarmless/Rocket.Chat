@@ -17,7 +17,7 @@ Meteor.methods({
 			throw new Meteor.Error('error-invalid-user', "Invalid user", {method: 'createDirectLivechatMessage'});
 		}
 
-		let to = RocketChat.models.Users.findOneByUsername(username);
+		let to = RocketChat.models.Users.findOne({username: username, type: 'visitor'});
 		if (!to && crmContactId) {
 			SystemLogger.debug("lookup user by crmID " + crmContactId);
 			to = RocketChat.models.Users.findOneVisitorByCrmContactId(crmContactId);
@@ -76,7 +76,7 @@ Meteor.methods({
             open: true,
             label: to.name || to.username,
             code: roomCode,
-            v: {_id: to._id},
+            v: {_id: to._id, token: to.profile.token},
             servedBy: {
                 _id: me._id,
                 username: me.username
