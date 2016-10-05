@@ -12,7 +12,7 @@ Package.describe({
  * CAUTION: The tarball referenced has to point to the customized "compactCRM"-branch!
  */
 Npm.depends({
-	"vtiger-client": "https://github.com/mrsimpson/vtiger-client/archive/429da5d3a899f17fa037468f7f7d6d4febc0427f.tar.gz"
+	"vtiger-client": "https://github.com/mrsimpson/vtiger-client/archive/d833b19df394ad7cc60f561fe9dbdc51f549c0c9.tar.gz"
 });
 
 Package.onUse(function (api) {
