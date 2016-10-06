@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "vtiger-client": {
-      "version": "https://github.com/mrsimpson/vtiger-client/archive/1ecd75e6219a236c61a11938cc5171c11ee83d4b.tar.gz",
+      "version": "https://github.com/mrsimpson/vtiger-client/archive/492feb0eca1461932352889906b4a60f4e699fc1.tar.gz",
       "dependencies": {
         "crypto-js": {
           "version": "3.1.6"
