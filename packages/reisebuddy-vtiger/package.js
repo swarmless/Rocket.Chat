@@ -1,6 +1,6 @@
 Package.describe({
 	name: 'reisebuddy:vtiger',
-	version: '0.8.6', // Brief, one-line summary of the package.
+	version: '0.8.7', // Brief, one-line summary of the package.
 	summary: 'Integration for vtiger crm', // URL to the Git repository containing the source code for this package.
 	git: '', // By default, Meteor will default to using README.md for documentation.
 	// To avoid submitting documentation, set this field to null.
@@ -12,7 +12,7 @@ Package.describe({
  * CAUTION: The tarball referenced has to point to the customized "compactCRM"-branch!
  */
 Npm.depends({
-	"vtiger-client": "https://github.com/mrsimpson/vtiger-client/archive/492feb0eca1461932352889906b4a60f4e699fc1.tar.gz"
+	"vtiger-client": "https://github.com/mrsimpson/vtiger-client/archive/813fe731db78758a16e92d545f8ce838f7c34d02.tar.gz"
 });
 
 Package.onUse(function (api) {
