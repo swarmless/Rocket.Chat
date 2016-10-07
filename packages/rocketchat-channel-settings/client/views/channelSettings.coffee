@@ -20,7 +20,11 @@ Template.channelSettings.helpers
 	roomName: ->
 		return ChatRoom.findOne(@rid, { fields: { name: 1 }})?.name
 	roomTopic: ->
-		return s.escapeHTML ChatRoom.findOne(@rid, { fields: { topic: 1 }})?.topic
+		return ChatRoom.findOne(@rid, { fields: { topic: 1 }})?.topic
+	roomTopicUnescaped: ->
+		return s.unescapeHTML ChatRoom.findOne(@rid, { fields: { topic: 1 }})?.topic
+	roomDescription: ->
+		return ChatRoom.findOne(@rid, { fields: { description: 1 }})?.description
 	archivationState: ->
 		return ChatRoom.findOne(@rid, { fields: { archived: 1 }})?.archived
 	archivationStateDescription: ->
@@ -107,6 +111,11 @@ Template.channelSettings.onCreated ->
 					Meteor.call 'saveRoomSettings', room._id, 'roomType', @$('input[name=roomType]:checked').val(), (err, result) ->
 						return handleError err if err
 						toastr.success TAPi18n.__ 'Room_type_changed_successfully'
+			when 'roomDescription'
+				if @validateRoomTopic()
+					Meteor.call 'saveRoomSettings', room._id, 'roomDescription', @$('input[name=roomDescription]').val(), (err, result) ->
+						return handleError err if err
+						toastr.success TAPi18n.__ 'Room_description_changed_successfully'
 			when 'archivationState'
 				if @$('input[name=archivationState]:checked').val() is 'true'
 					if room.archived isnt true

@@ -33,8 +33,16 @@ Meteor.methods
 			if settings.emailNotificationMode?
 				preferences.emailNotificationMode = settings.emailNotificationMode
 
+			if settings.mergeChannels isnt "-1"
+				preferences.mergeChannels = settings.mergeChannels is "1"
+			else
+				delete preferences.mergeChannels
+
+			preferences.desktopNotificationDuration = settings.desktopNotificationDuration - 0
 			preferences.viewMode = settings.viewMode || 0
 			preferences.hideUsernames = settings.hideUsernames is "1"
+			preferences.hideAvatars = settings.hideAvatars is "1"
+			preferences.hideFlexTab = settings.hideFlexTab is "1"
 			preferences.highlights = settings.highlights
 
 			RocketChat.models.Users.setPreferences Meteor.userId(), preferences

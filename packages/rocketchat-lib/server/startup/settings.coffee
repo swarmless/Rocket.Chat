@@ -1,6 +1,5 @@
 # Insert server unique id if it doesn't exist
-if not RocketChat.models.Settings.findOneById 'uniqueID'
-	RocketChat.models.Settings.createWithIdAndValue 'uniqueID', process.env.DEPLOYMENT_ID or Random.id()
+RocketChat.settings.add('uniqueID', process.env.DEPLOYMENT_ID or Random.id(), { public: true, hidden: true });
 
 # When you define a setting and want to add a description, you don't need to automatically define the i18nDescription
 # if you add a node to the i18n.json with the same setting name but with `_Description` it will automatically work.
@@ -23,6 +22,7 @@ RocketChat.settings.addGroup 'Accounts', ->
 		@add 'Accounts_AllowedDomainsList', '', { type: 'string', public: true }
 
 		@add 'Accounts_BlockedDomainsList', '', { type: 'string' }
+		@add 'Accounts_BlockedUsernameList', '', { type: 'string' }
 		@add 'Accounts_UseDefaultBlockedDomainsList', true, { type: 'boolean' }
 		@add 'Accounts_UseDNSDomainCheck', true, { type: 'boolean' }
 
@@ -106,6 +106,9 @@ RocketChat.settings.addGroup 'General', ->
 	@section 'Notifications', ->
 		@add 'Desktop_Notifications_Duration', 0, { type: 'int', public: true, i18nDescription: 'Desktop_Notification_Durations_Description' }
 
+	@section 'REST API', ->
+		@add 'API_User_Limit', 500, { type: 'int', public: true, i18nDescription: 'API_User_Limit' }
+
 
 RocketChat.settings.addGroup 'Email', ->
 	@section 'Header and Footer', ->
@@ -161,6 +164,7 @@ RocketChat.settings.addGroup 'Message', ->
 	@add 'Message_MaxAll', 0, { type: 'int', public: true }
 	@add 'Message_MaxAllowedSize', 5000, { type: 'int', public: true }
 	@add 'Message_ShowFormattingTips', true, { type: 'boolean', public: true }
+	@add 'Message_SetNameToAliasEnabled', false, { type: 'boolean', public: false, i18nDescription: 'Message_SetNameToAliasEnabled_Description' }
 	@add 'Message_AudioRecorderEnabled', true, { type: 'boolean', public: true, i18nDescription: 'Message_AudioRecorderEnabledDescription' }
 	@add 'Message_GroupingPeriod', 300, { type: 'int', public: true, i18nDescription: 'Message_GroupingPeriodDescription' }
 	@add 'API_Embed', true, { type: 'boolean', public: true }
@@ -218,6 +222,7 @@ RocketChat.settings.addGroup 'Layout', ->
 
 	@section 'User Interface', ->
 		@add 'UI_DisplayRoles', true, { type: 'boolean', public: true }
+		@add 'UI_Merge_Channels_Groups', true, { type: 'boolean', public: true }
 
 
 RocketChat.settings.addGroup 'Logs', ->

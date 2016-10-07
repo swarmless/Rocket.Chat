@@ -183,12 +183,13 @@ class SlackBridge {
 					}
 					if (userData.profile.real_name) {
 						RocketChat.models.Users.setName(userData.rocketId, userData.profile.real_name);
-						// Deleted users are 'inactive' users in Rocket.Chat
-						if (userData.deleted) {
-							Meteor.call('setUserActiveStatus', userData.rocketId, false);
-						}
 					}
 				});
+				// Deleted users are 'inactive' users in Rocket.Chat
+				if (userData.deleted) {
+					RocketChat.models.Users.setUserActive(userData.rocketId, false);
+					RocketChat.models.Users.unsetLoginTokens(userData.rocketId);
+				}
 			}
 			RocketChat.models.Users.update({ _id: userData.rocketId }, { $addToSet: { importIds: userData.id } });
 			if (!this.userTags[userId]) {
@@ -225,7 +226,7 @@ class SlackBridge {
 			if (message.subtype === 'bot_message') {
 				user = RocketChat.models.Users.findOneById('rocket.cat', { fields: { username: 1 } });
 			}
-			RocketChat.sendMessage(user, msgObj, room, { upsert: true });
+			RocketChat.sendMessage(user, msgObj, room);
 		}
 	}
 
@@ -323,12 +324,10 @@ class SlackBridge {
 					Meteor.runAsUser(user._id, () => {
 						Meteor.call('pinMessage', msgObj);
 					});
-					return;
 				} else {
 					logger.events.error('Pinned item with no attachment');
-					return;
 				}
-				break;
+				return;
 			case 'unpinned_item':
 				logger.events.error('Unpinned item not implemented');
 				return;
