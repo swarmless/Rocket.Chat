@@ -13,3 +13,4 @@ address: Address
 street: Street
 zipcode: Zip code
 city: City
+description: Description

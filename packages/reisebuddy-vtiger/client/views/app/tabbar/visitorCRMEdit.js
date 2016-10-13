@@ -22,6 +22,7 @@ Template.visitorCRMEdit.events({
 		contact.mailingstreet = event.currentTarget.elements['street'].value;
 		contact.mailingzip = event.currentTarget.elements['zipcode'].value;
 		contact.mailingcity = event.currentTarget.elements['city'].value;
+		contact.description = event.currentTarget.elements['description'].value;
 
 		instance.contact.set(contact);
 

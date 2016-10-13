@@ -1,6 +1,6 @@
 create_contact: Kontakt anlegen
 crm_communication_error: Fehler bei der CRM-Kommunikation
-crm_contact_information: CRM-Kontaktdaten
+crm_contact_information: Kontakt
 edit_contact: Kontakt bearbeiten
 update_contact: Kontakt aktualisieren
 
@@ -13,4 +13,5 @@ address: Adresse
 street: Straße und Hausnummer
 zipcode: Postleitzahl
 city: Ort
+description: Beschreibung
 
