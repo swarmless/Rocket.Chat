@@ -17,7 +17,7 @@
 									{{#with contact}}
                                         <div class="clearfix">
                                             <h4 title="{{lastname}}">{{firstname}} {{lastname}}</h4>
-											{{#if description}}<div class="crm-contact-description">{{description}}</div>{{/if}}
+											{{#if description}}<div class="crm-contact-description">{{nl2br description}}</div>{{/if}}
                                             <ul>
 												{{#if email}}
                                                     <li><i class="icon-mail"></i> {{email}}</li> {{/if}}

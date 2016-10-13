@@ -19,3 +19,8 @@ Template.registerHelper('formatDateMilliseconds', (val) => new _dbs.Duration(val
 Template.registerHelper('templateExists', (val) => !!Template[val]);
 
 Template.registerHelper('floatToFixed', (size, val) => val ? val.toFixed(size) : '');
+
+Template.registerHelper('nl2br', function(text) {
+	var nl2br = (text + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2');
+	return new Spacebars.SafeString(nl2br);
+});
