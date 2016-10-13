@@ -82,6 +82,7 @@ mdg:validation-error@0.5.1
 meteor@1.1.10
 meteor-base@1.0.1
 meteor-developer@1.1.5
+meteorhacks:cluster@1.6.9
 meteorhacks:fast-render@2.13.0
 meteorhacks:inject-data@2.0.0
 meteorhacks:inject-initial@1.0.4
