@@ -53,6 +53,7 @@ class ClosingDialog {
 				if (!isConfirm) { //on cancel
 					$('.swal-form').remove(); //possible bug? why I have to do this manually
 					reject();
+					return false;
 				}
 				let form = this.swalForm;
 				for (let key in form) {
