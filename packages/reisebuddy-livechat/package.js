@@ -12,6 +12,7 @@ Package.onUse(function(api) {
 	api.use('templating', 'client');
 	api.use('less@2.5.1');
 	api.use('aslagle:reactive-table');
+	api.use('momentjs:moment');
 	api.use(['reisebuddy:common', 'reisebuddy:communication']);
 	api.use(['rocketchat:lib', 'rocketchat:livechat']);
 

@@ -35,14 +35,14 @@ function extendRoomData(roomId, roomObject, context) {
 	return roomObject;
 }
 
-function formatDates(roomObject) { //todo this should be done by frontend (i18n)
+function formatDates(roomObject) { //todo aslagle:reactive-table doesn't support filters on formatted values. So we set the values on the server without i18n
 	if (roomObject) {
 		if (roomObject.lm) {
-			roomObject.lm = moment(roomObject.lm).format('L LT');
+			roomObject.lm = moment(roomObject.lm).locale('de').format('L LT');
 		}
 
 		if (roomObject.ts) {
-			roomObject.ts = moment(roomObject.ts).format('L LT');
+			roomObject.ts = moment(roomObject.ts).locale('de').format('L LT');
 		}
 	}
 
