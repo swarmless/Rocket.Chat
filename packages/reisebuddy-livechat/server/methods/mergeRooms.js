@@ -7,8 +7,8 @@ function getLiveRoomFromId(rid, errorMethod) {
 		throw new Meteor.Error('error-not-authorized', 'Not authorized', {method: errorMethod});
 	}
 	const room = RocketChat.models.Rooms.findOneById(rid);
-	if (!room || room.usernames.indexOf(Meteor.user().username) === -1) {
-		throw new Meteor.Error('error-not-authorized', 'Not authorized', {method: errorMethod});
+	if (!room) {
+		throw new Meteor.Error('error-not-found', 'Not found', {method: errorMethod});
 	}
 	return room;
 }
@@ -25,11 +25,8 @@ Meteor.methods({
 			"v._id": room.v._id,
 			open: {$ne: true}
 		}, {sort: {ts: -1}});
-		if (!targetRoom || !targetRoom.usernames) {
+		if (!targetRoom) {
 			throw new Meteor.Error('error-not-found', 'Not found', {method: 'livechat:getPreviousRoom'});
-		}
-		if (targetRoom.usernames.indexOf(Meteor.user().username) === -1) {
-			throw new Meteor.Error('error-not-authorized', 'Not authorized', {method: 'livechat:getPreviousRoom'});
 		}
 		return targetRoom;
 	},
