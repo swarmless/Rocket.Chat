@@ -70,7 +70,7 @@ Meteor.methods({
 		RocketChat.models.LivechatInquiry.remove({rid: roomToCloseId});
 
 		//trigger update for knowledgeAdapter
-		Meteor.defer(() => {
+		Meteor.defer(() => { //todo it seems that the messages from the roomToClose aren't processed
 			try {
 				const lastMsgByVisitorForNewRoom = RocketChat.models.Messages.findLastOneByVisitorForRoom(newRoomId);
 				if (_dbs.getKnowledgeAdapter() && lastMsgByVisitorForNewRoom) {
