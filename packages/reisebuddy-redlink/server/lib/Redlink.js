@@ -102,14 +102,10 @@ class RedlinkAdapter {
 					result: responseRedlinkPrepare.data,
 					ts: new Date()
 				});
-
-				const externalMessage = RocketChat.models.LivechatExternalMessage.findOneById(externalMessageId);
-
-				Meteor.defer( () =>	RocketChat.callbacks.run('afterExternalMessage', externalMessage) );
 			}
 		} catch (e) {
 			SystemLogger.error('Redlink-Prepare/Query with results from prepare did not succeed -> ', e);
-			SystemLogger.war("RequestBody: " + JSON.stringify(requestBody));
+			SystemLogger.warn("RequestBody: " + JSON.stringify(requestBody));
 		}
 	}
 
