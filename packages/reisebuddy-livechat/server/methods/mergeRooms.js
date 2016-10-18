@@ -67,6 +67,19 @@ Meteor.methods({
 
 		RocketChat.models.Subscriptions.removeByRoomId(roomToCloseId);
 		RocketChat.models.Rooms.removeById(roomToCloseId);
+		RocketChat.models.LivechatInquiry.remove({rid: roomToCloseId});
+
+		//trigger update for knowledgeAdapter
+		Meteor.defer(() => {
+			try {
+				const lastMsgByVisitorForNewRoom = RocketChat.models.Messages.findLastOneByVisitorForRoom(newRoomId);
+				if (_dbs.getKnowledgeAdapter() && lastMsgByVisitorForNewRoom) {
+                    _dbs.getKnowledgeAdapter().onMessage(lastMsgByVisitorForNewRoom);
+				}
+			} catch (e) {
+				SystemLogger.error('Error using knowledge provider ->', e);
+			}
+		});
 
 		RocketChat.models.Rooms.update(newRoomId, {
 			$set: {open: true},

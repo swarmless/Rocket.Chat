@@ -39,6 +39,7 @@ class RedlinkAdapter {
 		RocketChat.models.Messages.find({
 			rid: rid,
 			_hidden: {$ne: true},
+			msg: {$ne: ""},
 			ts: {$gt: new Date(analyzedUntil)}
 		}).forEach(visibleMessage => {
 			conversation.push({
@@ -84,7 +85,6 @@ class RedlinkAdapter {
 		requestBody.messages = this.getConversation(message.rid, latestKnowledgeProviderResult);
 
 		try {
-
 			const responseRedlinkPrepare = HTTP.post(this.properties.url + '/prepare', {
 				data: requestBody,
 				headers: this.headers,
@@ -108,7 +108,8 @@ class RedlinkAdapter {
 				Meteor.defer( () =>	RocketChat.callbacks.run('afterExternalMessage', externalMessage) );
 			}
 		} catch (e) {
-			console.error('Redlink-Prepare/Query with results from prepare did not succeed -> ', e);
+			SystemLogger.error('Redlink-Prepare/Query with results from prepare did not succeed -> ', e);
+			SystemLogger.war("RequestBody: " + JSON.stringify(requestBody));
 		}
 	}
 

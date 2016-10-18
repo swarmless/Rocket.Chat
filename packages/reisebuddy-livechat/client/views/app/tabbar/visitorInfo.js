@@ -113,7 +113,7 @@ Template.reisebuddy_visitorInfo.helpers({
 	roomOpen() {
 		const room = ChatRoom.findOne({ _id: this.rid });
 
-		return room.open;
+		return room && room.open;
 	},
 
 	guestPool() {
