@@ -77,7 +77,7 @@ class RedlinkAdapter {
 		}
 	}
 
-	onMessage(message, context={}) {
+	onMessage(message) {
 		const knowledgeProviderResultCursor = this.getKnowledgeProviderCursor(message.rid);
 		const latestKnowledgeProviderResult = knowledgeProviderResultCursor.fetch()[0];
 
@@ -87,15 +87,14 @@ class RedlinkAdapter {
 		try {
 			const responseRedlinkPrepare = HTTP.post(this.properties.url + '/prepare', {
 				data: requestBody,
-				headers: this.headers,
-				context: context
+				headers: this.headers
 			});
 
 			if (responseRedlinkPrepare.data && responseRedlinkPrepare.statusCode === 200) {
 
 				this.purgePreviousResults(knowledgeProviderResultCursor);
 
-				const externalMessageId = RocketChat.models.LivechatExternalMessage.insert({
+				RocketChat.models.LivechatExternalMessage.insert({
 					rid: message.rid,
 					knowledgeProvider: "redlink",
 					originMessage: {_id: message._id, ts: message.ts},
