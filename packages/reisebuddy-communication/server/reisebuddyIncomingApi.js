@@ -23,7 +23,6 @@ RB_API.addRoute('incoming/:service', {
 		}
 		let message;
 		try {
-			debugger;
 			message = service.parse(this.bodyParams);
 		} catch (e) {
 			SystemLogger.warn("rejected malformed request: " + JSON.stringify(this.bodyParams) + "\nException: " +

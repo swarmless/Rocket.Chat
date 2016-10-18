@@ -50,10 +50,8 @@ class LotusMailCommunicationService {
 	parse({sender, body, subject} = {}) {
 		check(sender, String);
 		check(body, String);
-		debugger;
 
 		let returnBody = this.handleEncodings(body);
-
 		if (!subject.startsWith('SMS an Zielnummer')) { //diiop: the sms may be in the subject => concat subject and body; smtp: subject contains the fixed string
 			returnBody = _.filter([this.handleEncodings(subject), returnBody], (e) => !!e).join(': '); // filter with boolean existence check
 		}
