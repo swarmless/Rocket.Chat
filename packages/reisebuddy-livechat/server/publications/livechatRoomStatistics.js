@@ -1,3 +1,5 @@
+var moment_tz = Npm.require('moment-timezone');
+
 Meteor.publish('livechat:room_statistics', function () {
 	if (!this.userId) {
 		return this.error(new Meteor.Error('error-not-authorized', 'Not authorized', {publish: 'livechat:messages'}));
@@ -38,11 +40,11 @@ function extendRoomData(roomId, roomObject, context) {
 function formatDates(roomObject) { //todo aslagle:reactive-table doesn't support filters on formatted values. So we set the values on the server without i18n
 	if (roomObject) {
 		if (roomObject.lm) {
-			roomObject.lm = moment(roomObject.lm).locale('de').format('L LT');
+			roomObject.lm = moment_tz(roomObject.lm).tz("Europe/Berlin").format('DD.MM.YYYY HH:mm');
 		}
 
 		if (roomObject.ts) {
-			roomObject.ts = moment(roomObject.ts).locale('de').format('L LT');
+			roomObject.ts = moment_tz(roomObject.ts).tz("Europe/Berlin").format('DD.MM.YYYY HH:mm');
 		}
 	}
 

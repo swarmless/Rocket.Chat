@@ -7,6 +7,10 @@ Package.describe({
 	documentation: null
 });
 
+Npm.depends({
+	"moment-timezone": "0.5.6"
+});
+
 Package.onUse(function(api) {
 	api.use(['ecmascript', 'underscore', 'mongo']);
 	api.use('templating', 'client');
