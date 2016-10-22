@@ -7,6 +7,7 @@
 		{{#let helpRequest=helpRequestByRoom }}
 			{{#if helpRequest}}
 				{{> HelpRequestContext helpRequest }}
+				{{> HelpRequestActions helpRequest }}
 			{{/if}}
 		{{/let}}
 		{{#each messages}}

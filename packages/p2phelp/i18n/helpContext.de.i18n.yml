@@ -2,4 +2,6 @@ SystemContext: System-Kontext
 system: System
 release: Version
 transaction: Transaktion
+application: Anwendung
 gui_title: GUI-Titel
+Close_HelpReuest: Hilfe beenden

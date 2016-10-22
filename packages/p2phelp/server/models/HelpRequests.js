@@ -53,9 +53,12 @@ class HelpRequest extends RocketChat.models._Base {
 	}
 
 //---------------------------- UPDATE
-	markResolved(_id) {
+	close(_id, closingProperties={}) {
 		const query = {_id: _id};
-		const update = {$set: {resolutionStatus: HelpRequest.RESOLUTION_STATUS.resolved}};
+		const update = {$set: {
+								resolutionStatus: HelpRequest.RESOLUTION_STATUS.resolved,
+								closingProperties: closingProperties
+						}};
 
 		return this.update(query, update);
 	}

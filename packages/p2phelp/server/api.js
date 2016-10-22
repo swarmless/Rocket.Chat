@@ -24,10 +24,6 @@ class P2pHelpApi {
 		if (!bodyParams.providers || bodyParams.providers.length === 0) {
 			throw new Meteor.Error('At least one user who could potentially help needs to be supplied');
 		}
-
-		if (!bodyParams.message || bodyParams.message.trim() === '') {
-			throw new Meteor.Error('A message describing the question beends to be provided by the seeker');
-		}
 	}
 
 	processHelpDiscussionPostRequest(bodyParams) {
@@ -129,11 +125,12 @@ class P2pHelpApi {
 				RocketChat.models.Rooms.addHelpRequestInfo(room, helpRequestId);
 
 				try {
-
-					RocketChat.sendMessage({
-						username: seekerUser.username,
-						_id: seekerUser._id
-					}, {msg: message}, {_id: channel.rid});
+					if (message) {
+						RocketChat.sendMessage({
+							username: seekerUser.username,
+							_id: seekerUser._id
+						}, {msg: message}, {_id: channel.rid});
+					}
 
 				} catch (err) {
 					console.error('Could not add help message', err);

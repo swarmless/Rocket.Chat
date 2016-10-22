@@ -32,6 +32,7 @@ Package.onUse(function (api) {
 
 	//Methods
 	api.addFiles('server/methods/helpRequestByRoomId.js', 'server');
+	api.addFiles('server/methods/closeHelpRequest.js', 'server');
 
 	// Hooks
 	api.addFiles('server/hooks/sendMessageToKnowledgeAdapter.js', 'server');
@@ -42,6 +43,8 @@ Package.onUse(function (api) {
 	api.addFiles('client/views/HelpRequestContext.js', 'client');
 	api.addFiles('client/views/HelpRequestContextParameter.html', 'client');
 	api.addFiles('client/views/HelpRequestContextParameter.js', 'client');
+	api.addFiles('client/views/HelpRequestActions.html', 'client');
+	api.addFiles('client/views/HelpRequestActions.js', 'client');
 
 	//Assets
 	api.addAssets('assets/stylesheets/helpRequestContext.less', 'server'); //has to be done on the server, it exposes the completed css to the client

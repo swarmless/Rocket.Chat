@@ -1,4 +1,8 @@
 Template.HelpRequestContext.helpers({
+	/**
+	 * Create a set of name-value-pairs which are being used to visualize the context from which the question has been asked
+	 * @returns {Array}
+	 */
 	relevantParameters(){
 		const instance = Template.instance();
 		const environment = instance.data.environment;
@@ -8,27 +12,9 @@ Template.HelpRequestContext.helpers({
 			let value = '';
 			let name = '';
 
-			if (environment.SYSTEM) {
-				let systemClient = environment.SYSTEM;
-				if (environment.CLIENT) {
-					systemClient = systemClient + "(" + environment.CLIENT + ")";
-				}
-				relevantParameters.push({
-					name: 'system',
-					value: systemClient
-				});
-			}
-
-			if (environment.RELEASE) {
-				relevantParameters.push({
-					name: 'release',
-					value: environment.RELEASE
-				});
-			}
-
 			// Transaction +  Title
 			name = '';
-			value = environment.TCODE || environment.PROGRAM;
+			value = environment.TCODE || environment.PROGRAM || environment.WD_APPLICATION;
 			if (environment.TITLE) {
 				value = value + ' - ' + environment.TITLE;
 			}
@@ -37,7 +23,12 @@ Template.HelpRequestContext.helpers({
 			} else {
 				if (environment.PROGRAM) {
 					name = 'program';
+				} else {
+					if (environment.WD_APPLICATION) {
+						name = 'application'
+					}
 				}
+
 			}
 
 			if (name) {
@@ -45,6 +36,23 @@ Template.HelpRequestContext.helpers({
 					name,
 					value
 				});
+			}
+
+			//System information
+			if (environment.SYSTEM) {
+				let systemClient = environment.SYSTEM;
+				if (environment.CLIENT) {
+					systemClient = systemClient + "(" + environment.CLIENT + ")";
+				}
+
+				if (environment.RELEASE) {
+					systemClient = systemClient + ', ' + t('release') + ': ' + environment.RELEASE;
+				}
+
+				relevantParameters.push({
+					name: 'system',
+					value: systemClient
+				})
 			}
 		}
 
