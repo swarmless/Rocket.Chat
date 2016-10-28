@@ -11,46 +11,41 @@ const API = new Restivus({
 	prettyJson: true
 });
 
-function keysToLowerCase(obj) {
-	var keys = Object.keys(obj);
-	var n = keys.length;
-	while (n--) {
-		var key = keys[n]; // "cache" it, for less lookups to the array
-		if (key !== key.toLowerCase()) { // might already be in its lower case version
-			obj[key.toLowerCase()] = obj[key]; // swap the value to a new lower case key
-			delete obj[key]; // delete the old key
-		}
-	}
-	return (obj);
-}
 
 function keysToUpperCase(obj) {
-	var keys = Object.keys(obj);
-	var n = keys.length;
-	while (n--) {
-		var key = keys[n]; // "cache" it, for less lookups to the array
-		if (key !== key.toUpperCase()) { // might already be in its lower case version
-			obj[key.toUpperCase()] = obj[key]; // swap the value to a new lower case key
-			delete obj[key]; // delete the old key
+	for (let prop in obj){
+		if(typeof obj[prop] === "object"){
+			obj[prop] = keysToUpperCase(obj[prop]);
+		}
+		if(prop != prop.toUpperCase()){
+			obj[prop.toUpperCase()] = obj[prop];
+			delete obj[prop];
 		}
 	}
-	return (obj);
+	return obj;
 }
 
+function keysToLowerCase(obj) {
+	for (let prop in obj){
+		if(typeof obj[prop] === "object"){
+			obj[prop] = keysToLowerCase(obj[prop]);
+		}
+		if(prop != prop.toLowerCase()){
+			obj[prop.toLowerCase()] = obj[prop];
+			delete obj[prop];
+		}
+	}
+	return obj;
+}
 
 function preProcessBody(body) {
-
+	body = keysToLowerCase(body);
 	// Extract properties from the load encapsulated in an additional REQUEST-object
-	if (body.REQUEST) {
-		let keys = Object.keys(body.REQUEST);
-		let n = keys.length;
-		while (n--) {
-			let key = keys[n];
-			body[key.toLowerCase()] = body.REQUEST[key];
-			delete body.REQUEST[key];
+	if (body.request) {
+		for (let key in body.request){
+			body[key] = body.request[key];
 		}
-
-		delete body.REQUEST;
+		delete body.request;
 	}
 
 	//dereference references

@@ -12,19 +12,19 @@ Template.HelpRequestContext.helpers({
 			let value = '';
 			let name = '';
 
-			// Transaction +  Title
+			// transaction +  title
 			name = '';
-			value = environment.TCODE || environment.PROGRAM || environment.WD_APPLICATION;
-			if (environment.TITLE) {
-				value = value + ' - ' + environment.TITLE;
+			value = environment.tcode || environment.program || environment.wd_application;
+			if (environment.title) {
+				value = value + ' - ' + environment.title;
 			}
-			if (environment.TCODE) {
+			if (environment.tcode) {
 				name = 'transaction';
 			} else {
-				if (environment.PROGRAM) {
+				if (environment.program) {
 					name = 'program';
 				} else {
-					if (environment.WD_APPLICATION) {
+					if (environment.wd_application) {
 						name = 'application'
 					}
 				}
@@ -38,20 +38,20 @@ Template.HelpRequestContext.helpers({
 				});
 			}
 
-			//System information
-			if (environment.SYSTEM) {
-				let systemClient = environment.SYSTEM;
-				if (environment.CLIENT) {
-					systemClient = systemClient + "(" + environment.CLIENT + ")";
+			//system information
+			if (environment.system) {
+				let systemInfo = environment.system;
+				if (environment.client) {
+					systemInfo = systemInfo + "(" + environment.client + ")";
 				}
 
-				if (environment.RELEASE) {
-					systemClient = systemClient + ', ' + t('release') + ': ' + environment.RELEASE;
+				if (environment.release) {
+					systemInfo = systemInfo + ', ' + t('release') + ': ' + environment.release;
 				}
 
 				relevantParameters.push({
 					name: 'system',
-					value: systemClient
+					value: systemInfo
 				})
 			}
 		}

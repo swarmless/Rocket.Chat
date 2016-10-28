@@ -17,7 +17,7 @@ class P2pHelpApi {
 			throw new Meteor.Error('No support area defined');
 		}
 
-		if (!bodyParams.seeker || bodyParams.seeker.trim() === '') {
+		if (!bodyParams.seeker) {
 			throw new Meteor.Error('No user provided who is seeking help');
 		}
 
@@ -46,20 +46,20 @@ class P2pHelpApi {
 		return siteUrl + 'channel/' + room.name;
 	}
 
-	_findUsers(idsOrEmails) {
+	_findUsers(userDescriptions) {
 		const REGEX_OBJECTID = /^[a-f\d]{24}$/i;
 		let potentialIds = [];
 		let potentialEmails = [];
 
 		let users = [];
 
-		idsOrEmails.forEach((idOrEmail)=> {
-			if (idOrEmail.match(REGEX_OBJECTID)) {
-				potentialIds.push(idOrEmail);
+		userDescriptions.forEach((userDescription)=> {
+			if (userDescription.id.match(REGEX_OBJECTID)) {
+				potentialIds.push(userDescription.id);
 			}
 
-			if (idOrEmail.search('@') !== -1) {
-				potentialEmails.push(idOrEmail);
+			if (userDescription.email.search('@') !== -1) {
+				potentialEmails.push(userDescription.email);
 			}
 		});
 
@@ -111,7 +111,7 @@ class P2pHelpApi {
 		const seekerUser = this._findUsers([seeker])[0];
 		const providerUsers = this._findUsers(providers);
 		if (!seekerUser) {
-			throw new Meteor.Error("Invalid user " + seeker + ' provided');
+			throw new Meteor.Error("Invalid user " + JSON.stringify(seeker) + ' provided');
 		}
 
 		let channel = {};
