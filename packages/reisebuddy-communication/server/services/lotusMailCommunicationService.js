@@ -139,7 +139,7 @@ class LotusMailCommunicationService {
 			}
 
 			let requestBody = {
-				to: to + self.baseAddress,
+				to: to.replace(/^\+/, '00').replace(/\s/, '') + self.baseAddress,
 				subject: effectiveSubject,
 				body: message || ''
 			};
