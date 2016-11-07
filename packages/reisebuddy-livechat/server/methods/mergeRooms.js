@@ -31,67 +31,74 @@ Meteor.methods({
 		return targetRoom;
 	},
 	/**
-	 * Moves all messages from roomToClose to newRoom, increments msg counter on newRoom, removes subscriptions
+	 * Moves all messages from roomToClose (current) to newRoom (prev), increments msg counter on newRoom, removes subscriptions
 	 * on roomToClose, deletes roomToClose, reopens newRoom, attaches subscriptions to newRoom
 	 * @throws Meteor.Error if rooms cannot be accessed
 	 */
-	'livechat:mergeRooms': function (roomToCloseId, newRoomId) {
-		const closeRoom = getLiveRoomFromId(roomToCloseId, 'livechat:mergeRooms');
-		const mergeRoom = getLiveRoomFromId(newRoomId, 'livechat:mergeRooms');
+	'livechat:mergeRooms': function (currentRoomId, prevRoomId) {
+		const currentRoom = getLiveRoomFromId(currentRoomId, 'livechat:mergeRooms');
+		const prevRoom = getLiveRoomFromId(prevRoomId, 'livechat:mergeRooms');
 
-		if (!closeRoom || !mergeRoom) {
+		if (!currentRoom || !prevRoom) {
 			throw new Meteor.Error('error-not-found', 'Not found', {method: 'livechat:mergeRooms'});
 		}
 
-		let settings = {answered: false};
-
-		let oldSubscription = RocketChat.models.Subscriptions.findOneByRoomIdAndUserId(roomToCloseId, Meteor.userId());
-		if (oldSubscription) {
-			if(oldSubscription.answered) {
-				settings.answered = oldSubscription.answered;
+		let currentSubscrip = RocketChat.models.Subscriptions.findOneByRoomIdAndUserId(currentRoomId, Meteor.userId());
+		let prevSubscriptionUpdate = {
+			answered: false,
+			u: currentSubscrip.u
+		};
+		if (currentSubscrip) {
+			if (currentSubscrip.answered) {
+				prevSubscriptionUpdate.answered = currentSubscrip.answered;
 			}
-			if(oldSubscription.lastActivity) {
-				settings.lastActivity = oldSubscription.lastActivity;
+			if (currentSubscrip.lastActivity) {
+				prevSubscriptionUpdate.lastActivity = currentSubscrip.lastActivity;
 			}
-			if(oldSubscription.lastCustomerActivity) {
-				settings.lastCustomerActivity = oldSubscription.lastCustomerActivity;
+			if (currentSubscrip.lastCustomerActivity) {
+				prevSubscriptionUpdate.lastCustomerActivity = currentSubscrip.lastCustomerActivity;
 			}
 		}
 
-		if (closeRoom.rbInfo) {
-			settings.rbInfo = closeRoom.rbInfo;
-		}
-		const numOfMsgsToMove = RocketChat.models.Messages.findVisibleByRoomId(roomToCloseId).count();
-		RocketChat.models.Messages.updateAllRoomIds(roomToCloseId, newRoomId);
-		RocketChat.models.Rooms.incMsgCountAndSetLastMessageTimestampById(newRoomId, numOfMsgsToMove, new Date());
+		const numOfMsgsToMove = RocketChat.models.Messages.findVisibleByRoomId(currentRoomId).count();
+		RocketChat.models.Messages.updateAllRoomIds(currentRoomId, prevRoomId);
+		RocketChat.models.Rooms.incMsgCountAndSetLastMessageTimestampById(prevRoomId, numOfMsgsToMove, new Date());
 
-		RocketChat.models.Subscriptions.removeByRoomId(roomToCloseId);
-		RocketChat.models.Rooms.removeById(roomToCloseId);
-		RocketChat.models.LivechatInquiry.remove({rid: roomToCloseId});
-		RocketChat.models.LivechatExternalMessage.remove({rid: roomToCloseId});
+		RocketChat.models.Subscriptions.removeByRoomId(currentRoomId);
+		RocketChat.models.Subscriptions.update({rid: prevRoomId}, {$set: prevSubscriptionUpdate});
+
+		RocketChat.models.Rooms.removeById(currentRoomId);
+		RocketChat.models.Rooms.update(prevRoomId, {
+			$set: {
+				open: true,
+				servedBy: currentRoom.servedBy,
+				usernames: currentRoom.usernames,
+				rbInfo: currentRoom.rbInfo
+			},
+			$unset: {
+				comment: '',
+				duration: '',
+				closedBy: '',
+				chatDuration: ''
+			}
+		});
 
 		//trigger update for knowledgeAdapter
+		RocketChat.models.LivechatExternalMessage.remove({rid: currentRoomId});
 		Meteor.defer(() => {
 			try {
-				const lastMsgByVisitorForNewRoom = RocketChat.models.Messages.findLastOneByVisitorForRoom(newRoomId);
+				const lastMsgByVisitorForNewRoom = RocketChat.models.Messages.findLastOneByVisitorForRoom(prevRoomId);
 				if (_dbs.getKnowledgeAdapter() && lastMsgByVisitorForNewRoom) {
-                    _dbs.getKnowledgeAdapter().onMessage(lastMsgByVisitorForNewRoom);
+					_dbs.getKnowledgeAdapter().onMessage(lastMsgByVisitorForNewRoom);
 				}
 			} catch (e) {
 				SystemLogger.error('Error using knowledge provider ->', e);
 			}
 		});
 
-		RocketChat.models.Rooms.update(newRoomId, {
-			$set: {open: true},
-			$unset: {comment: '', duration: ''}
-		});
+		RocketChat.models.LivechatInquiry.remove({rid: prevRoomId}); // we keep the most recent for potential queuing
+		RocketChat.models.LivechatInquiry.update({rid: currentRoomId}, {$set: {rid: prevRoomId}});
 
-		RocketChat.models.Subscriptions.update(
-			{rid: newRoomId},
-			{$set: settings}
-		);
-
-		RocketChat.models.Subscriptions.openByRoomIdAndUserId(newRoomId, Meteor.userId());
+		RocketChat.models.Subscriptions.openByRoomIdAndUserId(prevRoomId, Meteor.userId());
 	}
 });
