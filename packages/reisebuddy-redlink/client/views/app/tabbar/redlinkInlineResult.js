@@ -1,7 +1,9 @@
 Template.redlinkInlineResult._copyReplySuggestion = function(event, instance)
 {
 	if (instance.data.result.replySuggestion) {
-		$('#chat-window-' + instance.data.roomId + ' .input-message').val(instance.data.result.replySuggestion);
+		const inputBox = $('#chat-window-' + instance.data.roomId + ' .input-message');
+		const initialInputBoxValue = inputBox.val() ? inputBox.val() + ' ' : '';
+		inputBox.val(initialInputBoxValue + instance.data.result.replySuggestion).focus().trigger('keyup');
 	}
 };
 
