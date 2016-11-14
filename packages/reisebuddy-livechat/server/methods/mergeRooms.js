@@ -79,6 +79,7 @@ Meteor.methods({
 				comment: '',
 				duration: '',
 				closedBy: '',
+				closedAt: '',
 				chatDuration: ''
 			}
 		});
@@ -97,7 +98,7 @@ Meteor.methods({
 		});
 
 		RocketChat.models.LivechatInquiry.remove({rid: prevRoomId}); // we keep the most recent for potential queuing
-		RocketChat.models.LivechatInquiry.update({rid: currentRoomId}, {$set: {rid: prevRoomId}});
+		RocketChat.models.LivechatInquiry.update({rid: currentRoomId}, {$set: {rid: prevRoomId, code: prevRoom.code}});
 
 		RocketChat.models.Subscriptions.openByRoomIdAndUserId(prevRoomId, Meteor.userId());
 	}
